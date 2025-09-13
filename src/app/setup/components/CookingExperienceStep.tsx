@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { OnboardingData } from '../page';
 
 interface CookingExperienceStepProps {
@@ -32,12 +33,22 @@ const experienceLevels = [
 ];
 
 export default function CookingExperienceStep({ data, updateData }: CookingExperienceStepProps) {
+  const [blinkingButton, setBlinkingButton] = useState<string | null>(null);
+
   const handleExperienceChange = (experience: 'beginner' | 'intermediate' | 'advanced') => {
     updateData({ cookingExperience: experience });
+    
+    // Trigger blinking animation
+    setBlinkingButton(experience);
+    
+    // Reset blinking state after animation completes
+    setTimeout(() => {
+      setBlinkingButton(null);
+    }, 400); // Match the animation duration from CSS
   };
 
   return (
-    <div>
+    <div className="step-fade-in">
       <h2 className="text-lg font-medium mb-2">What&apos;s your cooking experience level?</h2>
       <p className="text-sm text-black/60 mb-6">
         This helps us suggest recipes that match your comfort level and available time.
@@ -52,7 +63,7 @@ export default function CookingExperienceStep({ data, updateData }: CookingExper
               data.cookingExperience === level.id
                 ? 'border-foreground bg-foreground/5'
                 : 'border-black/10 hover:border-black/20'
-            }`}
+            } ${blinkingButton === level.id ? 'animate-blink' : ''}`}
           >
             <div className="flex items-start justify-between">
               <div className="flex-1">

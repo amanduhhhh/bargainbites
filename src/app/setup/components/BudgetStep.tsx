@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { OnboardingData } from '../page';
 
 interface BudgetStepProps {
@@ -16,8 +17,18 @@ const budgetPresets = [
 ];
 
 export default function BudgetStep({ data, updateData }: BudgetStepProps) {
+  const [blinkingButton, setBlinkingButton] = useState<number | null>(null);
+
   const handleBudgetChange = (amount: number) => {
     updateData({ weeklyBudget: amount });
+    
+    // Trigger blinking animation
+    setBlinkingButton(amount);
+    
+    // Reset blinking state after animation completes
+    setTimeout(() => {
+      setBlinkingButton(null);
+    }, 400); // Match the animation duration from CSS
   };
 
   const handleCustomBudget = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,7 +37,7 @@ export default function BudgetStep({ data, updateData }: BudgetStepProps) {
   };
 
   return (
-    <div>
+    <div className="step-fade-in">
       <h2 className="text-lg font-medium mb-2">What&apos;s your weekly grocery budget?</h2>
       <p className="text-sm text-black/60 mb-6">
         This helps us create meal plans that fit your budget while maximizing savings from flyer deals.
@@ -41,7 +52,7 @@ export default function BudgetStep({ data, updateData }: BudgetStepProps) {
               data.weeklyBudget === preset.amount
                 ? 'border-foreground bg-foreground/5'
                 : 'border-black/10 hover:border-black/20'
-            }`}
+            } ${blinkingButton === preset.amount ? 'animate-blink' : ''}`}
           >
             <div className="flex items-center justify-between">
               <div>

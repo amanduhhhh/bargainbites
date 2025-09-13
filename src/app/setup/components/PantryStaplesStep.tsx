@@ -31,6 +31,7 @@ const pantryCategories = {
 
 export default function PantryStaplesStep({ data, updateData }: PantryStaplesStepProps) {
   const [searchTerm, setSearchTerm] = useState('');
+  const [customIngredient, setCustomIngredient] = useState('');
 
   const handleStapleToggle = (staple: string) => {
     const currentStaples = data.pantryStaples;
@@ -41,6 +42,19 @@ export default function PantryStaplesStep({ data, updateData }: PantryStaplesSte
     updateData({ pantryStaples: updatedStaples });
   };
 
+  const handleAddCustomIngredient = () => {
+    if (customIngredient.trim() && !data.pantryStaples.includes(customIngredient.trim())) {
+      updateData({ pantryStaples: [...data.pantryStaples, customIngredient.trim()] });
+      setCustomIngredient('');
+    }
+  };
+
+  const handleKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      handleAddCustomIngredient();
+    }
+  };
+
   const filteredCategories = Object.entries(pantryCategories).map(([category, items]) => [
     category,
     items.filter(item => 
@@ -49,7 +63,7 @@ export default function PantryStaplesStep({ data, updateData }: PantryStaplesSte
   ]).filter(([, items]) => (items as string[]).length > 0) as [string, string[]][];
 
   return (
-    <div>
+    <div className="step-fade-in">
       <h2 className="text-lg font-medium mb-2">What pantry staples do you already have?</h2>
       <p className="text-sm text-black/60 mb-4">
         Select items you already have at home. This helps us avoid suggesting recipes that require ingredients you already own.
@@ -64,6 +78,9 @@ export default function PantryStaplesStep({ data, updateData }: PantryStaplesSte
           className="w-full px-3 py-2 border border-black/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-foreground/20"
         />
       </div>
+
+      {/* Custom ingredient input */}
+    
 
       <div className="space-y-4 max-h-96 overflow-y-auto">
         {filteredCategories.map(([category, items]) => (
@@ -86,6 +103,27 @@ export default function PantryStaplesStep({ data, updateData }: PantryStaplesSte
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="mb-4 p-3 bg-black/5 border border-black/10 rounded-lg mt-4">
+        <div className="text-sm font-medium mb-2 text-black/80">Add custom ingredient</div>
+        <div className="flex gap-2">
+          <input
+            type="text"
+            placeholder="Enter ingredient name..."
+            value={customIngredient}
+            onChange={(e) => setCustomIngredient(e.target.value)}
+            onKeyPress={handleKeyPress}
+            className="flex-1 px-3 py-2 border border-black/20 rounded-lg focus:outline-none focus:ring-2 focus:ring-black/20 text-sm bg-white"
+          />
+          <button
+            onClick={handleAddCustomIngredient}
+            disabled={!customIngredient.trim()}
+            className="px-4 py-2 bg-foreground text-background rounded-lg hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed text-sm font-medium"
+          >
+            Add
+          </button>
+        </div>
       </div>
 
       {data.pantryStaples.length > 0 && (

@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <header className="border-b border-black/10">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link
             href="/"
             className="font-mono text-xs sm:text-sm uppercase tracking-[0.2em] hover:underline underline-offset-4"
@@ -13,37 +13,47 @@ export default function Home() {
             Bargain Bites
           </Link>
           <nav className="flex items-center gap-6 text-sm">
-            <a href="#how-it-works" className="hover:underline underline-offset-4">How it works</a>
+            <a href="/how-it-works" className="hover:underline underline-offset-4">How it works</a>
             <AuthButtons />
           </nav>
         </div>
       </header>
 
-      <main className="flex-1">
+      <main className="flex-1 relative">
+        {/* Background oranges image */}
+        <div 
+          className="absolute right-0 -top-8 h-full w-1/3 bg-cover bg-left bg-no-repeat opacity-20 pointer-events-none"
+          style={{
+            backgroundImage: 'url(/background/oranges.png)',
+            backgroundPosition: 'left center'
+          }}
+        />
+        
         {/* Hero */}
-        <section className="max-w-5xl mx-auto px-6 py-14 sm:py-20">
+        <section className="max-w-6xl mx-auto px-6 py-14 sm:py-20 relative z-10">
+       
+          <h1 className="mb-5 text-4xl sm:text-6xl font-semibold tracking-tight">
+            Weekly budget-friendly meals from local grocery flyers
+          </h1>
           <p className="inline-flex items-center gap-2 rounded-full border border-black/10 px-3 py-1 text-[10px] sm:text-xs tracking-[0.18em] uppercase">
             Save more. Eat better.
           </p>
-          <h1 className="mt-5 text-4xl sm:text-6xl font-semibold tracking-tight">
-            Weekly budget-friendly meals from local grocery flyers
-          </h1>
-          <p className="mt-4 max-w-[60ch] text-sm sm:text-base text-black/60 dark:text-white/60">
+          <p className="mt-4 max-w-[60ch] text-sm sm:text-base text-black/60 dark:text-black/60">
             Bargain Bites scrapes Canadian grocery flyers, generates 7-day meal plans, and
             builds one consolidated shopping list. Minimalist, fast, and focused on savings.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-3">
             <Link href="/plan" className="inline-flex items-center justify-center h-11 px-5 rounded-full bg-foreground text-background text-sm font-medium hover:opacity-90">
-              Generate my plan
+              Start my plan
             </Link>
-            <a href="#how-it-works" className="inline-flex items-center justify-center h-11 px-5 rounded-full border border-black/10 hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:text-black dark:hover:text-white text-sm font-medium transition-colors duration-200 ease-in-out">
+            <a href="/how-it-works" className="inline-flex items-center justify-center h-11 px-5 rounded-full border border-black/10 hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:text-black dark:hover:text-white text-sm font-medium transition-colors duration-200 ease-in-out">
               Learn more
             </a>
           </div>
         </section>
 
         {/* Retailers carousel */}
-        <section aria-labelledby="retailers" className="max-w-6xl mx-auto px-6 pb-10">
+        <section aria-labelledby="retailers" className="max-w-6xl mx-auto px-6 pb-10 relative z-10">
           <h2 id="retailers" className="sr-only">Works with</h2>
           <div className="text-xs uppercase tracking-[0.18em] text-black/60 mb-3">Works with</div>
           <div className="logo-marquee logo-fade py-2">
@@ -75,7 +85,7 @@ export default function Home() {
         </section>
 
         {/* Features */}
-        <section id="how-it-works" className="max-w-5xl mx-auto px-6 pb-10 sm:pb-16">
+        <section id="how-it-works" className="max-w-6xl mx-auto px-6 pb-10 sm:pb-16 relative z-10">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <div className="rounded-lg border border-black/10 p-4">
               <div className="font-medium">Scrapes local flyers</div>
@@ -98,7 +108,7 @@ export default function Home() {
       </main>
 
       <footer className="border-t border-black/10">
-        <div className="max-w-5xl mx-auto px-6 py-6 text-xs text-black/60 dark:text-white/60 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-6 py-6 text-xs text-black/60 dark:text-black/60 flex items-center justify-between">
           <span>© {new Date().getFullYear()} Bargain Bites</span>
           <div className="flex items-center gap-4">
             <a href="#" className="hover:underline underline-offset-4">Privacy</a>
