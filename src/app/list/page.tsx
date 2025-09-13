@@ -127,24 +127,13 @@ export default function GroceryListPage() {
       <header className="border-b border-black/10">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link
-            href="/"
+            href="/meals"
             className="font-mono text-xs sm:text-sm uppercase tracking-[0.2em] hover:underline underline-offset-4"
           >
             Bargain Bites
           </Link>
           <div className="flex items-center gap-6">
-            <Link
-              href="/meals"
-              className="text-sm text-black/60 hover:text-black/80 underline"
-            >
-              Meals
-            </Link>
-            <Link
-              href="/plan"
-              className="text-sm text-black/60 hover:text-black/80 underline"
-            >
-              Plan
-            </Link>
+           
             <Link
               href="/profile"
               className="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center hover:bg-orange-600 transition-colors"

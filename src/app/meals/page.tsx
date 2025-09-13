@@ -206,7 +206,7 @@ export default function MealsPage() {
       <header className="border-b border-black/10">
         <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link
-            href="/"
+            href="/meals"
             className="font-mono text-xs sm:text-sm uppercase tracking-[0.2em] hover:underline underline-offset-4"
           >
             Bargain Bites
@@ -217,12 +217,6 @@ export default function MealsPage() {
               className="text-sm text-black/60 hover:text-black/80 underline"
             >
               Grocery List
-            </Link>
-            <Link
-              href="/setup"
-              className="text-sm text-black/60 hover:text-black/80 underline"
-            >
-              Set up
             </Link>
             <Link
               href="/profile"

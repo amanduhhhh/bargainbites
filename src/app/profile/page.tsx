@@ -84,18 +84,7 @@ export default function ProfilePage() {
             >
               Meals
             </Link>
-            <Link
-              href="/list"
-              className="text-sm text-black/60 hover:text-black/80 underline"
-            >
-              Grocery List
-            </Link>
-            <Link
-              href="/plan"
-              className="text-sm text-black/60 hover:text-black/80 underline"
-            >
-              Plan
-            </Link>
+           
             <Link
               href="/profile"
               className="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center hover:bg-orange-600 transition-colors"
@@ -271,6 +260,12 @@ export default function ProfilePage() {
                     className="block w-full text-left px-3 py-2 text-sm border border-black/10 rounded-lg hover:bg-black/5 transition-colors"
                   >
                     Plan New Week
+                  </Link>
+                  <Link
+                    href="/list"
+                    className="block w-full text-left px-3 py-2 text-sm border border-black/10 rounded-lg hover:bg-black/5 transition-colors"
+                  >
+                    Grocery List
                   </Link>
                   <button className="block w-full text-left px-3 py-2 text-sm border border-black/10 rounded-lg hover:bg-black/5 transition-colors">
                     Shopping History
