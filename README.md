@@ -1,3 +1,27 @@
+## Auth0 setup
+
+Create a `.env.local` file in the project root with the following variables (do not commit this file):
+
+```
+AUTH0_DOMAIN=your-tenant.region.auth0.com
+AUTH0_CLIENT_ID=your_client_id
+AUTH0_CLIENT_SECRET=your_client_secret
+AUTH0_SECRET=generate_a_long_random_string
+APP_BASE_URL=http://localhost:3000
+# Optional custom route paths
+# NEXT_PUBLIC_LOGIN_ROUTE=/auth/login
+# NEXT_PUBLIC_LOGOUT_ROUTE=/auth/logout
+# NEXT_PUBLIC_PROFILE_ROUTE=/auth/profile
+```
+
+After setting the variables, start the dev server:
+
+```
+npm run dev
+```
+
+Then open http://localhost:3000 and use the Log in button in the header.
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started

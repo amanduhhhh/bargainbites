@@ -1,0 +1,47 @@
+- .env
+- .gitignore
+- README.md
+- details copy.md
+- eslint.config.mjs
+- next-env.d.ts
+- next.config.ts
+- package-lock.json
+- package.json
+- postcss.config.mjs
+- public
+  - company-logos
+    - Costco_Wholesale_logo_2010-10-26.svg.png
+    - Farm_Boy_logo.svg.png
+    - Food_Basics_Logo.png
+    - FreshCo_logo.svg.png
+    - Loblaws-Logo.png
+    - Metro_Inc._logo.svg.png
+    - No_Frills_logo.svg.png
+    - Real_Canadian_Superstore_logo.svg.png
+    - Sobeys_logo.svg.png
+    - Walmart_logo_(2008).svg.png
+  - file.svg
+  - globe.svg
+  - next.svg
+  - vercel.svg
+  - window.svg
+- src
+  - app
+    - api
+      - auth
+        - [auth0]
+          - route.ts
+    - favicon.ico
+    - globals.css
+    - layout.tsx
+    - loading.tsx
+    - page.tsx
+    - profile
+      - page.tsx
+    - route-loader.tsx
+    - template.tsx
+  - components
+    - AuthButtons.tsx
+    - ClientProviders.tsx
+  - middleware.ts
+- tsconfig.json

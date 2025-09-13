@@ -1,3 +1,5 @@
+import AuthButtons from "../components/AuthButtons";
+
 export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
@@ -7,6 +9,7 @@ export default function Home() {
           <nav className="flex items-center gap-6 text-sm">
             <a href="#how-it-works" className="hover:underline underline-offset-4">How it works</a>
             <a href="#get-started" className="rounded-full border border-black/10 px-4 py-1.5 hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a]">Get started</a>
+            <AuthButtons />
           </nav>
         </div>
       </header>
@@ -71,91 +74,20 @@ export default function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
             <div className="rounded-lg border border-black/10 p-4">
               <div className="font-medium">Scrapes local flyers</div>
-              <p className="mt-1 text-sm text-black/60 dark:text-white/60">Pulls deals from Canadian retailers and normalizes products, prices, and dates.</p>
+              <p className="mt-1 text-sm text-black/60 dark:text-black/60">Pulls deals from Canadian retailers and normalizes products, prices, and dates.</p>
             </div>
             <div className="rounded-lg border border-black/10 p-4">
               <div className="font-medium">Generates recipes</div>
-              <p className="mt-1 text-sm text-black/60 dark:text-white/60">Creates a 7-day plan tailored to your budget, household size, and preferences.</p>
+              <p className="mt-1 text-sm text-black/60 dark:text-black/60">Creates a 7-day plan tailored to your budget, household size, and preferences.</p>
             </div>
             <div className="rounded-lg border border-black/10 p-4">
               <div className="font-medium">Optimizes your trip</div>
-              <p className="mt-1 text-sm text-black/60 dark:text-white/60">Minimizes cost with store routing and carry-capacity checks if you’re on foot.</p>
+              <p className="mt-1 text-sm text-black/60 dark:text-black/60">Minimizes cost with store routing and carry-capacity checks if you’re on foot.</p>
             </div>
             <div className="rounded-lg border border-black/10 p-4">
               <div className="font-medium">Simple chat adjustments</div>
-              <p className="mt-1 text-sm text-black/60 dark:text-white/60">Ask to swap meals, change budget, or avoid ingredients—your plan updates live.</p>
+              <p className="mt-1 text-sm text-black/60 dark:text-black/60">Ask to swap meals, change budget, or avoid ingredients—your plan updates live.</p>
             </div>
-          </div>
-        </section>
-
-        {/* Starter form */}
-        <section id="get-started" className="max-w-5xl mx-auto px-6 pb-20">
-          <div className="rounded-xl border border-black/10 p-5 sm:p-6">
-            <h2 className="text-xl sm:text-2xl font-semibold tracking-tight">Tell us about your week</h2>
-            <p className="mt-1 text-sm text-black/60 dark:text-white/60">These details help us build a plan that fits your budget and lifestyle.</p>
-
-            <form action="#" method="get" className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="flex flex-col gap-1.5">
-                <label htmlFor="postal" className="text-sm font-medium">Postal code</label>
-                <input id="postal" name="postal" placeholder="e.g., M5V 2T6" className="h-10 rounded-md border border-black/15 bg-transparent px-3 outline-none focus:ring-2 focus:ring-black/20" />
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <label htmlFor="household" className="text-sm font-medium">Household size</label>
-                <select id="household" name="household" className="h-10 rounded-md border border-black/15 bg-transparent px-3 outline-none focus:ring-2 focus:ring-black/20">
-                  <option value="1">1</option>
-                  <option value="2">2</option>
-                  <option value="3">3</option>
-                  <option value="4">4</option>
-                  <option value="5">5</option>
-                  <option value="6">6</option>
-                  <option value="7">7</option>
-                  <option value="8">8+</option>
-                </select>
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <label htmlFor="experience" className="text-sm font-medium">Cooking experience</label>
-                <select id="experience" name="experience" className="h-10 rounded-md border border-black/15 bg-transparent px-3 outline-none focus:ring-2 focus:ring-black/20">
-                  <option>Beginner</option>
-                  <option>Comfortable</option>
-                  <option>Pro</option>
-                </select>
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <label htmlFor="pantry" className="text-sm font-medium">Pantry staples on hand</label>
-                <select id="pantry" name="pantry" className="h-10 rounded-md border border-black/15 bg-transparent px-3 outline-none focus:ring-2 focus:ring-black/20">
-                  <option>None</option>
-                  <option>Some</option>
-                  <option>Well-stocked</option>
-                </select>
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <label htmlFor="budget" className="text-sm font-medium">Weekly budget (CAD)</label>
-                <input id="budget" name="budget" type="number" min="0" placeholder="e.g., 60" className="h-10 rounded-md border border-black/15 bg-transparent px-3 outline-none focus:ring-2 focus:ring-black/20" />
-              </div>
-
-              <div className="flex flex-col gap-1.5">
-                <span className="text-sm font-medium">Equipment at home</span>
-                <div className="grid grid-cols-2 gap-x-3 gap-y-2 text-sm">
-                  <label className="flex items-center gap-2"><input type="checkbox" name="equip" value="stovetop" className="accent-current"/> Stovetop</label>
-                  <label className="flex items-center gap-2"><input type="checkbox" name="equip" value="oven" className="accent-current"/> Oven</label>
-                  <label className="flex items-center gap-2"><input type="checkbox" name="equip" value="microwave" className="accent-current"/> Microwave</label>
-                  <label className="flex items-center gap-2"><input type="checkbox" name="equip" value="blender" className="accent-current"/> Blender</label>
-                  <label className="flex items-center gap-2"><input type="checkbox" name="equip" value="airfryer" className="accent-current"/> Air fryer</label>
-                  <label className="flex items-center gap-2"><input type="checkbox" name="equip" value="bbq" className="accent-current"/> BBQ</label>
-                </div>
-              </div>
-
-              <div className="sm:col-span-2 pt-2">
-                <button type="submit" className="inline-flex items-center justify-center h-11 px-5 rounded-full bg-foreground text-background text-sm font-medium hover:opacity-90">
-                  Continue
-                </button>
-                <span className="ml-3 text-xs text-black/60 dark:text-white/60">No account needed to start.</span>
-              </div>
-            </form>
           </div>
         </section>
       </main>
