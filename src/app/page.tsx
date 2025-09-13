@@ -8,7 +8,6 @@ export default function Home() {
           <div className="font-mono text-xs sm:text-sm uppercase tracking-[0.2em]">Bargain Bites</div>
           <nav className="flex items-center gap-6 text-sm">
             <a href="#how-it-works" className="hover:underline underline-offset-4">How it works</a>
-            <a href="#get-started" className="rounded-full border border-black/10 px-4 py-1.5 hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a]">Get started</a>
             <AuthButtons />
           </nav>
         </div>
