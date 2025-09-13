@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { OnboardingData } from '../page';
 
 interface HouseholdSizeStepProps {
@@ -8,12 +9,22 @@ interface HouseholdSizeStepProps {
 }
 
 export default function HouseholdSizeStep({ data, updateData }: HouseholdSizeStepProps) {
+  const [blinkingButton, setBlinkingButton] = useState<number | null>(null);
+
   const handleSizeChange = (size: number) => {
     updateData({ householdSize: size });
+    
+    // Trigger blinking animation
+    setBlinkingButton(size);
+    
+    // Reset blinking state after animation completes
+    setTimeout(() => {
+      setBlinkingButton(null);
+    }, 400); // Match the animation duration from CSS
   };
 
   return (
-    <div>
+    <div className="step-fade-in">
       <h2 className="text-lg font-medium mb-2">How many people are in your household?</h2>
       <p className="text-sm text-black/60 mb-6">
         This helps us calculate the right portion sizes and quantities for your meal plan.
@@ -28,7 +39,7 @@ export default function HouseholdSizeStep({ data, updateData }: HouseholdSizeSte
               data.householdSize === size
                 ? 'border-foreground bg-foreground/5'
                 : 'border-black/10 hover:border-black/20'
-            }`}
+            } ${blinkingButton === size ? 'animate-blink' : ''}`}
           >
             <div className="text-2xl font-semibold">{size}</div>
             <div className="text-xs text-black/60 mt-1">

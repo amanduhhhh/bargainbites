@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useUser } from '@auth0/nextjs-auth0';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import HouseholdSizeStep from './components/HouseholdSizeStep';
 import CookingExperienceStep from './components/CookingExperienceStep';
 import PantryStaplesStep from './components/PantryStaplesStep';
@@ -27,7 +28,11 @@ const STEPS = [
 
 export default function PlanPage() {
   const { user, isLoading } = useUser();
+  const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
+  const [isDemoMode, setIsDemoMode] = useState(false);
+  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [animationDirection, setAnimationDirection] = useState<'next' | 'prev'>('next');
   const [onboardingData, setOnboardingData] = useState<OnboardingData>({
     householdSize: 1,
     cookingExperience: 'beginner',
@@ -41,14 +46,34 @@ export default function PlanPage() {
   };
 
   const nextStep = () => {
-    if (currentStep < STEPS.length - 1) {
-      setCurrentStep(currentStep + 1);
+    if (currentStep < STEPS.length - 1 && !isTransitioning) {
+      setAnimationDirection('next');
+      setIsTransitioning(true);
+      
+      // Start exit animation
+      setTimeout(() => {
+        setCurrentStep(currentStep + 1);
+        // Start enter animation after step change
+        setTimeout(() => {
+          setIsTransitioning(false);
+        }, 50);
+      }, 300); // Match the exit animation duration
     }
   };
 
   const prevStep = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
+    if (currentStep > 0 && !isTransitioning) {
+      setAnimationDirection('prev');
+      setIsTransitioning(true);
+      
+      // Start exit animation
+      setTimeout(() => {
+        setCurrentStep(currentStep - 1);
+        // Start enter animation after step change
+        setTimeout(() => {
+          setIsTransitioning(false);
+        }, 50);
+      }, 300); // Match the exit animation duration
     }
   };
 
@@ -56,8 +81,18 @@ export default function PlanPage() {
     // TODO: Submit onboarding data to backend
     console.log('Onboarding data:', onboardingData);
     
-    // Demo mode - show success message
-    alert(`Demo mode: Your meal plan preferences have been collected!\n\nHousehold: ${onboardingData.householdSize} people\nCooking Level: ${onboardingData.cookingExperience}\nBudget: $${onboardingData.weeklyBudget}/week\nPantry Items: ${onboardingData.pantryStaples.length} selected\nEquipment: ${onboardingData.equipment.length} items\n\nIn the full version, this would generate your personalized meal plan!`);
+    // Store onboarding data in localStorage for demo mode
+    if (isDemoMode) {
+      localStorage.setItem('demoOnboardingData', JSON.stringify(onboardingData));
+    }
+    
+    // Redirect to meals page
+    router.push('/meals');
+  };
+
+  const startDemoMode = () => {
+    setIsDemoMode(true);
+    setCurrentStep(0);
   };
 
   if (isLoading) {
@@ -71,7 +106,7 @@ export default function PlanPage() {
     );
   }
 
-  if (!user) {
+  if (!user && !isDemoMode) {
     return (
       <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
         <div className="text-center max-w-md mx-auto px-6">
@@ -81,14 +116,14 @@ export default function PlanPage() {
           </p>
           <div className="space-y-3">
             <Link
-              href="/auth/login"
+              href="/api/auth/login"
               className="inline-flex items-center justify-center h-11 px-6 rounded-full bg-foreground text-background text-sm font-medium hover:opacity-90 w-full"
             >
               Sign in to continue
             </Link>
             <button
-              onClick={() => setCurrentStep(0)}
-              className="inline-flex items-center justify-center h-11 px-6 rounded-full border border-black/10 hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] text-sm font-medium w-full"
+              onClick={startDemoMode}
+              className="inline-flex items-center justify-center h-11 px-6 rounded-full border border-black/10 hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] text-sm font-medium w-full animate-blink"
             >
               Skip for now (demo mode)
             </button>
@@ -114,8 +149,23 @@ export default function PlanPage() {
           >
             Bargain Bites
           </Link>
-          <div className="text-sm text-black/60">
-            Step {currentStep + 1} of {STEPS.length}
+          <div className="flex items-center gap-4">
+            {isDemoMode && (
+              <div className="flex items-center gap-2">
+                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                  Demo Mode
+                </span>
+                <button
+                  onClick={() => setIsDemoMode(false)}
+                  className="text-xs text-black/60 hover:text-black/80 underline"
+                >
+                  Exit Demo
+                </button>
+              </div>
+            )}
+            <div className="text-sm text-black/60">
+              Step {currentStep + 1} of {STEPS.length}
+            </div>
           </div>
         </div>
       </header>
@@ -124,12 +174,14 @@ export default function PlanPage() {
         {/* Progress bar */}
         <div className="mb-8">
           <div className="flex items-center justify-between mb-2">
-            <h1 className="text-xl font-semibold">Create your meal plan</h1>
+            <h1 className="text-xl font-semibold">
+              {isDemoMode ? 'Demo: Create your meal plan' : 'Create your meal plan'}
+            </h1>
             <span className="text-sm text-black/60">{Math.round(((currentStep + 1) / STEPS.length) * 100)}%</span>
           </div>
           <div className="w-full bg-black/10 rounded-full h-1">
             <div 
-              className="bg-foreground h-1 rounded-full transition-all duration-300"
+              className="bg-foreground h-1 rounded-full progress-bar"
               style={{ width: `${((currentStep + 1) / STEPS.length) * 100}%` }}
             />
           </div>
@@ -139,20 +191,20 @@ export default function PlanPage() {
         <div className="flex items-center justify-between mb-8">
           {STEPS.map((step, index) => (
             <div key={step.id} className="flex items-center">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium ${
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0 ${
                 index <= currentStep 
-                  ? 'bg-foreground text-background' 
-                  : 'bg-black/10 text-black/60'
+                  ? 'bg-foreground text-background step-indicator-active' 
+                  : 'bg-black/10 text-black/60 step-indicator'
               }`}>
                 {index + 1}
               </div>
-              <span className={`ml-2 text-xs ${
+              <span className={`ml-2 text-xs whitespace-nowrap step-indicator ${
                 index <= currentStep ? 'text-foreground' : 'text-black/60'
               }`}>
                 {step.title}
               </span>
               {index < STEPS.length - 1 && (
-                <div className={`w-8 h-px mx-2 ${
+                <div className={`w-8 h-px mx-2 flex-shrink-0 step-indicator ${
                   index < currentStep ? 'bg-foreground' : 'bg-black/10'
                 }`} />
               )}
@@ -161,19 +213,29 @@ export default function PlanPage() {
         </div>
 
         {/* Current step content */}
-        <div className="mb-8">
-          <CurrentStepComponent 
-            data={onboardingData}
-            updateData={updateData}
-          />
+        <div className="mb-8 relative overflow-hidden">
+          <div className={`${
+            isTransitioning 
+              ? animationDirection === 'next' 
+                ? 'step-exit-left' 
+                : 'step-exit-right'
+              : animationDirection === 'next' 
+                ? 'step-enter-right' 
+                : 'step-enter-left'
+          }`}>
+            <CurrentStepComponent 
+              data={onboardingData}
+              updateData={updateData}
+            />
+          </div>
         </div>
 
         {/* Navigation buttons */}
         <div className="flex items-center justify-between">
           <button
             onClick={prevStep}
-            disabled={currentStep === 0}
-            className="inline-flex items-center justify-center h-11 px-6 rounded-full border border-black/10 hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={currentStep === 0 || isTransitioning}
+            className="inline-flex items-center justify-center h-11 px-6 rounded-full border border-black/10 hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
           >
             Previous
           </button>
@@ -181,14 +243,16 @@ export default function PlanPage() {
           {isLastStep ? (
             <button
               onClick={handleSubmit}
-              className="inline-flex items-center justify-center h-11 px-6 rounded-full bg-foreground text-background text-sm font-medium hover:opacity-90"
+              disabled={isTransitioning}
+              className="inline-flex items-center justify-center h-11 px-6 rounded-full bg-foreground text-background text-sm font-medium hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
             >
-              Generate my plan
+              {isDemoMode ? 'Complete demo' : 'Generate my plan'}
             </button>
           ) : (
             <button
               onClick={nextStep}
-              className="inline-flex items-center justify-center h-11 px-6 rounded-full bg-foreground text-background text-sm font-medium hover:opacity-90"
+              disabled={isTransitioning}
+              className="inline-flex items-center justify-center h-11 px-6 rounded-full bg-foreground text-background text-sm font-medium hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
             >
               Next
             </button>

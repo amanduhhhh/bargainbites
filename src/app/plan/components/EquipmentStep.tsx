@@ -36,7 +36,7 @@ export default function EquipmentStep({ data, updateData }: EquipmentStepProps) 
   };
 
   return (
-    <div>
+    <div className="step-fade-in">
       <h2 className="text-lg font-medium mb-2">What cooking equipment do you have?</h2>
       <p className="text-sm text-black/60 mb-6">
         Select the equipment you have available. This helps us suggest recipes you can actually make with your setup.
@@ -87,14 +87,7 @@ export default function EquipmentStep({ data, updateData }: EquipmentStepProps) 
         </div>
       )}
 
-      <div className="mt-6 p-3 bg-blue-50 border border-blue-200 rounded-lg">
-        <div className="text-sm text-blue-800">
-          <div className="font-medium mb-1">💡 Don&apos;t worry if you&apos;re missing some items!</div>
-          <div>
-            We&apos;ll suggest recipes based on what you have, and you can always substitute or skip ingredients that require equipment you don&apos;t own.
-          </div>
-        </div>
-      </div>
+     
     </div>
   );
 }
