@@ -1,11 +1,17 @@
 import AuthButtons from "../components/AuthButtons";
+import Link from "next/link";
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <header className="border-b border-black/10">
         <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="font-mono text-xs sm:text-sm uppercase tracking-[0.2em]">Bargain Bites</div>
+          <Link
+            href="/"
+            className="font-mono text-xs sm:text-sm uppercase tracking-[0.2em] hover:underline underline-offset-4"
+          >
+            Bargain Bites
+          </Link>
           <nav className="flex items-center gap-6 text-sm">
             <a href="#how-it-works" className="hover:underline underline-offset-4">How it works</a>
             <AuthButtons />
@@ -27,7 +33,7 @@ export default function Home() {
             builds one consolidated shopping list. Minimalist, fast, and focused on savings.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-3">
-            <a href="#get-started" className="inline-flex items-center justify-center h-11 px-5 rounded-full bg-foreground text-background text-sm font-medium hover:opacity-90">
+            <Link href="/plan" className="inline-flex items-center justify-center h-11 px-5 rounded-full bg-foreground text-background text-sm font-medium hover:opacity-90">
               Generate my plan
             </a>
             <a href="#how-it-works" className="inline-flex items-center justify-center h-11 px-5 rounded-full border border-black/10 hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:text-black dark:hover:text-white text-sm font-medium transition-colors duration-200 ease-in-out">
