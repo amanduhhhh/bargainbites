@@ -32,11 +32,14 @@ The container name is now automatically loaded from the `CUA_CONTAINER_NAME` env
 
 ## How It Works
 
-1. **CUA Navigation**: Uses CUA to navigate to the Sobeys flyer page
-2. **Screenshot Capture**: Takes a screenshot of the loaded page
-3. **OCR Processing**: Uses Tesseract.js to extract text from the screenshot
-4. **Data Extraction**: Parses the OCR text to find product names and prices
-5. **Display**: Shows the extracted data in a user-friendly format
+1. **Intelligent Navigation**: Uses CUA to open a browser and navigate to the Sobeys flyer page
+2. **Adaptive Download Detection**: Intelligently searches for download buttons using multiple strategies
+3. **Multi-Method Processing**: 
+   - **Primary**: Downloads the complete PDF flyer and processes all pages
+   - **Fallback**: Takes screenshots if PDF download fails
+4. **OCR Processing**: Uses Tesseract.js to extract text from images/PDFs
+5. **Data Extraction**: Parses the OCR text to find product names and prices
+6. **Display**: Shows the extracted data in a user-friendly format
 
 ## Features
 

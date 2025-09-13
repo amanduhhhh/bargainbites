@@ -5,6 +5,7 @@ import { useState } from 'react';
 interface FlyerItem {
   product: string;
   price: string;
+  description?: string;
   originalText: string;
 }
 
@@ -15,6 +16,7 @@ interface OCRData {
   source: string;
   method?: string;
   pagesProcessed?: number;
+  totalProducts?: number;
 }
 
 export default function FlyerTestPage() {
@@ -82,7 +84,10 @@ export default function FlyerTestPage() {
                 {ocrData.extractedItems.map((item, index) => (
                   <div key={index} className="bg-white p-3 rounded border">
                     <div className="font-medium text-green-600">{item.price}</div>
-                    <div className="text-sm text-gray-800">{item.product}</div>
+                    <div className="text-sm text-gray-800 font-medium">{item.product}</div>
+                    {item.description && (
+                      <div className="text-xs text-gray-600 mt-1">{item.description}</div>
+                    )}
                     <div className="text-xs text-gray-500 mt-1">{item.originalText}</div>
                   </div>
                 ))}
@@ -103,6 +108,9 @@ export default function FlyerTestPage() {
                 <p><strong>Method:</strong> {ocrData.method || 'screenshot'}</p>
                 {ocrData.pagesProcessed && (
                   <p><strong>Pages Processed:</strong> {ocrData.pagesProcessed}</p>
+                )}
+                {ocrData.totalProducts && (
+                  <p><strong>Total Products:</strong> {ocrData.totalProducts}</p>
                 )}
                 <p><strong>Timestamp:</strong> {new Date(ocrData.timestamp).toLocaleString()}</p>
                 <p><strong>Items Found:</strong> {ocrData.extractedItems.length}</p>
