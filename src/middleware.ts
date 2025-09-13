@@ -1,8 +1,16 @@
-import { NextRequest } from 'next/server';
-import { Auth0Client } from '@auth0/nextjs-auth0/server';
+import { withAuth } from "next-auth/middleware"
 
-const auth0 = new Auth0Client();
+export default withAuth(
+  function middleware() {
+    // Add any custom middleware logic here if needed
+  },
+  {
+    callbacks: {
+      authorized: ({ token }) => !!token
+    },
+  }
+)
 
-export async function middleware(request: NextRequest) {
-  return auth0.middleware(request);
+export const config = {
+  matcher: ["/plan/:path*", "/setup/:path*"]
 }

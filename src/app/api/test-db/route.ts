@@ -1,25 +1,22 @@
 import { NextResponse } from 'next/server';
-import { connectToDatabase } from '@/lib/mongodb';
+import { prisma } from '@/lib/mongodb';
 
 // GET /api/test-db - Test database connection
 export async function GET() {
   try {
-    const { db } = await connectToDatabase();
-    
-    // Test basic operations
-    const collections = await db.listCollections().toArray();
-    const collectionNames = collections.map(col => col.name);
-    
-    // Test a simple operation
-    const testCollection = db.collection('test');
-    const count = await testCollection.countDocuments();
+    // Test basic operations with Prisma
+    const userCount = await prisma.user.count();
+    const accountCount = await prisma.account.count();
+    const sessionCount = await prisma.session.count();
     
     return NextResponse.json({
       success: true,
       message: 'Database connection successful!',
-      database: db.databaseName,
-      collections: collectionNames,
-      testCollectionCount: count
+      database: 'bargainbites',
+      collections: ['users', 'accounts', 'sessions', 'verificationtokens'],
+      userCount,
+      accountCount,
+      sessionCount
     });
 
   } catch (error) {

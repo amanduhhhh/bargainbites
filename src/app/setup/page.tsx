@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useUser } from '@auth0/nextjs-auth0';
+import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import HouseholdSizeStep from './components/HouseholdSizeStep';
@@ -27,7 +27,9 @@ const STEPS = [
 ];
 
 export default function PlanPage() {
-  const { user, isLoading } = useUser();
+  const { data: session, status } = useSession();
+  const user = session?.user;
+  const isLoading = status === 'loading';
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
   const [isDemoMode, setIsDemoMode] = useState(false);
@@ -147,12 +149,12 @@ export default function PlanPage() {
             We need to know your preferences to generate personalized meal plans and shopping lists.
           </p>
           <div className="space-y-3">
-            <Link
-              href="/api/auth/login"
+            <button
+              onClick={() => window.location.href = '/auth/signin'}
               className="inline-flex items-center justify-center h-11 px-6 rounded-full bg-foreground text-background text-sm font-medium hover:opacity-90 w-full"
             >
               Sign in to continue
-            </Link>
+            </button>
             <button
               onClick={startDemoMode}
               className="inline-flex items-center justify-center h-11 px-6 rounded-full border border-black/10 hover:bg-[#f2f2f2] hover:text-white dark:hover:bg-[#1a1a1a] text-sm font-medium w-full animate-blink"

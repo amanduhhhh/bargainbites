@@ -22,7 +22,7 @@ export default function Home() {
       <main className="flex-1 relative">
         {/* Background oranges image */}
         <div 
-          className="absolute right-0 -top-8 h-full w-1/3 bg-cover bg-left bg-no-repeat pointer-events-none"
+          className="absolute right-0 -top-55 h-full w-1/3 bg-cover bg-left bg-no-repeat pointer-events-none"
           style={{
             backgroundImage: 'url(/background/oranges.png)',
             backgroundPosition: 'left center'
@@ -43,8 +43,8 @@ export default function Home() {
             builds one consolidated shopping list. Minimalist, fast, and focused on savings.
           </p>
           <div className="mt-8 flex flex-col sm:flex-row items-start sm:items-center gap-3">
-            <Link href="/plan" className="inline-flex items-center justify-center h-11 px-5 rounded-full bg-foreground text-background text-sm font-medium hover:opacity-90">
-              Start my plan
+            <Link href="/setup" className="inline-flex items-center justify-center h-11 px-5 rounded-full bg-foreground text-background text-sm font-medium hover:opacity-90">
+             Try now
             </Link>
             <a href="/how-it-works" className="inline-flex items-center justify-center h-11 px-5 rounded-full border border-black/10 hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:text-black dark:hover:text-white text-sm font-medium transition-colors duration-200 ease-in-out">
               Learn more

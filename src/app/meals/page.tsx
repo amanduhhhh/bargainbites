@@ -343,7 +343,7 @@ export default function MealsPage() {
               
               {/* Duplicate for seamless scroll */}
               {editorPicks.map((pick) => (
-                <div key={`duplicate-${pick.id}`} className="flex-shrink-0 w-64 rounded-lg border border-black/10 p-4 bg-white">
+                <div key={`duplicate-${pick.id}`} className="flex-shrink-0 w-64 rounded-lg p-4 bg-white">
                   <div className="aspect-video bg-black/5 rounded-lg mb-3 flex items-center justify-center">
                     <span className="text-xs text-black/40">Image</span>
                   </div>
