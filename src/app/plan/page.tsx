@@ -4,26 +4,26 @@ import { useState } from 'react';
 import { useUser } from '@auth0/nextjs-auth0';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import HouseholdSizeStep from './components/HouseholdSizeStep';
-import CookingExperienceStep from './components/CookingExperienceStep';
-import PantryStaplesStep from './components/PantryStaplesStep';
-import BudgetStep from './components/BudgetStep';
-import EquipmentStep from './components/EquipmentStep';
+import LocationStep from './components/LocationStep';
+import TransportStep from './components/TransportStep';
+import MapStep from './components/MapStep';
+import CuisineStep from './components/CuisineStep';
 
-export interface OnboardingData {
+export interface PlanData {
+  postalCode: string;
   householdSize: number;
-  cookingExperience: 'beginner' | 'intermediate' | 'advanced';
-  pantryStaples: string[];
-  weeklyBudget: number;
-  equipment: string[];
+  hasCar: boolean;
+  selectedStore: string | null;
+  cuisinePreferences: string[];
+  dietaryRestrictions: string[];
+  budget: number;
 }
 
 const STEPS = [
-  { id: 'household', title: 'Household', component: HouseholdSizeStep },
-  { id: 'cooking', title: 'Cooking Level', component: CookingExperienceStep },
-  { id: 'pantry', title: 'Pantry Staples', component: PantryStaplesStep },
-  { id: 'budget', title: 'Budget', component: BudgetStep },
-  { id: 'equipment', title: 'Equipment', component: EquipmentStep },
+  { id: 'location', title: 'Location', component: LocationStep },
+  { id: 'transport', title: 'Transport', component: TransportStep },
+  { id: 'map', title: 'Store Selection', component: MapStep },
+  { id: 'cuisine', title: 'Preferences', component: CuisineStep },
 ];
 
 export default function PlanPage() {
@@ -34,22 +34,24 @@ export default function PlanPage() {
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [animationDirection, setAnimationDirection] = useState<'next' | 'prev'>('next');
-  const [onboardingData, setOnboardingData] = useState<OnboardingData>({
+  const [planData, setPlanData] = useState<PlanData>({
+    postalCode: '',
     householdSize: 1,
-    cookingExperience: 'beginner',
-    pantryStaples: [],
-    weeklyBudget: 50,
-    equipment: [],
+    hasCar: false,
+    selectedStore: null,
+    cuisinePreferences: [],
+    dietaryRestrictions: [],
+    budget: 50,
   });
 
-  const updateData = (updates: Partial<OnboardingData>) => {
-    setOnboardingData(prev => ({ ...prev, ...updates }));
+  const updateData = (updates: Partial<PlanData>) => {
+    setPlanData(prev => ({ ...prev, ...updates }));
   };
 
   const smoothScrollToTop = () => {
     const startPosition = window.pageYOffset;
     const startTime = performance.now();
-    const duration = 800; // 800ms for a smoother, longer animation
+    const duration = 800;
 
     const easeInOutCubic = (t: number) => {
       return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
@@ -75,16 +77,13 @@ export default function PlanPage() {
       setAnimationDirection('next');
       setIsTransitioning(true);
       
-      // Start exit animation
       setTimeout(() => {
         setCurrentStep(currentStep + 1);
-        // Start enter animation after step change
         setTimeout(() => {
           setIsTransitioning(false);
-          // Scroll to top smoothly after the new step is rendered
           smoothScrollToTop();
         }, 50);
-      }, 300); // Match the exit animation duration
+      }, 300);
     }
   };
 
@@ -93,32 +92,30 @@ export default function PlanPage() {
       setAnimationDirection('prev');
       setIsTransitioning(true);
       
-      // Start exit animation
       setTimeout(() => {
         setCurrentStep(currentStep - 1);
-        // Start enter animation after step change
         setTimeout(() => {
           setIsTransitioning(false);
         }, 50);
-      }, 300); // Match the exit animation duration
+      }, 300);
     }
   };
 
   const handleSubmit = async () => {
     setIsGenerating(true);
     
-    // TODO: Submit onboarding data to backend
-    console.log('Onboarding data:', onboardingData);
+    // TODO: Submit plan data to backend
+    console.log('Plan data:', planData);
     
-    // Store onboarding data in localStorage for demo mode
+    // Store plan data in localStorage for demo mode
     if (isDemoMode) {
-      localStorage.setItem('demoOnboardingData', JSON.stringify(onboardingData));
+      localStorage.setItem('demoPlanData', JSON.stringify(planData));
     }
     
-    // Add artificial load delay of 1000ms
+    // Add artificial load delay
     await new Promise(resolve => setTimeout(resolve, 1000));
     
-    // Redirect to meals page
+    // Redirect to meals page with plan data
     router.push('/meals');
   };
 
@@ -142,9 +139,9 @@ export default function PlanPage() {
     return (
       <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
         <div className="text-center max-w-md mx-auto px-6">
-          <h1 className="text-2xl font-semibold mb-4">Sign in to create your meal plan</h1>
+          <h1 className="text-2xl font-semibold mb-4">Create your shopping plan</h1>
           <p className="text-sm text-black/60 mb-6">
-            We need to know your preferences to generate personalized meal plans and shopping lists.
+            We&apos;ll help you find the best deals and plan your grocery shopping trip.
           </p>
           <div className="space-y-3">
             <Link
@@ -161,7 +158,7 @@ export default function PlanPage() {
             </button>
           </div>
           <p className="text-xs text-black/50 mt-4">
-            Note: Your preferences won&apos;t be saved without signing in
+            Note: Your plan won&apos;t be saved without signing in
           </p>
         </div>
       </div>
@@ -184,7 +181,9 @@ export default function PlanPage() {
           <div className="flex items-center gap-4">
             {isDemoMode && (
               <div className="flex items-center gap-2">
-               
+                <span className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded-full">
+                  Demo Mode
+                </span>
               </div>
             )}
             <div className="text-sm text-black/60">
@@ -199,7 +198,7 @@ export default function PlanPage() {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-2">
             <h1 className="text-xl font-semibold">
-              {isDemoMode ? 'Demo: Create your meal plan' : 'Create your meal plan'}
+              {isDemoMode ? 'Demo: Plan your shopping trip' : 'Plan your shopping trip'}
             </h1>
             <span className="text-sm text-black/60">{Math.round(((currentStep + 1) / STEPS.length) * 100)}%</span>
           </div>
@@ -248,8 +247,12 @@ export default function PlanPage() {
                 : 'step-enter-left'
           }`}>
             <CurrentStepComponent 
-              data={onboardingData}
+              data={planData}
               updateData={updateData}
+              onNext={nextStep}
+              onPrev={prevStep}
+              isFirstStep={currentStep === 0}
+              isLastStep={isLastStep}
             />
           </div>
         </div>
@@ -276,7 +279,7 @@ export default function PlanPage() {
                   Generating...
                 </>
               ) : (
-                'Generate my plan'
+                'Create my plan'
               )}
             </button>
           ) : (

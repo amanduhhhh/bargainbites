@@ -1,20 +1,21 @@
 import AuthButtons from "@/components/AuthButtons";
+import Link from "next/link";
 
 export default function HowItWorks() {
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
       <header className="border-b border-black/10">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
-          <a
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+          <Link
             href="/"
             className="font-mono text-xs sm:text-sm uppercase tracking-[0.2em] hover:underline underline-offset-4"
           >
             Bargain Bites
-          </a>
+          </Link>
           <nav className="flex items-center gap-6 text-sm">
-            <a href="/" className="hover:underline underline-offset-4">
+            <Link href="/" className="hover:underline underline-offset-4">
               Home
-            </a>
+            </Link>
             <AuthButtons />
           </nav>
         </div>
@@ -109,12 +110,12 @@ export default function HowItWorks() {
                 Generate your first plan in under a minute.
               </p>
             </div>
-            <a
+            <Link
               href="/"
               className="inline-flex items-center justify-center h-11 px-5 rounded-full bg-foreground text-background text-sm font-medium hover:opacity-90"
             >
               Generate my plan
-            </a>
+            </Link>
           </div>
         </section>
       </main>

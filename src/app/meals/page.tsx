@@ -23,7 +23,6 @@ interface EditorPick {
 export default function MealsPage() {
   const [onboardingData, setOnboardingData] = useState<OnboardingData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [postalCode, setPostalCode] = useState('');
   const [weeklyMeals, setWeeklyMeals] = useState<WeeklyMeal[]>([
     { id: '1', day: 'Monday', meal: 'Pasta with Tomato Sauce', isSet: true },
     { id: '2', day: 'Tuesday', meal: 'Chicken Stir-fry', isSet: true },
@@ -143,7 +142,7 @@ export default function MealsPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="border-b border-black/10">
-        <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
           <Link
             href="/"
             className="font-mono text-xs sm:text-sm uppercase tracking-[0.2em] hover:underline underline-offset-4"
@@ -151,13 +150,28 @@ export default function MealsPage() {
             Bargain Bites
           </Link>
           <div className="flex items-center gap-6">
-           
-           
             <Link
               href="/plan"
               className="text-sm text-black/60 hover:text-black/80 underline"
             >
-              Back to setup
+              Set up
+            </Link>
+            <Link
+              href="/profile"
+              className="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center hover:bg-orange-600 transition-colors"
+            >
+              <svg
+                className="w-5 h-5 text-white"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
+                  clipRule="evenodd"
+                />
+              </svg>
             </Link>
           </div>
         </div>
@@ -184,7 +198,7 @@ export default function MealsPage() {
             {/* Weekly Meals */}
             <div className=" p-4">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-xl font-semibold">This Week's Meals</h2>
+                <h2 className="text-xl font-semibold">This Week&apos;s Meals</h2>
                 <div className="text-sm text-black/60">
                   {weeklyMeals.filter(meal => meal.isSet).length} of 7 planned
                 </div>
@@ -196,11 +210,11 @@ export default function MealsPage() {
                     <div className="flex items-center justify-between mb-2">
                       <h3 className="font-medium text-sm">{meal.day}</h3>
                       {meal.isSet ? (
-                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
+                        <span className="inline-flex items-center px-2 py-1 rounded-sm text-xs font-medium bg-orange-500 text-white">
                           Set
                         </span>
                       ) : (
-                        <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600">
+                        <span className="inline-flex items-center px-2 py-1 rounded-sm text-xs font-medium bg-gray-500 text-white">
                           Not set
                         </span>
                       )}
@@ -310,7 +324,7 @@ export default function MealsPage() {
 
         {/* Editor's Picks Carousel - Full Width */}
         <div className="mt-8">
-          <h2 className="text-xl font-semibold mb-6">This Week's Best Choices</h2>
+          <h2 className="text-xl font-semibold mb-6">This Week&apos;s Best Choices</h2>
           <div className="editor-picks-marquee editor-picks-fade py-2">
             <div className="editor-picks-track">
               {editorPicks.map((pick) => (

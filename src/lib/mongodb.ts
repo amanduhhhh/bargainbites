@@ -12,18 +12,18 @@ if (!MONGODB_URI) {
  * in development. This prevents connections growing exponentially
  * during API Route usage.
  */
-let cached = (global as any).mongo;
+let cached = (global as typeof globalThis & { mongo?: { conn: { client: MongoClient; db: Db } | null; promise: Promise<{ client: MongoClient; db: Db }> | null } }).mongo;
 
 if (!cached) {
-  cached = (global as any).mongo = { conn: null, promise: null };
+  cached = (global as typeof globalThis & { mongo: { conn: { client: MongoClient; db: Db } | null; promise: Promise<{ client: MongoClient; db: Db }> | null } }).mongo = { conn: null, promise: null };
 }
 
 export async function connectToDatabase(): Promise<{ client: MongoClient; db: Db }> {
-  if (cached.conn) {
+  if (cached?.conn) {
     return cached.conn;
   }
 
-  if (!cached.promise) {
+  if (!cached?.promise) {
     const opts = {
       maxPoolSize: 10, // Maintain up to 10 socket connections
       serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
@@ -32,7 +32,7 @@ export async function connectToDatabase(): Promise<{ client: MongoClient; db: Db
       bufferCommands: false, // Disable mongoose buffering
     };
 
-    cached.promise = MongoClient.connect(MONGODB_URI!, opts).then((client) => {
+    cached!.promise = MongoClient.connect(MONGODB_URI!, opts).then((client) => {
       console.log('✅ Connected to MongoDB');
       return {
         client,
@@ -42,14 +42,14 @@ export async function connectToDatabase(): Promise<{ client: MongoClient; db: Db
   }
 
   try {
-    cached.conn = await cached.promise;
+    cached!.conn = await cached!.promise;
   } catch (e) {
-    cached.promise = null;
+    cached!.promise = null;
     console.error('❌ MongoDB connection error:', e);
     throw e;
   }
 
-  return cached.conn;
+  return cached!.conn;
 }
 
 export default connectToDatabase;
