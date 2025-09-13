@@ -85,6 +85,12 @@ export default function ProfilePage() {
               Meals
             </Link>
             <Link
+              href="/list"
+              className="text-sm text-black/60 hover:text-black/80 underline"
+            >
+              Grocery List
+            </Link>
+            <Link
               href="/plan"
               className="text-sm text-black/60 hover:text-black/80 underline"
             >

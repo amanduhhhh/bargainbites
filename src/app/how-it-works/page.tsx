@@ -16,6 +16,9 @@ export default function HowItWorks() {
             <Link href="/" className="hover:underline underline-offset-4">
               Home
             </Link>
+            <Link href="/list" className="hover:underline underline-offset-4">
+              Grocery List
+            </Link>
             <AuthButtons />
           </nav>
         </div>

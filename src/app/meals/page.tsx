@@ -121,6 +121,7 @@ export default function MealsPage() {
                   cookingExperience: result.preferences.cookingExperience || 'beginner',
                   equipment: result.preferences.equipment || [],
                   pantryStaples: result.preferences.pantryStaples || [],
+                  dietaryRestrictions: result.preferences.dietaryRestrictions || [],
                 });
               } else {
                 // No setup data found, redirect to setup
@@ -211,6 +212,12 @@ export default function MealsPage() {
             Bargain Bites
           </Link>
           <div className="flex items-center gap-6">
+            <Link
+              href="/list"
+              className="text-sm text-black/60 hover:text-black/80 underline"
+            >
+              Grocery List
+            </Link>
             <Link
               href="/setup"
               className="text-sm text-black/60 hover:text-black/80 underline"

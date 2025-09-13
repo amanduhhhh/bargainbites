@@ -1,0 +1,1209 @@
+[
+  {
+    "page_number": 1,
+    "items": [
+      {
+        "name": "Sobeys Fresh Chicken Breasts",
+        "price": 5.99,
+        "measure": 6.44,
+        "measure_unit": "g",
+        "unit_type": "member price per 100g",
+        "price_per_unit": 5.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "perishable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "Member price"
+      },
+      {
+        "name": "Sunflowers",
+        "price": 6.99,
+        "measure": 100,
+        "measure_unit": "points",
+        "unit_type": "each",
+        "price_per_unit": 6.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "perishable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "Hot price"
+      },
+      {
+        "name": "Mixed Peppers",
+        "price": 3.99,
+        "measure": 3,
+        "measure_unit": "count",
+        "unit_type": "each",
+        "price_per_unit": 3.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "perishable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "Hot price"
+      },
+      {
+        "name": "McCain Fries",
+        "price": 2.99,
+        "measure": null,
+        "measure_unit": null,
+        "unit_type": "each",
+        "price_per_unit": 2.99,
+        "savings_amount": 1,
+        "savings_percentage": null,
+        "estimated_shelf_life": "frozen",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "Hot price"
+      },
+      {
+        "name": "VH Sauces",
+        "price": 2.88,
+        "measure": null,
+        "measure_unit": null,
+        "unit_type": "each",
+        "price_per_unit": 2.88,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "shelf-stable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "Hot price"
+      }
+    ]
+  },
+  {
+    "page_number": 2,
+    "items": [
+      {
+        "name": "Cheez-It Crackers",
+        "price": 4.99,
+        "measure": 500,
+        "measure_unit": "points",
+        "unit_type": "each",
+        "price_per_unit": 4.99,
+        "savings_amount": 5,
+        "savings_percentage": null,
+        "estimated_shelf_life": "shelf-stable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "+500 Scene+ points"
+      },
+      {
+        "name": "Tide Laundry Detergent",
+        "price": 19.99,
+        "measure": 800,
+        "measure_unit": "points",
+        "unit_type": "each",
+        "price_per_unit": 19.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "shelf-stable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "+800 Scene+ points"
+      }
+    ]
+  },
+  {
+    "page_number": 3,
+    "items": [
+      {
+        "name": "Janes Haddock Fillets",
+        "price": 12.99,
+        "measure": null,
+        "measure_unit": null,
+        "unit_type": "each",
+        "price_per_unit": 12.99,
+        "savings_amount": null,
+        "savings_percentage": 10,
+        "estimated_shelf_life": "frozen",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "Members save extra 10%"
+      },
+      {
+        "name": "Janes Cod Fillets",
+        "price": 14.99,
+        "measure": null,
+        "measure_unit": null,
+        "unit_type": "each",
+        "price_per_unit": 14.99,
+        "savings_amount": null,
+        "savings_percentage": 10,
+        "estimated_shelf_life": "frozen",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "Members save extra 10%"
+      },
+      {
+        "name": "Nature Valley or Fibre 1 Bars",
+        "price": 2.88,
+        "measure": null,
+        "measure_unit": null,
+        "unit_type": "each",
+        "price_per_unit": 2.88,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "shelf-stable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "Members save"
+      }
+    ]
+  },
+  {
+    "page_number": 4,
+    "items": [
+      {
+        "name": "Sirloin Roasts",
+        "price": 9.99,
+        "measure": 1,
+        "measure_unit": "lb",
+        "unit_type": "per lb",
+        "price_per_unit": 9.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "perishable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": null
+      },
+      {
+        "name": "Burgers",
+        "price": 2.99,
+        "measure": 75,
+        "measure_unit": "g",
+        "unit_type": "per 100g",
+        "price_per_unit": 2.99,
+        "savings_amount": null,
+        "savings_percentage": 20,
+        "estimated_shelf_life": "perishable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "20% off"
+      },
+      {
+        "name": "Broccoli",
+        "price": 2.99,
+        "measure": null,
+        "measure_unit": null,
+        "unit_type": "each",
+        "price_per_unit": 2.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "perishable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": null
+      },
+      {
+        "name": "Pork Chops",
+        "price": 3.99,
+        "measure": 100,
+        "measure_unit": "points",
+        "unit_type": "each",
+        "price_per_unit": 3.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "perishable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "+100 Scene+ points"
+      },
+      {
+        "name": "VH Sauces",
+        "price": 6.99,
+        "measure": 400,
+        "measure_unit": "points",
+        "unit_type": "each",
+        "price_per_unit": 6.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "shelf-stable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "+400 Scene+ points"
+      },
+      {
+        "name": "Campbell's Soup",
+        "price": 5.00,
+        "measure": 2,
+        "measure_unit": "count",
+        "unit_type": "each",
+        "price_per_unit": 2.50,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "shelf-stable",
+        "multi_buy_required": true,
+        "multi_buy_amount": 2,
+        "other_info": "2 for $5, +100 Scene+ points"
+      }
+    ]
+  },
+  {
+    "page_number": 5,
+    "items": [
+      {
+        "name": "Salad Kits",
+        "price": 5.99,
+        "measure": 300,
+        "measure_unit": "points",
+        "unit_type": "each",
+        "price_per_unit": 5.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "perishable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "+300 Scene+ points"
+      },
+      {
+        "name": "Deli Meats",
+        "price": 6.99,
+        "measure": 200,
+        "measure_unit": "points",
+        "unit_type": "each",
+        "price_per_unit": 6.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "perishable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "+200 Scene+ points"
+      },
+      {
+        "name": "Coca-Cola soft drinks",
+        "price": 3.99,
+        "measure": 175,
+        "measure_unit": "points",
+        "unit_type": "each",
+        "price_per_unit": 3.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "shelf-stable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "+175 Scene+ points"
+      },
+      {
+        "name": "Oatmeal",
+        "price": 5.00,
+        "measure": 2,
+        "measure_unit": "count",
+        "unit_type": "each",
+        "price_per_unit": 2.50,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "shelf-stable",
+        "multi_buy_required": true,
+        "multi_buy_amount": 2,
+        "other_info": "2 for $5, +100 Scene+ points"
+      }
+    ]
+  },
+  {
+    "page_number": 6,
+    "items": [
+      {
+        "name": "Sterling Silver or Nagano products",
+        "price": null,
+        "measure": 2000,
+        "measure_unit": "points",
+        "unit_type": "each",
+        "price_per_unit": null,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "perishable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "Earn up to 2,000 Scene+ points. Spend $20 get 500 pts, spend $35 get 800 pts, spend $50 or more get 2,000 pts."
+      },
+      {
+        "name": "Janes Chicken Nuggets",
+        "price": 7.99,
+        "measure": 150,
+        "measure_unit": "points",
+        "unit_type": "each",
+        "price_per_unit": 7.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "frozen",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "+150 Scene+ points"
+      },
+      {
+        "name": "Kellogg's Vector Cereal",
+        "price": 8.99,
+        "measure": 200,
+        "measure_unit": "points",
+        "unit_type": "each",
+        "price_per_unit": 8.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "shelf-stable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "+200 Scene+ points"
+      }
+    ]
+  },
+  {
+    "page_number": 7,
+    "items": [
+      {
+        "name": "Berries",
+        "price": 3.99,
+        "measure": null,
+        "measure_unit": null,
+        "unit_type": "each",
+        "price_per_unit": 3.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "perishable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "So-local"
+      },
+      {
+        "name": "Sobeys Fresh Ground Beef",
+        "price": 6.99,
+        "measure": null,
+        "measure_unit": null,
+        "unit_type": "per lb",
+        "price_per_unit": 6.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "perishable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "So-local"
+      },
+      {
+        "name": "Avocado",
+        "price": 5.00,
+        "measure": 2,
+        "measure_unit": "count",
+        "unit_type": "each",
+        "price_per_unit": 2.50,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "perishable",
+        "multi_buy_required": true,
+        "multi_buy_amount": 2,
+        "other_info": "+100 Scene+ points"
+      },
+      {
+        "name": "Tofu",
+        "price": 2.49,
+        "measure": 2,
+        "measure_unit": "count",
+        "unit_type": "each",
+        "price_per_unit": 1.25,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "perishable",
+        "multi_buy_required": true,
+        "multi_buy_amount": 2,
+        "other_info": null
+      }
+    ]
+  },
+  {
+    "page_number": 8,
+    "items": [
+      {
+        "name": "Hand-Selected AAA Beef",
+        "price": 17.99,
+        "measure": 300,
+        "measure_unit": "points",
+        "unit_type": "each",
+        "price_per_unit": 17.99,
+        "savings_amount": null,
+        "savings_percentage": 20,
+        "estimated_shelf_life": "perishable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "20% off"
+      },
+      {
+        "name": "Chicken Drumsticks",
+        "price": 4.49,
+        "measure": null,
+        "measure_unit": null,
+        "unit_type": "per lb",
+        "price_per_unit": 4.49,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "perishable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": null
+      },
+      {
+        "name": "Wendy's Burgers",
+        "price": null,
+        "measure": 400,
+        "measure_unit": "points",
+        "unit_type": "each",
+        "price_per_unit": null,
+        "savings_amount": null,
+        "savings_percentage": 20,
+        "estimated_shelf_life": "frozen",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "20% off, so-exclusive"
+      },
+      {
+        "name": "Quick & Easy Meals",
+        "price": 7.99,
+        "measure": null,
+        "measure_unit": null,
+        "unit_type": "each",
+        "price_per_unit": 7.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "refrigerated",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "Various brands"
+      }
+    ]
+  },
+  {
+    "page_number": 9,
+    "items": [
+      {
+        "name": "Frozen Shrimp",
+        "price": 15.99,
+        "measure": null,
+        "measure_unit": null,
+        "unit_type": "each",
+        "price_per_unit": 15.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "frozen",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "Choose Canadian Seafood!"
+      },
+      {
+        "name": "Smoked Salmon",
+        "price": 16.99,
+        "measure": null,
+        "measure_unit": null,
+        "unit_type": "each",
+        "price_per_unit": 16.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "perishable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "Choose Canadian Seafood!"
+      },
+      {
+        "name": "Deli Meats",
+        "price": 6.99,
+        "measure": 100,
+        "measure_unit": "points",
+        "unit_type": "each",
+        "price_per_unit": 6.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "perishable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "+100 Scene+ points"
+      },
+      {
+        "name": "Oranges",
+        "price": 4.49,
+        "measure": null,
+        "measure_unit": null,
+        "unit_type": "each",
+        "price_per_unit": 4.49,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "perishable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": null
+      }
+    ]
+  },
+  {
+    "page_number": 10,
+    "items": [
+      {
+        "name": "Bubly Sparkling Water",
+        "price": 6.99,
+        "measure": null,
+        "measure_unit": null,
+        "unit_type": "each",
+        "price_per_unit": 6.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "shelf-stable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": null
+      },
+      {
+        "name": "Lay's Potato Chips",
+        "price": 5.99,
+        "measure": null,
+        "measure_unit": null,
+        "unit_type": "each",
+        "price_per_unit": 5.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "shelf-stable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": null
+      },
+      {
+        "name": "Budweiser Light Beer",
+        "price": 46.99,
+        "measure": 30,
+        "measure_unit": "cans",
+        "unit_type": "case",
+        "price_per_unit": 1.57,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "shelf-stable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "30 cans"
+      },
+      {
+        "name": "Cutwater Vodka Mule",
+        "price": 10.99,
+        "measure": null,
+        "measure_unit": null,
+        "unit_type": "case",
+        "price_per_unit": null,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "shelf-stable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "4x355 mL cans"
+      }
+    ]
+  },
+  {
+    "page_number": 11,
+    "items": [
+      {
+        "name": "Pinty's Chicken Wings",
+        "price": 10.99,
+        "measure": null,
+        "measure_unit": null,
+        "unit_type": "each",
+        "price_per_unit": 10.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "frozen",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": null
+      },
+      {
+        "name": "McCain Pizza Pockets",
+        "price": 3.99,
+        "measure": null,
+        "measure_unit": null,
+        "unit_type": "each",
+        "price_per_unit": 3.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "frozen",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": null
+      },
+      {
+        "name": "BeaverTails",
+        "price": 5.99,
+        "measure": null,
+        "measure_unit": null,
+        "unit_type": "each",
+        "price_per_unit": 5.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "frozen",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "New product"
+      }
+    ]
+  },
+  {
+    "page_number": 12,
+    "items": [
+      {
+        "name": "Compliments Cat Litter",
+        "price": 6.99,
+        "measure": null,
+        "measure_unit": null,
+        "unit_type": "each",
+        "price_per_unit": 6.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "shelf-stable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": null
+      },
+      {
+        "name": "Tide Liquid Laundry Detergent",
+        "price": 7.99,
+        "measure": 200,
+        "measure_unit": "points",
+        "unit_type": "each",
+        "price_per_unit": 7.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "shelf-stable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "+200 Scene+ points"
+      },
+      {
+        "name": "Colgate Toothpaste",
+        "price": 6.99,
+        "measure": 400,
+        "measure_unit": "points",
+        "unit_type": "each",
+        "price_per_unit": 6.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "shelf-stable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "+400 Scene+ points"
+      },
+      {
+        "name": "Nivea",
+        "price": 3.99,
+        "measure": 200,
+        "measure_unit": "points",
+        "unit_type": "each",
+        "price_per_unit": 3.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "shelf-stable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "+200 Scene+ points"
+      }
+    ]
+  },
+  {
+    "page_number": 13,
+    "items": [
+      {
+        "name": "Fuze Iced Tea",
+        "price": null,
+        "measure": 1.75,
+        "measure_unit": "L",
+        "unit_type": "each",
+        "price_per_unit": null,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "shelf-stable",
+        "multi_buy_required": true,
+        "multi_buy_amount": 2,
+        "other_info": "Get 320 Scene+ points when you buy 2"
+      },
+      {
+        "name": "Compliments Flatbreads",
+        "price": null,
+        "measure": 310,
+        "measure_unit": "g",
+        "unit_type": "each",
+        "price_per_unit": null,
+        "savings_amount": 2,
+        "savings_percentage": null,
+        "estimated_shelf_life": "perishable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "Save $2"
+      },
+      {
+        "name": "McCain Superfries",
+        "price": null,
+        "measure": "454-800",
+        "measure_unit": "g",
+        "unit_type": "each",
+        "price_per_unit": null,
+        "savings_amount": 1,
+        "savings_percentage": null,
+        "estimated_shelf_life": "frozen",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "Save $1"
+      }
+    ]
+  },
+  {
+    "page_number": 14,
+    "items": [
+      {
+        "name": "Bud Light Lager",
+        "price": 46.99,
+        "measure": 30,
+        "measure_unit": "cans",
+        "unit_type": "case",
+        "price_per_unit": 1.57,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "shelf-stable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "30x355 mL cans"
+      },
+      {
+        "name": "Miller Lite Pilsner",
+        "price": 26.99,
+        "measure": 12,
+        "measure_unit": "cans",
+        "unit_type": "case",
+        "price_per_unit": 2.25,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "shelf-stable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "12x355 mL cans"
+      },
+      {
+        "name": "Twisted Tea Party Pack",
+        "price": 24.99,
+        "measure": 12,
+        "measure_unit": "cans",
+        "unit_type": "case",
+        "price_per_unit": 2.08,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "shelf-stable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "12x355 mL cans"
+      }
+    ]
+  },
+  {
+    "page_number": 15,
+    "items": [
+      {
+        "name": "Lovare Tea",
+        "price": 3.99,
+        "measure": null,
+        "measure_unit": null,
+        "unit_type": "each",
+        "price_per_unit": 3.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "shelf-stable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "Global Market"
+      },
+      {
+        "name": "Wonder-ful Honey Roasted Peanuts",
+        "price": 8.00,
+        "measure": 2,
+        "measure_unit": "bags",
+        "unit_type": "each",
+        "price_per_unit": 4.00,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "shelf-stable",
+        "multi_buy_required": true,
+        "multi_buy_amount": 2,
+        "other_info": "2 for $8"
+      },
+      {
+        "name": "Drink Box",
+        "price": 4.99,
+        "measure": 100,
+        "measure_unit": "points",
+        "unit_type": "each",
+        "price_per_unit": 4.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "shelf-stable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "+100 Scene+ points"
+      },
+      {
+        "name": "Dairy Milk Chocolate",
+        "price": 6.49,
+        "measure": null,
+        "measure_unit": null,
+        "unit_type": "each",
+        "price_per_unit": 6.49,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "shelf-stable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "Global Market"
+      }
+    ]
+  },
+  {
+    "page_number": 16,
+    "items": [
+      {
+        "name": "Mangoes",
+        "price": 5.00,
+        "measure": 2,
+        "measure_unit": "count",
+        "unit_type": "each",
+        "price_per_unit": 2.50,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "perishable",
+        "multi_buy_required": true,
+        "multi_buy_amount": 2,
+        "other_info": "2 for $5, +100 Scene+ points"
+      },
+      {
+        "name": "Papaya",
+        "price": 2.28,
+        "measure": null,
+        "measure_unit": null,
+        "unit_type": "each",
+        "price_per_unit": 2.28,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "perishable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "Global Market"
+      },
+      {
+        "name": "Cilantro",
+        "price": 2.48,
+        "measure": null,
+        "measure_unit": null,
+        "unit_type": "each",
+        "price_per_unit": 2.48,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "perishable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "Global Market"
+      },
+      {
+        "name": "Bombay Kitchen Snack Mix",
+        "price": 3.99,
+        "measure": 200,
+        "measure_unit": "points",
+        "unit_type": "each",
+        "price_per_unit": 3.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "shelf-stable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "+200 Scene+ points"
+      }
+    ]
+  },
+  {
+    "page_number": 17,
+    "items": [
+      {
+        "name": "Sweet Rice Cakes",
+        "price": 7.98,
+        "measure": null,
+        "measure_unit": null,
+        "unit_type": "each",
+        "price_per_unit": 7.98,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "shelf-stable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "Happy Mid-Autumn Festival"
+      },
+      {
+        "name": "Melona Ice Cream",
+        "price": 5.48,
+        "measure": null,
+        "measure_unit": null,
+        "unit_type": "each",
+        "price_per_unit": 5.48,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "frozen",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "Happy Mid-Autumn Festival"
+      }
+    ]
+  },
+  {
+    "page_number": 18,
+    "items": [
+      {
+        "name": "Assorted Seafood",
+        "price": 18.88,
+        "measure": null,
+        "measure_unit": null,
+        "unit_type": "each",
+        "price_per_unit": 18.88,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "perishable",
+        "multi_buy_required": true,
+        "multi_buy_amount": 3,
+        "other_info": "Buy 2 Get 3rd Free"
+      },
+      {
+        "name": "Japanese Panko Breadcrumbs",
+        "price": 3.48,
+        "measure": null,
+        "measure_unit": null,
+        "unit_type": "each",
+        "price_per_unit": 3.48,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "shelf-stable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "Happy Mid-Autumn Festival"
+      },
+      {
+        "name": "Lay's Chips",
+        "price": 8.00,
+        "measure": 2,
+        "measure_unit": "bags",
+        "unit_type": "each",
+        "price_per_unit": 4.00,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "shelf-stable",
+        "multi_buy_required": true,
+        "multi_buy_amount": 2,
+        "other_info": "2 for $8"
+      }
+    ]
+  },
+  {
+    "page_number": 19,
+    "items": [
+      {
+        "name": "Sterling Silver Hand-Selected AAA Beef",
+        "price": 19.99,
+        "measure": null,
+        "measure_unit": null,
+        "unit_type": "per lb",
+        "price_per_unit": 19.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "perishable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "Minimum 21-Day Aged"
+      },
+      {
+        "name": "Nagano Fresh Pork",
+        "price": 10.99,
+        "measure": null,
+        "measure_unit": null,
+        "unit_type": "per lb",
+        "price_per_unit": 10.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "perishable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "Rich Flavour. Remarkably Tender. 100% Canadian Pork."
+      }
+    ]
+  },
+  {
+    "page_number": 20,
+    "items": [
+      {
+        "name": "Kabrita Goat Milk Infant Formula",
+        "price": 49.99,
+        "measure": null,
+        "measure_unit": null,
+        "unit_type": "each",
+        "price_per_unit": 49.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "shelf-stable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "Canada's Baby Grocery Store"
+      },
+      {
+        "name": "Melon Organic Baby Food Puree",
+        "price": 5.99,
+        "measure": null,
+        "measure_unit": null,
+        "unit_type": "each",
+        "price_per_unit": 5.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "shelf-stable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "Women Owned"
+      }
+    ]
+  },
+  {
+    "page_number": 21,
+    "items": [
+      {
+        "name": "Dream Cake Spicy Chocolate",
+        "price": 21.99,
+        "measure": 1,
+        "measure_unit": "kg",
+        "unit_type": "each",
+        "price_per_unit": 21.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "perishable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "Bakery item, limited time only"
+      },
+      {
+        "name": "Cheesecake Mocha",
+        "price": 18.99,
+        "measure": 800,
+        "measure_unit": "g",
+        "unit_type": "each",
+        "price_per_unit": 18.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "perishable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "Bakery item, limited time only"
+      },
+      {
+        "name": "Lava Cake",
+        "price": 7.99,
+        "measure": 220,
+        "measure_unit": "g",
+        "unit_type": "each",
+        "price_per_unit": 7.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "perishable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "Bakery item, limited time only"
+      }
+    ]
+  },
+  {
+    "page_number": 22,
+    "items": [
+      {
+        "name": "Shaw's Ice Cream",
+        "price": 6.99,
+        "measure": 1.5,
+        "measure_unit": "L",
+        "unit_type": "each",
+        "price_per_unit": 6.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "frozen",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "So-local"
+      },
+      {
+        "name": "Mad Mexican Salsa or Dips",
+        "price": 8.49,
+        "measure": 250,
+        "measure_unit": "ml",
+        "unit_type": "each",
+        "price_per_unit": 8.49,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "refrigerated",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "So-local"
+      },
+      {
+        "name": "Top Shelf Canada Hot Sauce",
+        "price": 9.99,
+        "measure": 295,
+        "measure_unit": "ml",
+        "unit_type": "each",
+        "price_per_unit": 9.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "shelf-stable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "So-local"
+      }
+    ]
+  },
+  {
+    "page_number": 23,
+    "items": [
+      {
+        "name": "Five Roses All Purpose Flour",
+        "price": 4.49,
+        "measure": null,
+        "measure_unit": null,
+        "unit_type": "each",
+        "price_per_unit": 4.49,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "shelf-stable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "Fall into Baking Season"
+      },
+      {
+        "name": "Crisco All Vegetable Shortening",
+        "price": 3.99,
+        "measure": null,
+        "measure_unit": null,
+        "unit_type": "each",
+        "price_per_unit": 3.99,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "shelf-stable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "Fall into Baking Season"
+      },
+      {
+        "name": "Eagle Brand Condensed Milk",
+        "price": 4.49,
+        "measure": null,
+        "measure_unit": null,
+        "unit_type": "each",
+        "price_per_unit": 4.49,
+        "savings_amount": null,
+        "savings_percentage": null,
+        "estimated_shelf_life": "shelf-stable",
+        "multi_buy_required": false,
+        "multi_buy_amount": null,
+        "other_info": "Fall into Baking Season"
+      }
+    ]
+  }
+]
