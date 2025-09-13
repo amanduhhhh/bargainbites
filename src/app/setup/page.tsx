@@ -45,6 +45,30 @@ export default function PlanPage() {
     setOnboardingData(prev => ({ ...prev, ...updates }));
   };
 
+  const smoothScrollToTop = () => {
+    const startPosition = window.pageYOffset;
+    const startTime = performance.now();
+    const duration = 800; // 800ms for a smoother, longer animation
+
+    const easeInOutCubic = (t: number) => {
+      return t < 0.5 ? 4 * t * t * t : (t - 1) * (2 * t - 2) * (2 * t - 2) + 1;
+    };
+
+    const animateScroll = (currentTime: number) => {
+      const timeElapsed = currentTime - startTime;
+      const progress = Math.min(timeElapsed / duration, 1);
+      const easedProgress = easeInOutCubic(progress);
+      
+      window.scrollTo(0, startPosition * (1 - easedProgress));
+      
+      if (progress < 1) {
+        requestAnimationFrame(animateScroll);
+      }
+    };
+
+    requestAnimationFrame(animateScroll);
+  };
+
   const nextStep = () => {
     if (currentStep < STEPS.length - 1 && !isTransitioning) {
       setAnimationDirection('next');
@@ -56,6 +80,8 @@ export default function PlanPage() {
         // Start enter animation after step change
         setTimeout(() => {
           setIsTransitioning(false);
+          // Scroll to top smoothly after the new step is rendered
+          smoothScrollToTop();
         }, 50);
       }, 300); // Match the exit animation duration
     }
@@ -123,7 +149,7 @@ export default function PlanPage() {
             </Link>
             <button
               onClick={startDemoMode}
-              className="inline-flex items-center justify-center h-11 px-6 rounded-full border border-black/10 hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] text-sm font-medium w-full animate-blink"
+              className="inline-flex items-center justify-center h-11 px-6 rounded-full border border-black/10 hover:bg-[#f2f2f2] hover:text-white dark:hover:bg-[#1a1a1a] text-sm font-medium w-full animate-blink"
             >
               Skip for now (demo mode)
             </button>
@@ -235,7 +261,7 @@ export default function PlanPage() {
           <button
             onClick={prevStep}
             disabled={currentStep === 0 || isTransitioning}
-            className="inline-flex items-center justify-center h-11 px-6 rounded-full border border-black/10 hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
+            className="inline-flex items-center justify-center h-11 px-6 rounded-full border border-black/10 hover:text-white hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-opacity"
           >
             Previous
           </button>

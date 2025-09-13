@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { OnboardingData } from '../plan/page';
+import { OnboardingData } from '../setup/page';
 
 interface WeeklyMeal {
   id: string;
@@ -151,19 +151,8 @@ export default function MealsPage() {
             Bargain Bites
           </Link>
           <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2">
-              <input
-                type="text"
-                placeholder="Postal Code"
-                value={postalCode}
-                onChange={(e) => setPostalCode(e.target.value)}
-                className="px-3 py-1 text-sm border border-black/10 rounded-full focus:outline-none focus:ring-2 focus:ring-black/20"
-                maxLength={7}
-              />
-            </div>
-            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-800">
-              Demo Mode
-            </span>
+           
+           
             <Link
               href="/plan"
               className="text-sm text-black/60 hover:text-black/80 underline"

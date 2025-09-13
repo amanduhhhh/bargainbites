@@ -298,3 +298,5 @@ the amount of basic ingredients/ shelf staples I already have
 the amount of money I want to spend per week
 
 the equipment I have at home
+
+take account of the expiration date 
