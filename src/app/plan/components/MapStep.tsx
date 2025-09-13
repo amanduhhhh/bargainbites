@@ -26,62 +26,62 @@ interface MapStepProps {
   isLastStep: boolean;
 }
 
-// Mock store data - in a real app, this would come from an API
+// Actual flyer-providing stores near 256 Phillip Street, Waterloo, ON
 const MOCK_STORES = [
   {
-    id: 'walmart-1',
-    name: 'Walmart Supercentre',
-    address: '123 Main St, Toronto, ON',
-    distance: 0.8,
-    hasCar: true,
-    noCar: false,
-    logo: '/company-logos/Walmart_logo_(2008).svg.png',
-    deals: ['Fresh produce 20% off', 'Bulk items available'],
-    rating: 4.2
-  },
-  {
-    id: 'loblaws-1',
-    name: 'Loblaws',
-    address: '456 Queen St, Toronto, ON',
+    id: 'zehrs-conestoga',
+    name: 'Zehrs Conestoga',
+    address: '555 Davenport Rd, Waterloo, ON N2L 6L2',
     distance: 1.2,
     hasCar: true,
     noCar: true,
     logo: '/company-logos/Loblaws-Logo.png',
-    deals: ['PC Points bonus', 'Organic section'],
-    rating: 4.5
+    deals: ['Weekly flyer deals', 'PC Points bonus', 'Fresh produce specials'],
+    rating: 4.1
   },
   {
-    id: 'metro-1',
-    name: 'Metro',
-    address: '789 King St, Toronto, ON',
-    distance: 0.5,
-    hasCar: true,
-    noCar: true,
-    logo: '/company-logos/Metro_Inc._logo.svg.png',
-    deals: ['Weekly flyer deals', 'Fresh bakery'],
-    rating: 4.0
-  },
-  {
-    id: 'sobeys-1',
-    name: 'Sobeys',
-    address: '321 College St, Toronto, ON',
+    id: 'belfiores-independent',
+    name: 'Belfiore\'s Your Independent Grocer',
+    address: '385 Frederick St, Kitchener, ON N2H 2P2',
     distance: 2.1,
     hasCar: true,
-    noCar: false,
-    logo: '/company-logos/Sobeys_logo.svg.png',
-    deals: ['Air Miles rewards', 'Premium products'],
+    noCar: true,
+    logo: '/company-logos/Loblaws-Logo.png',
+    deals: ['Independent grocer flyers', 'Local products', 'Weekly specials'],
     rating: 4.3
   },
   {
-    id: 'freshco-1',
-    name: 'FreshCo',
-    address: '654 Spadina Ave, Toronto, ON',
+    id: 'tnt-supermarket',
+    name: 'T&T Supermarket Waterloo',
+    address: '50 Westmount Rd N B1, Waterloo, ON N2L 2R5',
     distance: 1.8,
     hasCar: true,
+    noCar: true,
+    logo: '/company-logos/t-t-supermarket-logo.svg',
+    deals: ['Asian grocery flyers', 'Fresh seafood specials', 'International products'],
+    rating: 4.4
+  },
+  {
+    id: 'walmart-farmers-market',
+    name: 'Walmart Supercentre',
+    address: '335 Farmers Market Rd Unit 101, Waterloo, ON N2V 0A4',
+    distance: 2.5,
+    hasCar: true,
     noCar: false,
-    logo: '/company-logos/FreshCo_logo.svg.png',
-    deals: ['Budget-friendly prices', 'Weekly specials'],
-    rating: 4.1
+    logo: '/company-logos/Walmart_logo_(2008).svg.png',
+    deals: ['Weekly flyer deals', 'Bulk items available', 'Fresh produce 20% off'],
+    rating: 3.1
+  },
+  {
+    id: 'real-canadian-superstore',
+    name: 'Real Canadian Superstore',
+    address: '875 Highland Rd W, Kitchener, ON N2N 2Y2',
+    distance: 3.2,
+    hasCar: true,
+    noCar: false,
+    logo: '/company-logos/Real_Canadian_Superstore_logo.png',
+    deals: ['PC Points flyers', 'Bulk savings', 'Weekly specials'],
+    rating: 4.2
   }
 ];
 
@@ -90,8 +90,14 @@ export default function MapStep({ data, updateData }: MapStepProps) {
   const [filteredStores, setFilteredStores] = useState(MOCK_STORES);
 
   useEffect(() => {
-    // Filter stores based on car access and sort by distance (shortest to longest)
+    // Filter stores based on car access, 5km radius, and sort by distance (shortest to longest)
     const filtered = MOCK_STORES.filter(store => {
+      // First check if store is within 5km radius
+      if (store.distance > 5) {
+        return false;
+      }
+      
+      // Then check transport access
       if (data.hasCar) {
         return store.hasCar;
       } else {
@@ -118,7 +124,7 @@ export default function MapStep({ data, updateData }: MapStepProps) {
     <div className="step-fade-in">
       <h2 className="text-lg font-medium mb-2">Choose your preferred store</h2>
       <p className="text-sm text-black/60 mb-6">
-        Based on your location and transport options, here are the best stores near you.
+        Based on your location and transport options, here are the best stores within 5km of 256 Phillip Street.
       </p>
 
       {/* Map Component */}

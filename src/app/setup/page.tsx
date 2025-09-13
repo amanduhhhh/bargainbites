@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -9,6 +9,7 @@ import CookingExperienceStep from './components/CookingExperienceStep';
 import PantryStaplesStep from './components/PantryStaplesStep';
 import BudgetStep from './components/BudgetStep';
 import EquipmentStep from './components/EquipmentStep';
+import DietaryRestrictionsStep from './components/DietaryRestrictionsStep';
 
 export interface OnboardingData {
   householdSize: number;
@@ -16,6 +17,7 @@ export interface OnboardingData {
   pantryStaples: string[];
   weeklyBudget: number;
   equipment: string[];
+  dietaryRestrictions: string[];
 }
 
 const STEPS = [
@@ -24,6 +26,7 @@ const STEPS = [
   { id: 'pantry', title: 'Pantry Staples', component: PantryStaplesStep },
   { id: 'budget', title: 'Budget', component: BudgetStep },
   { id: 'equipment', title: 'Equipment', component: EquipmentStep },
+  { id: 'dietary', title: 'Dietary', component: DietaryRestrictionsStep },
 ];
 
 export default function PlanPage() {
@@ -35,6 +38,7 @@ export default function PlanPage() {
   const [isDemoMode, setIsDemoMode] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isLoadingPreferences, setIsLoadingPreferences] = useState(true);
   const [animationDirection, setAnimationDirection] = useState<'next' | 'prev'>('next');
   const [onboardingData, setOnboardingData] = useState<OnboardingData>({
     householdSize: 1,
@@ -42,11 +46,55 @@ export default function PlanPage() {
     pantryStaples: [],
     weeklyBudget: 50,
     equipment: [],
+    dietaryRestrictions: [],
   });
 
   const updateData = (updates: Partial<OnboardingData>) => {
     setOnboardingData(prev => ({ ...prev, ...updates }));
   };
+
+  // Load user preferences when component mounts
+  useEffect(() => {
+    const loadUserPreferences = async () => {
+      try {
+        if (isDemoMode) {
+          // Load demo preferences from localStorage
+          const demoData = localStorage.getItem('demoOnboardingData');
+          if (demoData) {
+            const parsedData = JSON.parse(demoData);
+            setOnboardingData(parsedData);
+          }
+          setIsLoadingPreferences(false);
+          return;
+        }
+
+        if (user && !isLoading) {
+          // Fetch user preferences from database
+          const response = await fetch('/api/user/preferences');
+          if (response.ok) {
+            const result = await response.json();
+            if (result.success && result.preferences) {
+              const preferences = result.preferences;
+              setOnboardingData({
+                householdSize: preferences.householdSize || 1,
+                cookingExperience: preferences.cookingExperience || 'beginner',
+                pantryStaples: preferences.pantryStaples || [],
+                weeklyBudget: preferences.weeklyBudget || 50,
+                equipment: preferences.equipment || [],
+                dietaryRestrictions: preferences.dietaryRestrictions || [],
+              });
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error loading user preferences:', error);
+      } finally {
+        setIsLoadingPreferences(false);
+      }
+    };
+
+    loadUserPreferences();
+  }, [user, isLoading, isDemoMode]);
 
   const smoothScrollToTop = () => {
     const startPosition = window.pageYOffset;
@@ -120,7 +168,14 @@ export default function PlanPage() {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify(onboardingData),
+          body: JSON.stringify({
+            householdSize: onboardingData.householdSize,
+            cookingExperience: onboardingData.cookingExperience,
+            pantryStaples: onboardingData.pantryStaples,
+            weeklyBudget: onboardingData.weeklyBudget,
+            equipment: onboardingData.equipment,
+            dietaryRestrictions: onboardingData.dietaryRestrictions,
+          }),
         });
 
         if (!response.ok) {
@@ -149,14 +204,26 @@ export default function PlanPage() {
   const startDemoMode = () => {
     setIsDemoMode(true);
     setCurrentStep(0);
+    // Load demo preferences from localStorage
+    const demoData = localStorage.getItem('demoOnboardingData');
+    if (demoData) {
+      try {
+        const parsedData = JSON.parse(demoData);
+        setOnboardingData(parsedData);
+      } catch (error) {
+        console.error('Error parsing demo data:', error);
+      }
+    }
   };
 
-  if (isLoading) {
+  if (isLoading || isLoadingPreferences) {
     return (
       <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
         <div className="text-center">
           <div className="h-8 w-8 border-2 border-foreground border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-sm text-black/60">Loading...</p>
+          <p className="text-sm text-black/60">
+            {isLoading ? 'Loading...' : 'Loading your preferences...'}
+          </p>
         </div>
       </div>
     );
@@ -236,13 +303,13 @@ export default function PlanPage() {
         </div>
 
         {/* Step indicator */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center mb-8 overflow-x-auto">
           {STEPS.map((step, index) => (
-            <div key={step.id} className="flex items-center">
-              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0 ${
+            <div key={step.id} className="flex items-center flex-shrink-0">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-medium flex-shrink-0 transition-colors duration-200 ${
                 index <= currentStep 
-                  ? 'bg-foreground text-background step-indicator-active' 
-                  : 'bg-black/10 text-black/60 step-indicator'
+                  ? 'bg-foreground text-background' 
+                  : 'bg-black/10 text-black/60'
               }`}>
                 {index + 1}
               </div>
@@ -252,7 +319,7 @@ export default function PlanPage() {
                 {step.title}
               </span>
               {index < STEPS.length - 1 && (
-                <div className={`w-8 h-px mx-2 flex-shrink-0 step-indicator ${
+                <div className={`w-3 h-px mx-2 flex-shrink-0 step-indicator ${
                   index < currentStep ? 'bg-foreground' : 'bg-black/10'
                 }`} />
               )}

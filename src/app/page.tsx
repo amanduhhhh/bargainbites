@@ -60,6 +60,7 @@ export default function Home() {
             <div className="logo-track">
               <img className="h-8 sm:h-10 w-auto object-contain opacity-80 hover:opacity-100 transition" src="/company-logos/Loblaws-Logo.png" alt="Loblaws" />
               <img className="h-8 sm:h-10 w-auto object-contain opacity-80 hover:opacity-100 transition" src="/company-logos/No_Frills_logo.svg.png" alt="No Frills" />
+              <img className="h-8 sm:h-10 w-auto object-contain opacity-80 hover:opacity-100 transition" src="/company-logos/t-t-supermarket-logo.svg" alt="T&T" />
               <img className="h-8 sm:h-10 w-auto object-contain opacity-80 hover:opacity-100 transition" src="/company-logos/Real_Canadian_Superstore_logo.svg.png" alt="Real Canadian Superstore" />
               <img className="h-8 sm:h-10 w-auto object-contain opacity-80 hover:opacity-100 transition" src="/company-logos/Metro_Inc._logo.svg.png" alt="Metro" />
               <img className="h-8 sm:h-10 w-auto object-contain opacity-80 hover:opacity-100 transition" src="/company-logos/Sobeys_logo.svg.png" alt="Sobeys" />
@@ -72,6 +73,7 @@ export default function Home() {
               {/* duplicate for seamless scroll */}
               <img className="h-8 sm:h-10 w-auto object-contain opacity-80 hover:opacity-100 transition" src="/company-logos/Loblaws-Logo.png" alt="Loblaws" />
               <img className="h-8 sm:h-10 w-auto object-contain opacity-80 hover:opacity-100 transition" src="/company-logos/No_Frills_logo.svg.png" alt="No Frills" />
+              <img className="h-8 sm:h-10 w-auto object-contain opacity-80 hover:opacity-100 transition" src="/company-logos/t-t-supermarket-logo.svg" alt="T&T" />
               <img className="h-8 sm:h-10 w-auto object-contain opacity-80 hover:opacity-100 transition" src="/company-logos/Real_Canadian_Superstore_logo.svg.png" alt="Real Canadian Superstore" />
               <img className="h-8 sm:h-10 w-auto object-contain opacity-80 hover:opacity-100 transition" src="/company-logos/Metro_Inc._logo.svg.png" alt="Metro" />
               <img className="h-8 sm:h-10 w-auto object-contain opacity-80 hover:opacity-100 transition" src="/company-logos/Sobeys_logo.svg.png" alt="Sobeys" />

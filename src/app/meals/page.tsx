@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import { OnboardingData } from '../setup/page';
 
 interface WeeklyMeal {
@@ -21,8 +23,11 @@ interface EditorPick {
 }
 
 export default function MealsPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [onboardingData, setOnboardingData] = useState<OnboardingData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isCheckingSetup, setIsCheckingSetup] = useState(true);
   const [weeklyMeals, setWeeklyMeals] = useState<WeeklyMeal[]>([
     { id: '1', day: 'Monday', meal: '', isSet: false },
     { id: '2', day: 'Tuesday', meal: '', isSet: false },
@@ -101,17 +106,70 @@ export default function MealsPage() {
   ]);
 
   useEffect(() => {
-    // Check if we have demo data in localStorage
-    const demoData = localStorage.getItem('demoOnboardingData');
-    if (demoData) {
+    const checkSetupCompletion = async () => {
       try {
-        setOnboardingData(JSON.parse(demoData));
+        if (session?.user) {
+          // For authenticated users, check database
+          try {
+            const response = await fetch('/api/user/preferences');
+            if (response.ok) {
+              const result = await response.json();
+              if (result.success && result.preferences?.preferencesSet) {
+                setOnboardingData({
+                  householdSize: result.preferences.householdSize || 1,
+                  weeklyBudget: result.preferences.weeklyBudget || 50,
+                  cookingExperience: result.preferences.cookingExperience || 'beginner',
+                  equipment: result.preferences.equipment || [],
+                  pantryStaples: result.preferences.pantryStaples || [],
+                });
+              } else {
+                // No setup data found, redirect to setup
+                router.push('/setup');
+                return;
+              }
+            } else {
+              // API call failed, redirect to setup
+              router.push('/setup');
+              return;
+            }
+          } catch (fetchError) {
+            console.error('Error fetching user preferences:', fetchError);
+            // If API call fails, redirect to setup
+            router.push('/setup');
+            return;
+          }
+        } else {
+          // For non-authenticated users, check localStorage
+          const demoData = localStorage.getItem('demoOnboardingData');
+          if (demoData) {
+            try {
+              setOnboardingData(JSON.parse(demoData));
+            } catch (error) {
+              console.error('Error parsing demo data:', error);
+              router.push('/setup');
+              return;
+            }
+          } else {
+            // No demo data found, redirect to setup
+            router.push('/setup');
+            return;
+          }
+        }
       } catch (error) {
-        console.error('Error parsing demo data:', error);
+        console.error('Error checking setup completion:', error);
+        router.push('/setup');
+        return;
+      } finally {
+        setIsCheckingSetup(false);
+        setIsLoading(false);
       }
+    };
+
+    // Only check setup if session status is not loading
+    if (status !== 'loading') {
+      checkSetupCompletion();
     }
-    setIsLoading(false);
-  }, []);
+  }, [session, status, router]);
 
   const handleMealEdit = (id: string, newMeal: string) => {
     setWeeklyMeals(meals => 
@@ -131,12 +189,12 @@ export default function MealsPage() {
   // Check if all meals are set
   const allMealsSet = weeklyMeals.every(meal => meal.isSet);
 
-  if (isLoading) {
+  if (isLoading || isCheckingSetup || status === 'loading') {
     return (
       <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
         <div className="text-center">
           <div className="h-8 w-8 border-2 border-foreground border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-sm text-black/60">Loading your meal plan...</p>
+          <p className="text-sm text-black/60">Saving your preferences...</p>
         </div>
       </div>
     );
@@ -154,7 +212,7 @@ export default function MealsPage() {
           </Link>
           <div className="flex items-center gap-6">
             <Link
-              href="/plan"
+              href="/setup"
               className="text-sm text-black/60 hover:text-black/80 underline"
             >
               Set up
@@ -188,15 +246,15 @@ export default function MealsPage() {
             <p className="mt-4 max-w-[60ch] text-sm sm:text-base text-black/60">Plan your week, discover deals, and save money</p>
           </div>
           <button
-            onClick={handlePlanWeek}
-            className={`inline-flex items-center justify-center h-11 px-5 rounded-full text-background text-sm font-medium hover:opacity-90 transition-all duration-300 ${
-              allMealsSet 
-                ? 'bg-foreground' 
-                : 'bg-orange-500 shadow-lg shadow-orange-500/50 animate-pulse'
-            }`}
-          >
-            Plan the Week
-          </button>
+  onClick={handlePlanWeek}
+  className={`inline-flex items-center justify-center h-11 px-5 rounded-full text-background text-sm font-medium hover:opacity-90 transition-all duration-300 ${
+    allMealsSet 
+      ? 'bg-foreground' 
+      : 'bg-orange-600 shadow-md shadow-orange-700/60 animate-[pulse_2s_ease-in-out_infinite]'
+  }`}
+>
+  Plan the Week
+</button>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

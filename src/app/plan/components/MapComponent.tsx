@@ -42,7 +42,7 @@ function MapUpdater({ stores }: { stores: Store[]; selectedStore: string | null 
     if (stores.length > 0) {
       // Create bounds to fit all stores
       const bounds = L.latLngBounds(
-        stores.map(store => [store.lat || 43.6532, store.lng || -79.3832])
+        stores.map(store => [store.lat || 43.4643, store.lng || -80.5204])
       );
       map.fitBounds(bounds, { padding: [20, 20] });
     }
@@ -58,15 +58,29 @@ export default function MapComponent({ stores, selectedStore, onStoreSelect }: M
     setIsClient(true);
   }, []);
 
-  // Mock coordinates for stores (in a real app, these would come from geocoding)
-  const storesWithCoords = stores.map((store) => ({
-    ...store,
-    lat: 43.6532 + (Math.random() - 0.5) * 0.1, // Random coordinates around Toronto
-    lng: -79.3832 + (Math.random() - 0.5) * 0.1,
-  }));
+  // Actual coordinates for flyer-providing stores near 256 Phillip Street, Waterloo, ON
+  const getStoreCoordinates = (storeId: string) => {
+    const coordinates: { [key: string]: [number, number] } = {
+      'zehrs-conestoga': [43.4620, -80.5350],           // 555 Davenport Rd, Waterloo
+      'belfiores-independent': [43.4350, -80.4820],     // 385 Frederick St, Kitchener
+      'tnt-supermarket': [43.4580, -80.5280],           // 50 Westmount Rd N B1, Waterloo
+      'walmart-farmers-market': [43.4400, -80.5600],    // 335 Farmers Market Rd, Waterloo
+      'real-canadian-superstore': [43.4280, -80.4950],  // 875 Highland Rd W, Kitchener
+    };
+    return coordinates[storeId] || [43.4643, -80.5204]; // Default to 256 Phillip St
+  };
 
-  // Default center (Toronto coordinates)
-  const defaultCenter: [number, number] = [43.6532, -79.3832];
+  const storesWithCoords = stores.map((store) => {
+    const [lat, lng] = getStoreCoordinates(store.id);
+    return {
+      ...store,
+      lat,
+      lng,
+    };
+  });
+
+  // Default center (256 Phillip Street, Waterloo, ON coordinates)
+  const defaultCenter: [number, number] = [43.4643, -80.5204];
 
   if (!isClient) {
     return (
@@ -93,6 +107,28 @@ export default function MapComponent({ stores, selectedStore, onStoreSelect }: M
         />
         
         <MapUpdater stores={storesWithCoords} selectedStore={selectedStore} />
+        
+        {/* User Location Marker */}
+        <Marker
+          position={defaultCenter}
+          icon={L.divIcon({
+            className: 'user-location-marker',
+            html: `
+              <div class="w-6 h-6 bg-white border-2 border-gray-400 rounded-full flex items-center justify-center shadow-lg">
+                <div class="w-3 h-3 bg-gray-600 rounded-full"></div>
+              </div>
+            `,
+            iconSize: [24, 24],
+            iconAnchor: [12, 12],
+          })}
+        >
+          <Popup>
+            <div className="p-2">
+              <h3 className="font-medium text-sm mb-1">Your Location</h3>
+              <p className="text-xs text-gray-600">256 Phillip Street, Waterloo, ON</p>
+            </div>
+          </Popup>
+        </Marker>
         
         {storesWithCoords.map((store) => {
           const isSelected = selectedStore === store.id;

@@ -23,6 +23,7 @@ export async function GET() {
         pantryStaples: true,
         weeklyBudget: true,
         equipment: true,
+        dietaryRestrictions: true,
         preferencesSet: true,
       }
     });
@@ -65,12 +66,12 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { householdSize, cookingExperience, pantryStaples, weeklyBudget, equipment } = body;
+    const { householdSize, cookingExperience, pantryStaples, weeklyBudget, equipment, dietaryRestrictions } = body;
 
     // Validate required fields
     if (householdSize === undefined || cookingExperience === undefined || 
         !Array.isArray(pantryStaples) || weeklyBudget === undefined || 
-        !Array.isArray(equipment)) {
+        !Array.isArray(equipment) || !Array.isArray(dietaryRestrictions)) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
@@ -85,6 +86,7 @@ export async function POST(request: NextRequest) {
         pantryStaples,
         weeklyBudget: parseFloat(weeklyBudget),
         equipment,
+        dietaryRestrictions,
         preferencesSet: true,
       },
       select: {
@@ -93,6 +95,7 @@ export async function POST(request: NextRequest) {
         pantryStaples: true,
         weeklyBudget: true,
         equipment: true,
+        dietaryRestrictions: true,
         preferencesSet: true,
       }
     });

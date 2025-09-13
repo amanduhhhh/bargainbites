@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import LocationStep from './components/LocationStep';
 import TransportStep from './components/TransportStep';
 import MapStep from './components/MapStep';
@@ -27,10 +28,12 @@ const STEPS = [
 
 export default function PlanPage() {
   const router = useRouter();
+  const { data: session, status } = useSession();
   const [currentStep, setCurrentStep] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [animationDirection, setAnimationDirection] = useState<'next' | 'prev'>('next');
+  const [isLoadingPreferences, setIsLoadingPreferences] = useState(true);
   const [planData, setPlanData] = useState<PlanData>({
     postalCode: '',
     householdSize: 1,
@@ -44,6 +47,52 @@ export default function PlanPage() {
   const updateData = (updates: Partial<PlanData>) => {
     setPlanData(prev => ({ ...prev, ...updates }));
   };
+
+  // Load user preferences on component mount
+  useEffect(() => {
+    const loadUserPreferences = async () => {
+      if (status === 'loading') return; // Wait for session to load
+      
+      if (session?.user) {
+        try {
+          const response = await fetch('/api/user/preferences');
+          if (response.ok) {
+            const data = await response.json();
+            if (data.success && data.preferences) {
+              const preferences = data.preferences;
+              setPlanData(prev => ({
+                ...prev,
+                householdSize: preferences.householdSize || prev.householdSize,
+                dietaryRestrictions: preferences.dietaryRestrictions || [],
+                budget: preferences.weeklyBudget || prev.budget,
+              }));
+            }
+          }
+        } catch (error) {
+          console.error('Error loading user preferences:', error);
+        }
+      } else {
+        // Check for demo data in localStorage
+        const demoData = localStorage.getItem('demoOnboardingData');
+        if (demoData) {
+          try {
+            const parsedData = JSON.parse(demoData);
+            setPlanData(prev => ({
+              ...prev,
+              householdSize: parsedData.householdSize || prev.householdSize,
+              dietaryRestrictions: parsedData.dietaryRestrictions || [],
+              budget: parsedData.weeklyBudget || prev.budget,
+            }));
+          } catch (error) {
+            console.error('Error parsing demo data:', error);
+          }
+        }
+      }
+      setIsLoadingPreferences(false);
+    };
+
+    loadUserPreferences();
+  }, [session, status]);
 
   const smoothScrollToTop = () => {
     const startPosition = window.pageYOffset;
@@ -117,6 +166,18 @@ export default function PlanPage() {
 
   const CurrentStepComponent = STEPS[currentStep].component;
   const isLastStep = currentStep === STEPS.length - 1;
+
+  // Show loading state while preferences are being loaded
+  if (isLoadingPreferences) {
+    return (
+      <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
+        <div className="text-center">
+          <div className="h-8 w-8 border-2 border-foreground border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-sm text-black/60">Loading your preferences...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground">
