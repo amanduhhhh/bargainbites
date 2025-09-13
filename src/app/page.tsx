@@ -49,6 +49,9 @@ export default function Home() {
             <a href="/how-it-works" className="inline-flex items-center justify-center h-11 px-5 rounded-full border border-black/10 hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:text-black dark:hover:text-white text-sm font-medium transition-colors duration-200 ease-in-out">
               Learn more
             </a>
+            <Link href="/flyer-test" className="inline-flex items-center justify-center h-11 px-5 rounded-full border border-blue-500 text-blue-600 hover:bg-blue-50 text-sm font-medium transition-colors duration-200 ease-in-out">
+              Test Flyer OCR
+            </Link>
           </div>
         </section>
 
