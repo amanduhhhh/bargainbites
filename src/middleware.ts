@@ -1,16 +1,8 @@
-import { withAuth } from "next-auth/middleware"
-
-export default withAuth(
-  function middleware() {
-    // Add any custom middleware logic here if needed
-  },
-  {
-    callbacks: {
-      authorized: ({ token }) => !!token
-    },
-  }
-)
+// Middleware disabled - no authentication required
+export default function middleware() {
+  // No authentication checks
+}
 
 export const config = {
-  matcher: ["/plan/:path*"]
+  matcher: []
 }
