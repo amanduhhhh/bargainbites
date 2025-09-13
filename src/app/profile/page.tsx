@@ -25,7 +25,7 @@ export default function ProfilePage() {
       <div className="min-h-screen grid place-items-center">
         <div className="text-center">
           <p className="mb-4">You need to log in to view your profile.</p>
-          <Link href="/auth/login" className="rounded-full border border-black/10 px-4 py-1.5 hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] text-sm">
+          <Link href="/auth/login" className="rounded-full border border-black/10 px-4 py-1.5 hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:text-black dark:hover:text-white text-sm transition-colors duration-200 ease-in-out">
             Log in
           </Link>
         </div>
