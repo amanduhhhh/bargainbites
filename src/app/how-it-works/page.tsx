@@ -120,7 +120,7 @@ export default function HowItWorks() {
       </main>
 
       <footer className="border-t border-black/10">
-        <div className="max-w-5xl mx-auto px-6 py-6 text-xs text-black/60 dark:text-white/60 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-6 py-6 text-xs text-black/60 dark:text-white/60 flex items-center justify-between">
           <span>© {new Date().getFullYear()} Bargain Bites</span>
           <div className="flex items-center gap-4">
             <a href="#" className="hover:underline underline-offset-4">

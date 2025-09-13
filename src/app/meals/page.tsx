@@ -232,43 +232,6 @@ export default function MealsPage() {
                 ))}
               </div>
             </div>
-
-            {/* Editor's Picks Carousel */}
-            <div className=" p-4">
-              <h2 className="text-xl font-semibold mb-6">This Week's Best Choices</h2>
-              <div className="editor-picks-marquee editor-picks-fade py-2">
-                <div className="editor-picks-track">
-                  {editorPicks.map((pick) => (
-                    <div key={pick.id} className="flex-shrink-0 w-64 rounded-lg border border-black/10 p-4 bg-white">
-                      <div className="aspect-video bg-black/5 rounded-lg mb-3 flex items-center justify-center">
-                        <span className="text-xs text-black/40">Image</span>
-                      </div>
-                      <h3 className="font-medium text-sm mb-1">{pick.title}</h3>
-                      <p className="text-xs text-black/60 mb-2">{pick.description}</p>
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium text-sm">{pick.price}</span>
-                        <span className="text-xs text-black/40">{pick.store}</span>
-                      </div>
-                    </div>
-                  ))}
-                  
-                  {/* Duplicate for seamless scroll */}
-                  {editorPicks.map((pick) => (
-                    <div key={`duplicate-${pick.id}`} className="flex-shrink-0 w-64 rounded-lg border border-black/10 p-4 bg-white">
-                      <div className="aspect-video bg-black/5 rounded-lg mb-3 flex items-center justify-center">
-                        <span className="text-xs text-black/40">Image</span>
-                      </div>
-                      <h3 className="font-medium text-sm mb-1">{pick.title}</h3>
-                      <p className="text-xs text-black/60 mb-2">{pick.description}</p>
-                      <div className="flex items-center justify-between">
-                        <span className="font-medium text-sm">{pick.price}</span>
-                        <span className="text-xs text-black/40">{pick.store}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
           </div>
 
           {/* Sidebar */}
@@ -305,7 +268,7 @@ export default function MealsPage() {
 
             {/* Quick Stats */}
             {onboardingData && (
-              <div className=" p-4">
+              <div className=" pb-4 px-4">
                 <h3 className="font-semibold mb-4">Your Profile</h3>
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between">
@@ -325,7 +288,7 @@ export default function MealsPage() {
             )}
 
             {/* Quick Actions */}
-            <div className=" p-4">
+            <div className=" pb-4 px-4">
               <h3 className="font-semibold mb-4">Quick Actions</h3>
               <div className="space-y-2">
                 <Link
@@ -341,6 +304,43 @@ export default function MealsPage() {
                   Find Deals
                 </button>
               </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Editor's Picks Carousel - Full Width */}
+        <div className="mt-8">
+          <h2 className="text-xl font-semibold mb-6">This Week's Best Choices</h2>
+          <div className="editor-picks-marquee editor-picks-fade py-2">
+            <div className="editor-picks-track">
+              {editorPicks.map((pick) => (
+                <div key={pick.id} className="flex-shrink-0 w-64 rounded-lg  p-4 bg-white">
+                  <div className="aspect-video bg-black/5 rounded-lg mb-3 flex items-center justify-center">
+                    <span className="text-xs text-black/40">Image</span>
+                  </div>
+                  <h3 className="font-medium text-sm mb-1">{pick.title}</h3>
+                  <p className="text-xs text-black/60 mb-2">{pick.description}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-sm">{pick.price}</span>
+                    <span className="text-xs text-black/40">{pick.store}</span>
+                  </div>
+                </div>
+              ))}
+              
+              {/* Duplicate for seamless scroll */}
+              {editorPicks.map((pick) => (
+                <div key={`duplicate-${pick.id}`} className="flex-shrink-0 w-64 rounded-lg border border-black/10 p-4 bg-white">
+                  <div className="aspect-video bg-black/5 rounded-lg mb-3 flex items-center justify-center">
+                    <span className="text-xs text-black/40">Image</span>
+                  </div>
+                  <h3 className="font-medium text-sm mb-1">{pick.title}</h3>
+                  <p className="text-xs text-black/60 mb-2">{pick.description}</p>
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium text-sm">{pick.price}</span>
+                    <span className="text-xs text-black/40">{pick.store}</span>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
