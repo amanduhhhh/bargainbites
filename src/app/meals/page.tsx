@@ -24,11 +24,11 @@ export default function MealsPage() {
   const [onboardingData, setOnboardingData] = useState<OnboardingData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [weeklyMeals, setWeeklyMeals] = useState<WeeklyMeal[]>([
-    { id: '1', day: 'Monday', meal: 'Pasta with Tomato Sauce', isSet: true },
-    { id: '2', day: 'Tuesday', meal: 'Chicken Stir-fry', isSet: true },
-    { id: '3', day: 'Wednesday', meal: 'Bean and Rice Bowl', isSet: true },
-    { id: '4', day: 'Thursday', meal: 'Vegetable Soup', isSet: false },
-    { id: '5', day: 'Friday', meal: 'Fish Tacos', isSet: false },
+    { id: '1', day: 'Monday', meal: '', isSet: false },
+    { id: '2', day: 'Tuesday', meal: '', isSet: false },
+    { id: '3', day: 'Wednesday', meal: '', isSet: false },
+    { id: '4', day: 'Thursday', meal: '', isSet: false },
+    { id: '5', day: 'Friday', meal: '', isSet: false },
     { id: '6', day: 'Saturday', meal: '', isSet: false },
     { id: '7', day: 'Sunday', meal: '', isSet: false },
   ]);
@@ -128,6 +128,9 @@ export default function MealsPage() {
     window.location.href = '/plan';
   };
 
+  // Check if all meals are set
+  const allMealsSet = weeklyMeals.every(meal => meal.isSet);
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
@@ -186,7 +189,11 @@ export default function MealsPage() {
           </div>
           <button
             onClick={handlePlanWeek}
-            className="inline-flex items-center justify-center h-11 px-5 rounded-full bg-foreground text-background text-sm font-medium hover:opacity-90"
+            className={`inline-flex items-center justify-center h-11 px-5 rounded-full text-background text-sm font-medium hover:opacity-90 transition-all duration-300 ${
+              allMealsSet 
+                ? 'bg-foreground' 
+                : 'bg-orange-500 shadow-lg shadow-orange-500/50 animate-pulse'
+            }`}
           >
             Plan the Week
           </button>
@@ -232,8 +239,7 @@ export default function MealsPage() {
                     ) : (
                       <input
                         type="text"
-                        placeholder="Add a meal..."
-                        className="w-full text-sm border-none outline-none bg-transparent placeholder:text-black/40"
+                        className="w-full text-sm border-none outline-none bg-transparent"
                         onKeyPress={(e) => {
                           if (e.key === 'Enter') {
                             handleMealEdit(meal.id, e.currentTarget.value);
@@ -329,8 +335,7 @@ export default function MealsPage() {
             <div className="editor-picks-track">
               {editorPicks.map((pick) => (
                 <div key={pick.id} className="flex-shrink-0 w-64 rounded-lg  p-4 bg-white">
-                  <div className="aspect-video bg-black/5 rounded-lg mb-3 flex items-center justify-center">
-                    <span className="text-xs text-black/40">Image</span>
+                  <div className="aspect-video bg-black/5 rounded-lg mb-3">
                   </div>
                   <h3 className="font-medium text-sm mb-1">{pick.title}</h3>
                   <p className="text-xs text-black/60 mb-2">{pick.description}</p>
@@ -344,8 +349,7 @@ export default function MealsPage() {
               {/* Duplicate for seamless scroll */}
               {editorPicks.map((pick) => (
                 <div key={`duplicate-${pick.id}`} className="flex-shrink-0 w-64 rounded-lg p-4 bg-white">
-                  <div className="aspect-video bg-black/5 rounded-lg mb-3 flex items-center justify-center">
-                    <span className="text-xs text-black/40">Image</span>
+                  <div className="aspect-video bg-black/5 rounded-lg mb-3">
                   </div>
                   <h3 className="font-medium text-sm mb-1">{pick.title}</h3>
                   <p className="text-xs text-black/60 mb-2">{pick.description}</p>

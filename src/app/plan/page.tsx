@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import LocationStep from './components/LocationStep';
@@ -27,12 +26,8 @@ const STEPS = [
 ];
 
 export default function PlanPage() {
-  const { data: session, status } = useSession();
-  const user = session?.user;
-  const isLoading = status === 'loading';
   const router = useRouter();
   const [currentStep, setCurrentStep] = useState(0);
-  const [isDemoMode, setIsDemoMode] = useState(false);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [animationDirection, setAnimationDirection] = useState<'next' | 'prev'>('next');
@@ -109,10 +104,8 @@ export default function PlanPage() {
     // TODO: Submit plan data to backend
     console.log('Plan data:', planData);
     
-    // Store plan data in localStorage for demo mode
-    if (isDemoMode) {
-      localStorage.setItem('demoPlanData', JSON.stringify(planData));
-    }
+    // Store plan data in localStorage
+    localStorage.setItem('demoPlanData', JSON.stringify(planData));
     
     // Add artificial load delay
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -121,51 +114,6 @@ export default function PlanPage() {
     router.push('/meals');
   };
 
-  const startDemoMode = () => {
-    setIsDemoMode(true);
-    setCurrentStep(0);
-  };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
-        <div className="text-center">
-          <div className="h-8 w-8 border-2 border-foreground border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-sm text-black/60">Loading...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!user && !isDemoMode) {
-    return (
-      <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
-        <div className="text-center max-w-md mx-auto px-6">
-          <h1 className="text-2xl font-semibold mb-4">Create your shopping plan</h1>
-          <p className="text-sm text-black/60 mb-6">
-            We&apos;ll help you find the best deals and plan your grocery shopping trip.
-          </p>
-          <div className="space-y-3">
-            <button
-              onClick={() => window.location.href = '/auth/signin'}
-              className="inline-flex items-center justify-center h-11 px-6 rounded-full bg-foreground text-background text-sm font-medium hover:opacity-90 w-full"
-            >
-              Sign in to continue
-            </button>
-            <button
-              onClick={startDemoMode}
-              className="inline-flex items-center justify-center h-11 px-6 rounded-full border border-black/10 hover:bg-[#f2f2f2] hover:text-white dark:hover:bg-[#1a1a1a] text-sm font-medium w-full animate-blink"
-            >
-              Skip for now (demo mode)
-            </button>
-          </div>
-          <p className="text-xs text-black/50 mt-4">
-            Note: Your plan won&apos;t be saved without signing in
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   const CurrentStepComponent = STEPS[currentStep].component;
   const isLastStep = currentStep === STEPS.length - 1;
@@ -181,13 +129,6 @@ export default function PlanPage() {
             Bargain Bites
           </Link>
           <div className="flex items-center gap-4">
-            {isDemoMode && (
-              <div className="flex items-center gap-2">
-                <span className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded-full">
-                  Demo Mode
-                </span>
-              </div>
-            )}
             <div className="text-sm text-black/60">
               Step {currentStep + 1} of {STEPS.length}
             </div>
@@ -200,7 +141,7 @@ export default function PlanPage() {
         <div className="mb-8">
           <div className="flex items-center justify-between mb-2">
             <h1 className="text-xl font-semibold">
-              {isDemoMode ? 'Demo: Plan your shopping trip' : 'Plan your shopping trip'}
+              Plan your shopping trip
             </h1>
             <span className="text-sm text-black/60">{Math.round(((currentStep + 1) / STEPS.length) * 100)}%</span>
           </div>

@@ -163,8 +163,8 @@ export default function ProfilePage() {
 
               {/* Preferences Card */}
               {onboardingData && (
-                <div className="p-4">
-                  <div className=" p-6">
+                <div className="py-4">
+                  <div className=" py-6">
                     <h2 className="text-xl font-semibold mb-4">Your Preferences</h2>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="space-y-2">
