@@ -18,17 +18,43 @@ export default function ProfilePage() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check if we have demo data in localStorage
-    const demoData = localStorage.getItem('demoOnboardingData');
-    if (demoData) {
+    const fetchPreferences = async () => {
       try {
-        setOnboardingData(JSON.parse(demoData));
+        if (session?.user) {
+          // Fetch preferences from database for authenticated users
+          const response = await fetch('/api/user/preferences');
+          if (response.ok) {
+            const result = await response.json();
+            if (result.success && result.preferences) {
+              setOnboardingData({
+                householdSize: result.preferences.householdSize || 1,
+                weeklyBudget: result.preferences.weeklyBudget || 50,
+                cookingExperience: result.preferences.cookingExperience || 'beginner',
+                equipment: result.preferences.equipment || [],
+                pantryStaples: result.preferences.pantryStaples || [],
+              });
+            }
+          }
+        } else {
+          // Check if we have demo data in localStorage for non-authenticated users
+          const demoData = localStorage.getItem('demoOnboardingData');
+          if (demoData) {
+            try {
+              setOnboardingData(JSON.parse(demoData));
+            } catch (error) {
+              console.error('Error parsing demo data:', error);
+            }
+          }
+        }
       } catch (error) {
-        console.error('Error parsing demo data:', error);
+        console.error('Error fetching preferences:', error);
+      } finally {
+        setIsLoading(false);
       }
-    }
-    setIsLoading(false);
-  }, []);
+    };
+
+    fetchPreferences();
+  }, [session]);
 
   if (status === 'loading' || isLoading) {
     return (

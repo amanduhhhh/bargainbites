@@ -109,19 +109,41 @@ export default function PlanPage() {
   const handleSubmit = async () => {
     setIsGenerating(true);
     
-    // TODO: Submit onboarding data to backend
-    console.log('Onboarding data:', onboardingData);
-    
-    // Store onboarding data in localStorage for demo mode
-    if (isDemoMode) {
-      localStorage.setItem('demoOnboardingData', JSON.stringify(onboardingData));
+    try {
+      if (isDemoMode) {
+        // Store onboarding data in localStorage for demo mode
+        localStorage.setItem('demoOnboardingData', JSON.stringify(onboardingData));
+      } else {
+        // Save to database for authenticated users
+        const response = await fetch('/api/user/preferences', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(onboardingData),
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to save preferences');
+        }
+
+        const result = await response.json();
+        console.log('Preferences saved successfully:', result);
+      }
+      
+      // Add artificial load delay of 1000ms
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Redirect to meals page
+      router.push('/meals');
+    } catch (error) {
+      console.error('Error saving preferences:', error);
+      // Still redirect to meals page even if save fails
+      router.push('/meals');
+    } finally {
+      setIsGenerating(false);
     }
-    
-    // Add artificial load delay of 1000ms
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Redirect to meals page
-    router.push('/meals');
   };
 
   const startDemoMode = () => {
