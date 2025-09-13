@@ -22,7 +22,7 @@ export default function Home() {
       <main className="flex-1 relative">
         {/* Background oranges image */}
         <div 
-          className="absolute right-0 -top-8 h-full w-1/3 bg-cover bg-left bg-no-repeat opacity-20 pointer-events-none"
+          className="absolute right-0 -top-8 h-full w-1/3 bg-cover bg-left bg-no-repeat pointer-events-none"
           style={{
             backgroundImage: 'url(/background/oranges.png)',
             backgroundPosition: 'left center'
@@ -56,7 +56,7 @@ export default function Home() {
         <section aria-labelledby="retailers" className="max-w-6xl mx-auto px-6 pb-10 relative z-10">
           <h2 id="retailers" className="sr-only">Works with</h2>
           <div className="text-xs uppercase tracking-[0.18em] text-black/60 mb-3">Works with</div>
-          <div className="logo-marquee logo-fade py-2">
+          <div className="logo-marquee py-2">
             <div className="logo-track">
               <img className="h-8 sm:h-10 w-auto object-contain opacity-80 hover:opacity-100 transition" src="/company-logos/Loblaws-Logo.png" alt="Loblaws" />
               <img className="h-8 sm:h-10 w-auto object-contain opacity-80 hover:opacity-100 transition" src="/company-logos/No_Frills_logo.svg.png" alt="No Frills" />
