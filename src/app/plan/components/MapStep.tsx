@@ -79,7 +79,7 @@ const MOCK_STORES = [
     distance: 3.2,
     hasCar: true,
     noCar: false,
-    logo: '/company-logos/Real_Canadian_Superstore_logo.png',
+    logo: '/company-logos/Real_Canadian_Superstore_logo.svg.png',
     deals: ['PC Points flyers', 'Bulk savings', 'Weekly specials'],
     rating: 4.2
   }
