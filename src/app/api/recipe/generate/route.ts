@@ -49,24 +49,16 @@ export async function POST(request: NextRequest) {
       cuisineType
     });
 
-    // Simple prompt for cooking instructions only
-    const prompt = `Generate detailed cooking instructions for this meal. Do not include any conversational text, greetings, or responses to the user. Only provide the cooking instructions.
+    // Direct prompt for cooking instructions only
+    const prompt = `Cooking instructions for ${mealName}:
 
-MEAL: ${mealName}
-INGREDIENTS: ${ingredients.join(', ')}
-SERVING SIZE: ${servingSize} people
-COOKING EXPERIENCE: ${cookingExperience}
-DIETARY RESTRICTIONS: ${dietaryRestrictions.join(', ') || 'None'}
-PANTRY ITEMS: ${pantryItems.join(', ') || 'None'}
+Available ingredients: ${ingredients.join(', ')}
+Serving size: ${servingSize} people
+Cooking level: ${cookingExperience}
 
-Provide step-by-step cooking instructions that are:
-- Clear and easy to follow
-- Appropriate for ${cookingExperience} level
-- Include timing and temperature when helpful
-- Use the available ingredients efficiently
-- Include helpful cooking tips
+STRICT RULE: You can ONLY use the ingredients listed above. Do not add any other ingredients not in the list.
 
-Format as numbered steps with clear instructions. Do not include any markdown headers, just the instructions.`;
+Provide only numbered cooking steps. Use ONLY the provided ingredients. No additional ingredients allowed.`;
 
     console.log('📏 Prompt length:', prompt.length, 'characters');
     console.log('⏰ Starting Cohere API call...');
@@ -85,20 +77,21 @@ Format as numbered steps with clear instructions. Do not include any markdown he
     console.log('📊 Response details:', {
       model: 'command',
       responseLength: response.generations[0].text.length,
-      tokensUsed: response.meta?.billed_units?.input_tokens + response.meta?.billed_units?.output_tokens || 'unknown'
+      tokensUsed: (response.meta?.billedUnits?.inputTokens || 0) + (response.meta?.billedUnits?.outputTokens || 0) || 'unknown'
     });
 
     let cookingInstructions = response.generations[0].text;
     
-    // Clean up the response - remove conversational text
+    // Simple cleanup - just remove any remaining conversational text
     cookingInstructions = cookingInstructions
-      .replace(/^(Certainly!|Here is|Let me|I'll|I can|Let me know|This recipe|This should|This honors).*/gim, '')
-      .replace(/Let me know if you would like[\s\S]*$/gim, '')
-      .replace(/I can also provide[\s\S]*$/gim, '')
-      .replace(/This recipe honors[\s\S]*$/gim, '')
-      .replace(/This should be[\s\S]*$/gim, '')
-      .replace(/This honors[\s\S]*$/gim, '')
+      .replace(/^(Certainly!|Here is|Let me|I'll|I can|Let me know|This recipe|This should|This honors|Absolutely!|Of course!|I'd be happy to|I'm happy to|I can help|Here's|Here are|Let's|I'll help).*/gim, '')
+      .replace(/Let me know if[\s\S]*$/gim, '')
+      .replace(/I hope this helps[\s\S]*$/gim, '')
+      .replace(/Enjoy your meal[\s\S]*$/gim, '')
+      .replace(/Happy cooking[\s\S]*$/gim, '')
       .replace(/^#+.*$/gm, '') // Remove markdown headers
+      .replace(/\n\s*\n\s*\n/g, '\n\n') // Remove excessive line breaks
+      .replace(/^\s+|\s+$/gm, '') // Trim each line
       .trim();
 
     const totalDuration = Date.now() - startTime;

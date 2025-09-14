@@ -123,18 +123,8 @@ export default function RecipePage() {
     setIsGeneratingRecipe(true);
     
     try {
-      // Check if instructions are already cached
-      const cacheKey = `instructions_${recipeData.meal}_${recipeData.id}`;
-      const cachedInstructions = localStorage.getItem(cacheKey);
-      
-      if (cachedInstructions) {
-        setRecipeData(prev => prev ? { 
-          ...prev, 
-          cookingInstructions: cachedInstructions 
-        } : null);
-        setIsGeneratingRecipe(false);
-        return;
-      }
+      // Always generate new instructions - no caching check
+      console.log('🔄 Generating fresh instructions with Cohere...');
 
       // Extract ingredients
       const ingredients: string[] = [];
@@ -184,6 +174,7 @@ export default function RecipePage() {
       if (data.success) {
         console.log('💾 Frontend: Caching instructions and updating UI');
         // Cache the instructions
+        const cacheKey = `instructions_${recipeData.meal}_${recipeData.id}`;
         localStorage.setItem(cacheKey, data.cookingInstructions);
         
         // Update recipe data with new instructions
@@ -243,6 +234,13 @@ export default function RecipePage() {
     }
   }, [recipeData]);
 
+  // Auto-generate instructions when recipe data loads
+  useEffect(() => {
+    if (recipeData && !isGeneratingRecipe) {
+      generateDetailedInstructions();
+    }
+  }, [recipeData?.id]); // Only depend on recipe ID
+
   // Function to check if an ingredient is from a flyer deal
   const isFlyerDeal = (ingredient: string) => {
     return ingredient.includes('[SALE:');
@@ -285,16 +283,6 @@ export default function RecipePage() {
     );
   }
 
-  if (isGeneratingRecipe) {
-    return (
-      <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
-        <div className="text-center">
-          <div className="h-8 w-8 border-2 border-foreground border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-sm text-black/60">Generating detailed recipe...</p>
-        </div>
-      </div>
-    );
-  }
 
   if (!recipeData) {
     return (
@@ -457,7 +445,13 @@ export default function RecipePage() {
             {/* Cooking Instructions */}
             <div className="prose prose-sm max-w-none">
               <div className="bg-white pl-2">
-                {recipeData.cookingInstructions ? (
+                {isGeneratingRecipe ? (
+                  <div className="text-center py-12">
+                    <div className="h-12 w-12 border-4 border-loblaws-orange border-t-transparent rounded-full animate-spin mx-auto mb-6" />
+                    <h3 className="text-lg font-semibold text-gray-800 mb-2">Generating Detailed Instructions</h3>
+                    <p className="text-gray-500">Creating comprehensive cooking instructions with Cohere AI...</p>
+                  </div>
+                ) : recipeData.cookingInstructions ? (
                   <div 
                     className="text-black/80 leading-relaxed"
                     dangerouslySetInnerHTML={{ 
@@ -466,21 +460,10 @@ export default function RecipePage() {
                   />
                 ) : (
                   <div className="text-center py-8">
-                    <p className="text-gray-500 mb-4">No detailed instructions available</p>
+                    <p className="text-gray-500 mb-4">Instructions will appear here once generated</p>
                   </div>
                 )}
               </div>
-            </div>
-
-            {/* Generate Instructions Button */}
-            <div className="mt-6 pl-2">
-              <button
-                onClick={generateDetailedInstructions}
-                disabled={isGeneratingRecipe}
-                className="px-4 py-2 bg-loblaws-orange text-white rounded-lg hover:bg-loblaws-orange/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                {isGeneratingRecipe ? 'Generating...' : 'Generate Cooking Instructions'}
-              </button>
             </div>
 
           </div>
