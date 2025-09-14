@@ -313,8 +313,15 @@ export default function PlanPage() {
               }`}>
                 {index + 1}
               </div>
-              <span className={`ml-2 text-xs whitespace-nowrap step-indicator ${
+              {/* Only show text for current step on small screens, all steps on larger screens */}
+              <span className={`ml-2 text-xs whitespace-nowrap step-indicator hidden sm:block ${
                 index <= currentStep ? 'text-foreground' : 'text-black/60'
+              }`}>
+                {step.title}
+              </span>
+              {/* Show current step text on small screens */}
+              <span className={`ml-2 text-xs whitespace-nowrap step-indicator block sm:hidden ${
+                index === currentStep ? 'text-foreground' : 'hidden'
               }`}>
                 {step.title}
               </span>

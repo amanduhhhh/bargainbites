@@ -150,7 +150,7 @@ export default function MapStep({ data, updateData }: MapStepProps) {
             className={`p-4 rounded-lg border cursor-pointer transition-all ${
               selectedStore === store.id
                 ? 'border-foreground bg-foreground/5 ring-2 ring-foreground/20'
-                : 'border-black/10 hover:border-black/20 hover:bg-accent-muted-light'
+                : 'border-black/10 hover:border-black/20 hover:bg-gray-200'
             }`}
           >
             <div className="flex items-start gap-4">
@@ -185,7 +185,7 @@ export default function MapStep({ data, updateData }: MapStepProps) {
                   {store.deals.map((deal, index) => (
                     <span
                       key={index}
-                      className="inline-block px-2 py-1 bg-blue-100 text-black text-xs rounded-full"
+                      className="inline-block px-2 py-1 bg-gray-100 text-black text-xs rounded-full"
                     >
                       {deal}
                     </span>
