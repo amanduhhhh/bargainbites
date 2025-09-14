@@ -1188,5 +1188,33 @@
     "multi_buy_required": false,
     "multi_buy_amount": null,
     "other_info": "Selected varieties. Product of Canada."
+  },
+  {
+    "name": "Green Beans",
+    "price": 2.50,
+    "measure": null,
+    "measure_unit": null,
+    "unit_type": "lb",
+    "price_per_unit": 2.50,
+    "savings_amount": null,
+    "savings_percentage": null,
+    "estimated_shelf_life": "Perishable",
+    "multi_buy_required": false,
+    "multi_buy_amount": null,
+    "other_info": "Product of Ontario. No. 1 Grade."
+  },
+  {
+    "name": "Broccoli Crowns",
+    "price": 2.25,
+    "measure": null,
+    "measure_unit": null,
+    "unit_type": "each",
+    "price_per_unit": 2.25,
+    "savings_amount": null,
+    "savings_percentage": null,
+    "estimated_shelf_life": "Perishable",
+    "multi_buy_required": false,
+    "multi_buy_amount": null,
+    "other_info": "Product of Canada."
   }
 ]

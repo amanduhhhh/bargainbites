@@ -3,13 +3,19 @@
 :root {
   --background: #ffffff;
   --foreground: #000000;
-  --loblaws-orange: #ff6b35;
+  --loblaws-orange: #f2834b;
+  --accent-muted: #6e7084;
+  --accent-muted-light: #E3F2FD;
+  --accent-muted-dark: #6289e0;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-loblaws-orange: var(--loblaws-orange);
+  --color-accent-muted: var(--accent-muted);
+  --color-accent-muted-light: var(--accent-muted-light);
+  --color-accent-muted-dark: var(--accent-muted-dark);
   --font-sans: Arial, Helvetica, sans-serif;
   --font-mono: var(--font-geist-mono);
 }

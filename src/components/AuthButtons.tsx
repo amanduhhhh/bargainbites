@@ -27,7 +27,7 @@ export default function AuthButtons() {
     <div className="flex items-center gap-3">
       <Link
         href="/profile"
-        className="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center hover:bg-orange-600 transition-colors"
+        className="w-6 h-6 rounded-full bg-loblaws-orange flex items-center justify-center hover:bg-loblaws-orange/80 transition-colors"
       >
         <svg
           className="w-5 h-5 text-white"

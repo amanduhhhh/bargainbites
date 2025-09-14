@@ -150,17 +150,139 @@ export default function PlanPage() {
   const handleSubmit = async () => {
     setIsGenerating(true);
     
-    // TODO: Submit plan data to backend
-    console.log('Plan data:', planData);
-    
-    // Store plan data in localStorage
-    localStorage.setItem('demoPlanData', JSON.stringify(planData));
-    
-    // Add artificial load delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Redirect to meals page with plan data
-    router.push('/meals');
+    try {
+      // Get user's cooking experience from preferences
+      let cookingExperience = 'beginner';
+      if (session?.user) {
+        try {
+          const response = await fetch('/api/user/preferences');
+          if (response.ok) {
+            const data = await response.json();
+            if (data.success && data.preferences) {
+              cookingExperience = data.preferences.cookingExperience || 'beginner';
+            }
+          }
+        } catch (error) {
+          console.error('Error fetching cooking experience:', error);
+        }
+      } else {
+        // Check localStorage for demo data
+        const demoData = localStorage.getItem('demoOnboardingData');
+        if (demoData) {
+          try {
+            const parsedData = JSON.parse(demoData);
+            cookingExperience = parsedData.cookingExperience || 'beginner';
+          } catch (error) {
+            console.error('Error parsing demo data:', error);
+          }
+        }
+      }
+
+      // Debug: Log the plan data being sent
+      console.log('Plan data being sent to API:', {
+        store: planData.selectedStore,
+        cuisinePreferences: planData.cuisinePreferences,
+        dietaryRestrictions: planData.dietaryRestrictions,
+        budget: planData.budget,
+        householdSize: planData.householdSize,
+        cookingExperience: cookingExperience,
+      });
+
+      // Call meal planning API
+      const mealPlanResponse = await fetch('/api/meal-plan', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          store: planData.selectedStore,
+          cuisinePreferences: planData.cuisinePreferences,
+          dietaryRestrictions: planData.dietaryRestrictions,
+          budget: planData.budget,
+          householdSize: planData.householdSize,
+          cookingExperience: cookingExperience,
+        }),
+      });
+
+      if (!mealPlanResponse.ok) {
+        const errorData = await mealPlanResponse.json();
+        console.error('API Error:', errorData);
+        throw new Error(`Failed to generate meal plan: ${errorData.error || 'Unknown error'}`);
+      }
+
+      const mealPlanData = await mealPlanResponse.json();
+      
+      if (!mealPlanData.success) {
+        throw new Error(mealPlanData.error || 'Failed to generate meal plan');
+      }
+
+      // Store plan data and meal plan in localStorage
+      localStorage.setItem('demoPlanData', JSON.stringify(planData));
+      localStorage.setItem('generatedMealPlan', JSON.stringify(mealPlanData.mealPlan));
+      
+      // Redirect to meals page with plan data
+      router.push('/meals');
+      
+    } catch (error) {
+      console.error('Error generating meal plan:', error);
+      
+      // Create a fallback meal plan
+      const fallbackMealPlan = {
+        monday: {
+          meal: "Pasta with Marinara Sauce",
+          ingredients: ["Pasta", "Marinara sauce", "Parmesan cheese", "Garlic", "Olive oil"],
+          totalCost: 8.50,
+          cookingInstructions: "Boil pasta according to package directions. Heat marinara sauce in a pan. Mix together and serve with parmesan."
+        },
+        tuesday: {
+          meal: "Grilled Chicken with Rice",
+          ingredients: ["Chicken breast", "Rice", "Mixed vegetables", "Soy sauce", "Garlic"],
+          totalCost: 12.00,
+          cookingInstructions: "Season chicken and grill. Cook rice. Steam vegetables. Serve together with soy sauce."
+        },
+        wednesday: {
+          meal: "Vegetable Stir Fry",
+          ingredients: ["Mixed vegetables", "Tofu", "Soy sauce", "Ginger", "Rice"],
+          totalCost: 9.75,
+          cookingInstructions: "Cut vegetables and tofu. Stir fry in a hot pan with oil. Add soy sauce and ginger. Serve over rice."
+        },
+        thursday: {
+          meal: "Fish and Potatoes",
+          ingredients: ["White fish fillet", "Potatoes", "Lemon", "Herbs", "Butter"],
+          totalCost: 14.25,
+          cookingInstructions: "Season fish with herbs and lemon. Bake fish and roast potatoes in oven. Serve with lemon butter."
+        },
+        friday: {
+          meal: "Tacos",
+          ingredients: ["Ground beef", "Taco shells", "Lettuce", "Tomatoes", "Cheese", "Sour cream"],
+          totalCost: 11.50,
+          cookingInstructions: "Cook ground beef with taco seasoning. Warm taco shells. Assemble with toppings."
+        },
+        saturday: {
+          meal: "Pizza Night",
+          ingredients: ["Pizza dough", "Tomato sauce", "Mozzarella cheese", "Pepperoni", "Vegetables"],
+          totalCost: 13.00,
+          cookingInstructions: "Roll out dough. Add sauce, cheese, and toppings. Bake at 450°F for 12-15 minutes."
+        },
+        sunday: {
+          meal: "Roast Dinner",
+          ingredients: ["Chicken", "Potatoes", "Carrots", "Onions", "Herbs", "Gravy"],
+          totalCost: 16.75,
+          cookingInstructions: "Season chicken with herbs. Roast with vegetables at 375°F for 1.5 hours. Make gravy from drippings."
+        },
+        totalWeeklyCost: 85.75,
+        savings: 15.25
+      };
+      
+      // Store plan data and fallback meal plan
+      localStorage.setItem('demoPlanData', JSON.stringify(planData));
+      localStorage.setItem('generatedMealPlan', JSON.stringify(fallbackMealPlan));
+      
+      // Redirect to meals page
+      router.push('/meals');
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
 

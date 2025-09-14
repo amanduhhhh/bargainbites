@@ -136,7 +136,7 @@ export default function GroceryListPage() {
            
             <Link
               href="/profile"
-              className="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center hover:bg-orange-600 transition-colors"
+              className="w-6 h-6 rounded-full bg-loblaws-orange flex items-center justify-center hover:bg-loblaws-orange/80 transition-colors"
             >
               <svg
                 className="w-5 h-5 text-white"
@@ -179,7 +179,7 @@ export default function GroceryListPage() {
                     value={newItem.name}
                     onChange={(e) => setNewItem({ ...newItem, name: e.target.value })}
                     placeholder="e.g., Milk, Bread, Apples"
-                    className="w-full px-3 py-2 border border-black/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                    className="w-full px-3 py-2 border border-black/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-loblaws-orange"
                     required
                   />
                 </div>
@@ -194,7 +194,7 @@ export default function GroceryListPage() {
                       value={newItem.quantity}
                       onChange={(e) => setNewItem({ ...newItem, quantity: e.target.value })}
                       placeholder="e.g., 2 lbs, 1 dozen"
-                      className="w-full px-3 py-2 border border-black/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      className="w-full px-3 py-2 border border-black/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-loblaws-orange"
                     />
                   </div>
                   <div>
@@ -207,14 +207,14 @@ export default function GroceryListPage() {
                       value={newItem.notes}
                       onChange={(e) => setNewItem({ ...newItem, notes: e.target.value })}
                       placeholder="e.g., Organic, Red variety"
-                      className="w-full px-3 py-2 border border-black/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-500"
+                      className="w-full px-3 py-2 border border-black/10 rounded-lg focus:outline-none focus:ring-2 focus:ring-loblaws-orange"
                     />
                   </div>
                 </div>
                 <button
                   type="submit"
                   disabled={isAdding || !newItem.name.trim()}
-                  className="inline-flex items-center justify-center h-10 px-4 rounded-lg bg-orange-500 text-white text-sm font-medium hover:bg-orange-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="inline-flex items-center justify-center h-10 px-4 rounded-lg bg-loblaws-orange text-white text-sm font-medium hover:bg-loblaws-orange/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                 >
                   {isAdding ? 'Adding...' : 'Add to List'}
                 </button>
@@ -238,7 +238,7 @@ export default function GroceryListPage() {
                       <div className="flex items-center gap-3">
                         <button
                           onClick={() => toggleComplete(item.id, true)}
-                          className="w-5 h-5 border-2 border-black/30 rounded hover:border-orange-500 transition-colors flex-shrink-0"
+                          className="w-5 h-5 border-2 border-black/30 rounded hover:border-loblaws-orange transition-colors flex-shrink-0"
                         />
                         <div className="flex-1 min-w-0">
                           <div className="font-medium text-sm">{item.name}</div>
@@ -283,7 +283,7 @@ export default function GroceryListPage() {
                       <div className="flex items-center gap-3">
                         <button
                           onClick={() => toggleComplete(item.id, false)}
-                          className="w-5 h-5 bg-orange-500 rounded flex items-center justify-center hover:bg-orange-600 transition-colors flex-shrink-0"
+                          className="w-5 h-5 bg-loblaws-orange rounded flex items-center justify-center hover:bg-loblaws-orange/80 transition-colors flex-shrink-0"
                         >
                           <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
@@ -321,8 +321,8 @@ export default function GroceryListPage() {
             <div className="py-4">
               <div className="py-6">
                 <div className="text-center py-8">
-                  <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <svg className="w-6 h-6 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-12 h-12 bg-loblaws-orange/10 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <svg className="w-6 h-6 text-loblaws-orange" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
                     </svg>
                   </div>
