@@ -13,13 +13,7 @@ export default function HowItWorks() {
             Bargain Bites
           </Link>
           <nav className="flex items-center gap-6 text-sm">
-            <Link href="/" className="hover:underline underline-offset-4">
-              Home
-            </Link>
-            <Link href="/list" className="hover:underline underline-offset-4">
-              Grocery List
-            </Link>
-            <AuthButtons />
+          
           </nav>
         </div>
       </header>

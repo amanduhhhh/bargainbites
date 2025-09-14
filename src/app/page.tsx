@@ -22,10 +22,11 @@ export default function Home() {
       <main className="flex-1 relative">
         {/* Background oranges image */}
         <div 
-          className="absolute right-0 -top-55 h-full w-1/3 bg-cover bg-left bg-no-repeat pointer-events-none"
+          className="absolute -top-12 -right-4 h-1/3 w-1/3 bg-cover bg-no-repeat pointer-events-none"
           style={{
             backgroundImage: 'url(/background/oranges.png)',
-            backgroundPosition: 'left center'
+            backgroundPosition: 'left top',
+            backgroundSize: '200% auto'
           }}
         />
         
@@ -99,11 +100,69 @@ export default function Home() {
             </div>
             <div className="rounded-lg border border-black/10 p-4">
               <div className="font-medium">Optimizes your trip</div>
-              <p className="mt-1 text-sm text-black/60 dark:text-black/60">Minimizes cost with store routing and carry-capacity checks if you’re on foot.</p>
+              <p className="mt-1 text-sm text-black/60 dark:text-black/60">Minimizes cost with store routing and carry-capacity checks if you're on foot.</p>
             </div>
             <div className="rounded-lg border border-black/10 p-4">
               <div className="font-medium">Simple chat adjustments</div>
               <p className="mt-1 text-sm text-black/60 dark:text-black/60">Ask to swap meals, change budget, or avoid ingredients—your plan updates live.</p>
+            </div>
+          </div>
+        </section>
+
+        {/* Dietary Restrictions Section */}
+        <section className="max-w-6xl mx-auto px-6 pb-10 sm:pb-16 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            <div className="order-2 lg:order-1">
+              <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight mb-4">
+                Personalized to your needs
+              </h2>
+              <p className="text-sm sm:text-base text-black/60 dark:text-black/60 mb-6">
+                Tell us about your dietary restrictions, allergies, and preferences. Whether you're vegetarian, 
+                gluten-free, or have specific allergies, we'll filter out incompatible meals and focus on 
+                options that work for you.
+              </p>
+              <p className="text-sm sm:text-base text-black/60 dark:text-black/60">
+                Our smart filtering system narrows down thousands of recipes to only show meals that match 
+                your dietary requirements, making meal planning effortless and safe.
+              </p>
+            </div>
+            <div className="order-1 lg:order-2">
+              <div className="relative">
+                <img 
+                  src="/landing/landing01.png" 
+                  alt="Dietary restrictions selection interface" 
+                  className="w-full h-auto rounded-lg shadow-lg"
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Store Selection Section */}
+        <section className="max-w-6xl mx-auto px-6 pb-10 sm:pb-16 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+            <div className="order-1">
+              <div className="relative">
+                <img 
+                  src="/landing/landing02.png" 
+                  alt="Store selection map interface" 
+                  className="w-full h-auto rounded-lg shadow-lg"
+                />
+              </div>
+            </div>
+            <div className="order-2">
+              <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight mb-4">
+                Smart store optimization
+              </h2>
+              <p className="text-sm sm:text-base text-black/60 dark:text-black/60 mb-6">
+                We analyze your location and optimize your shopping trip by considering distance, 
+                transportation method, and carry capacity. Whether you're walking, cycling, or driving, 
+                we'll suggest the most convenient stores and routes.
+              </p>
+              <p className="text-sm sm:text-base text-black/60 dark:text-black/60">
+                Our algorithm weighs factors like proximity, item availability, and your transport 
+                limitations to maximize convenience while minimizing your total shopping time and effort.
+              </p>
             </div>
           </div>
         </section>
