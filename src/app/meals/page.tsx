@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { OnboardingData } from '../setup/page';
 import { ShoppingCart, User } from 'lucide-react';
+import NutritionalOverview from '../../components/NutritionalOverview';
 
 interface WeeklyMeal {
   id: string;
@@ -545,6 +546,16 @@ export default function MealsPage() {
                     </Link>
                   ))}
                 </div>
+
+                {onboardingData && (
+                  <div className="mt-4">
+                    <NutritionalOverview 
+                      weeklyMeals={weeklyMeals}
+                      lunchPreference={lunchPreference}
+                      householdSize={onboardingData.householdSize}
+                    />
+                  </div>
+                )}
               </div>
           </div>
 
