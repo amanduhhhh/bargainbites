@@ -87,7 +87,7 @@ export default function ProfilePage() {
            
             <Link
               href="/profile"
-              className="w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center hover:bg-orange-600 transition-colors"
+              className="w-6 h-6 rounded-full bg-loblaws-orange flex items-center justify-center hover:bg-loblaws-orange/80 transition-colors"
             >
               <svg
                 className="w-5 h-5 text-white"
@@ -119,7 +119,7 @@ export default function ProfilePage() {
                 <img 
                   src={session.user.image} 
                   alt="Profile" 
-                  className="w-16 h-16 rounded-full border-2 border-orange-200"
+                  className="w-16 h-16 rounded-full border-2 border-loblaws-orange/30"
                 />
               )}
             </div>
@@ -146,7 +146,7 @@ export default function ProfilePage() {
                     <div>
                       <label className="text-sm text-black/60">Account Status</label>
                       <div className="flex items-center gap-2">
-                        <span className="inline-flex items-center px-2 py-1 rounded-sm text-xs font-medium bg-orange-500 text-white">
+                        <span className="inline-flex items-center px-2 py-1 rounded-sm text-xs font-medium bg-loblaws-orange text-white">
                           Active
                         </span>
                         <span className="text-sm text-black/60">Member since recently</span>

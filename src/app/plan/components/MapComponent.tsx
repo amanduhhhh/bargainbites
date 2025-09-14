@@ -84,17 +84,17 @@ export default function MapComponent({ stores, selectedStore, onStoreSelect }: M
 
   if (!isClient) {
     return (
-      <div className="h-96 bg-gray-100 rounded-lg flex items-center justify-center">
+      <div className="h-96 bg-accent-muted-light rounded-lg flex items-center justify-center">
         <div className="text-center">
-          <div className="h-8 w-8 border-2 border-gray-400 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
-          <p className="text-sm text-gray-600">Loading map...</p>
+          <div className="h-8 w-8 border-2 border-accent-muted border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+          <p className="text-sm text-accent-muted-dark">Loading map...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="h-96 w-full rounded-lg overflow-hidden border border-gray-200">
+    <div className="h-96 w-full rounded-lg overflow-hidden border border-accent-muted/20">
       <MapContainer
         center={defaultCenter}
         zoom={12}
@@ -114,8 +114,8 @@ export default function MapComponent({ stores, selectedStore, onStoreSelect }: M
           icon={L.divIcon({
             className: 'user-location-marker',
             html: `
-              <div class="w-6 h-6 bg-white border-2 border-gray-400 rounded-full flex items-center justify-center shadow-lg">
-                <div class="w-3 h-3 bg-gray-600 rounded-full"></div>
+              <div class="w-6 h-6 bg-white border-2 border-accent-muted rounded-full flex items-center justify-center shadow-lg">
+                <div class="w-3 h-3 bg-accent-muted-dark rounded-full"></div>
               </div>
             `,
             iconSize: [24, 24],
@@ -125,7 +125,7 @@ export default function MapComponent({ stores, selectedStore, onStoreSelect }: M
           <Popup>
             <div className="p-2">
               <h3 className="font-medium text-sm mb-1">Your Location</h3>
-              <p className="text-xs text-gray-600">256 Phillip Street, Waterloo, ON</p>
+              <p className="text-xs text-accent-muted-dark">256 Phillip Street, Waterloo, ON</p>
             </div>
           </Popup>
         </Marker>
@@ -136,9 +136,9 @@ export default function MapComponent({ stores, selectedStore, onStoreSelect }: M
             className: 'custom-marker',
             html: `
               <div class="w-8 h-8 bg-white border-2 rounded-full flex items-center justify-center shadow-lg ${
-                isSelected ? 'border-blue-500' : 'border-gray-400'
+                isSelected ? 'border-loblaws-orange' : 'border-accent-muted'
               }">
-                <div class="w-4 h-4 bg-orange-500 rounded-full"></div>
+                <div class="w-4 h-4 bg-loblaws-orange rounded-full"></div>
               </div>
             `,
             iconSize: [32, 32],
@@ -157,18 +157,18 @@ export default function MapComponent({ stores, selectedStore, onStoreSelect }: M
               <Popup>
                 <div className="p-2">
                   <h3 className="font-medium text-sm mb-1">{store.name}</h3>
-                  <p className="text-xs text-gray-600 mb-2">{store.address}</p>
+                  <p className="text-xs text-accent-muted-dark mb-2">{store.address}</p>
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-xs bg-orange-100 text-orange-800 px-2 py-1 rounded">
+                    <span className="text-xs bg-loblaws-orange/10 text-loblaws-orange px-2 py-1 rounded">
                       {store.distance}km away
                     </span>
-                    <span className="text-xs text-gray-600">
+                    <span className="text-xs text-accent-muted-dark">
                       ★ {store.rating}
                     </span>
                   </div>
                   <div className="space-y-1">
                     {store.deals.slice(0, 2).map((deal, index) => (
-                      <div key={index} className="text-xs text-gray-700">
+                      <div key={index} className="text-xs text-accent-muted-dark">
                         • {deal}
                       </div>
                     ))}
@@ -177,8 +177,8 @@ export default function MapComponent({ stores, selectedStore, onStoreSelect }: M
                     onClick={() => onStoreSelect(store.id)}
                     className={`mt-2 w-full text-xs py-1 px-2 rounded-sm ${
                       isSelected
-                        ? 'bg-orange-500 text-white'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                        ? 'bg-loblaws-orange text-white'
+                        : 'bg-accent-muted-light text-accent-muted-dark hover:bg-accent-muted/10'
                     }`}
                   >
                     {isSelected ? 'Selected' : 'Select Store'}

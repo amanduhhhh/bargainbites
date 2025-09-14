@@ -8,10 +8,10 @@ import { PlanData } from '../page';
 const MapComponent = dynamic(() => import('./MapComponent'), {
   ssr: false,
   loading: () => (
-    <div className="h-96 bg-gray-100 rounded-lg flex items-center justify-center">
+    <div className="h-96 bg-accent-muted-light rounded-lg flex items-center justify-center">
       <div className="text-center">
-        <div className="h-8 w-8 border-2 border-gray-400 border-t-transparent rounded-full animate-spin mx-auto mb-2" />
-        <p className="text-sm text-gray-600">Loading map...</p>
+        <div className="h-8 w-8 border-2 border-accent-muted border-t-transparent rounded-full animate-spin mx-auto mb-2" />
+        <p className="text-sm text-accent-muted-dark">Loading map...</p>
       </div>
     </div>
   )
@@ -79,7 +79,7 @@ const MOCK_STORES = [
     distance: 3.2,
     hasCar: true,
     noCar: false,
-    logo: '/company-logos/Real_Canadian_Superstore_logo.png',
+    logo: '/company-logos/Real_Canadian_Superstore_logo.svg.png',
     deals: ['PC Points flyers', 'Bulk savings', 'Weekly specials'],
     rating: 4.2
   }
@@ -150,11 +150,11 @@ export default function MapStep({ data, updateData }: MapStepProps) {
             className={`p-4 rounded-lg border cursor-pointer transition-all ${
               selectedStore === store.id
                 ? 'border-foreground bg-foreground/5 ring-2 ring-foreground/20'
-                : 'border-black/10 hover:border-black/20 hover:bg-gray-50'
+                : 'border-black/10 hover:border-black/20 hover:bg-accent-muted-light'
             }`}
           >
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-white rounded-lg border border-gray-200 flex items-center justify-center flex-shrink-0">
+              <div className="w-12 h-12 bg-white rounded-lg border border-accent-muted/20 flex items-center justify-center flex-shrink-0">
                 <img 
                   src={store.logo} 
                   alt={store.name}
