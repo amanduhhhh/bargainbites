@@ -272,6 +272,7 @@ export default function GroceryListPage() {
                       </div>
                     </div>
                     
+                    
                     <button
                       onClick={goToNextWeek}
                       className="flex items-center gap-1 px-3 py-1 bg-white hover:bg-gray-100  text-black rounded text-xs font-mono transition-colors"
