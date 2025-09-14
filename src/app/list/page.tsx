@@ -251,14 +251,14 @@ export default function GroceryListPage() {
             <div className="lg:col-span-2">
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                 {/* Receipt Header */}
-                <div className="bg-black text-white p-6">
+                <div className="bg-loblaws-orange text-white p-6">
                   <div className="text-center">
-                    <div className="font-mono text-lg font-bold">BARGAIN BITES</div>
+                    <div className="font-mono text-md sm:text-sm uppercase tracking-[0.2em] ">BARGAIN BITES</div>
                     <div className="font-mono text-xs mt-1">GROCERY RECEIPT - Walmart</div>
                   </div>
                   
                   {/* Week Navigation */}
-                  <div className="mt-4 flex items-center justify-between">
+                  <div className="mt-2 flex items-center justify-between">
                     <button
                       onClick={goToPreviousWeek}
                       className="flex items-center gap-1 px-3 py-1 bg-white text-black hover:bg-gray-100 rounded text-xs font-mono transition-colors"
@@ -270,7 +270,7 @@ export default function GroceryListPage() {
                     </button>
                     
                     <div className="text-center">
-                      <div className="font-mono text-xs opacity-75">
+                      <div className="mb-2 font-mono text-xs">
                         {formatWeekRange(currentWeekStart)}
                       </div>
                       <div className="flex items-center justify-center gap-2 mt-1">
@@ -280,19 +280,19 @@ export default function GroceryListPage() {
                           </span>
                         )}
                         {isPastWeek(currentWeekStart) && (
-                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-gray-600 text-white">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-black text-white">
                             Archived
                           </span>
                         )}
                         {isFutureWeek(currentWeekStart) && (
-                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-orange-500 text-white">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-white text-black">
                             Planned
                           </span>
                         )}
                         {!isCurrentWeek(currentWeekStart) && (
                           <button
                             onClick={goToCurrentWeek}
-                            className="text-xs text-gray-400 hover:text-white underline"
+                            className="text-xs text-black hover:text-white underline"
                           >
                             Go to current
                           </button>
@@ -384,7 +384,7 @@ export default function GroceryListPage() {
 
             {/* User Addition Section - Takes up 1/3 of the space */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 sticky top-6">
+              <div className="bg-white p-6 sticky top-6">
                 <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
                   <span className="text-yellow-600">★</span>
                   Add Your Items

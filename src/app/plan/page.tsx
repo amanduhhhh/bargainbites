@@ -39,7 +39,7 @@ export default function PlanPage() {
     householdSize: 1,
     hasCar: false,
     selectedStore: null,
-    cuisinePreferences: [],
+    cuisinePreferences: ['american'], // Default to American cuisine to prevent empty array
     dietaryRestrictions: [],
     budget: 50,
   });
@@ -148,6 +148,19 @@ export default function PlanPage() {
   };
 
   const handleSubmit = async () => {
+    // Validate required fields before submitting
+    if (!planData.cuisinePreferences || planData.cuisinePreferences.length === 0) {
+      console.error('Cuisine preferences are required');
+      alert('Please select at least one cuisine preference before creating your meal plan.');
+      return;
+    }
+
+    if (!planData.selectedStore) {
+      console.error('Store selection is required');
+      alert('Please select a store before creating your meal plan.');
+      return;
+    }
+
     setIsGenerating(true);
     
     try {

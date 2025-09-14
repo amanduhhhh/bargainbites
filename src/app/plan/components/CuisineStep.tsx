@@ -47,8 +47,9 @@ const BUDGET_OPTIONS = [
   { value: 100, label: '$100/week', description: 'Full variety' },
 ];
 
-export default function CuisineStep({ data, updateData }: CuisineStepProps) {
+export default function CuisineStep({ data, updateData, onNext }: CuisineStepProps) {
   const [blinkingButton, setBlinkingButton] = useState<string | null>(null);
+  const [showCuisineError, setShowCuisineError] = useState(false);
 
   const handleCuisineToggle = (cuisineId: string) => {
     const currentCuisines = data.cuisinePreferences;
@@ -58,9 +59,22 @@ export default function CuisineStep({ data, updateData }: CuisineStepProps) {
     
     updateData({ cuisinePreferences: newCuisines });
     
+    // Clear error if cuisine is selected
+    if (newCuisines.length > 0) {
+      setShowCuisineError(false);
+    }
+    
     // Trigger blinking animation
     setBlinkingButton(`cuisine-${cuisineId}`);
     setTimeout(() => setBlinkingButton(null), 400);
+  };
+
+  const validateAndProceed = () => {
+    if (data.cuisinePreferences.length === 0) {
+      setShowCuisineError(true);
+      return;
+    }
+    onNext();
   };
 
   const handleDietaryToggle = (dietId: string) => {
@@ -96,6 +110,11 @@ export default function CuisineStep({ data, updateData }: CuisineStepProps) {
         <div>
           <h3 className="text-base font-medium mb-3">Cuisine Preferences</h3>
           <p className="text-sm text-black/60 mb-4">Select all that apply (you can choose multiple)</p>
+          {showCuisineError && (
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-sm text-red-600">Please select at least one cuisine preference to continue.</p>
+            </div>
+          )}
           
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
             {CUISINE_OPTIONS.map((cuisine) => (

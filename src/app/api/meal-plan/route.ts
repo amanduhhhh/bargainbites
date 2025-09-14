@@ -132,7 +132,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body: MealPlanRequest = await request.json();
-    const { store, cuisinePreferences, dietaryRestrictions, budget, householdSize, cookingExperience } = body;
+    let { store, cuisinePreferences, dietaryRestrictions, budget, householdSize, cookingExperience } = body;
 
     // Debug logging
     console.log('Received meal plan request:', {
@@ -152,10 +152,8 @@ export async function POST(request: NextRequest) {
       );
     }
     if (!cuisinePreferences || cuisinePreferences.length === 0) {
-      return NextResponse.json(
-        { success: false, error: 'Cuisine preferences are required' },
-        { status: 400 }
-      );
+      // Provide a default cuisine preference if none are selected
+      cuisinePreferences = ['american'];
     }
     if (!budget || budget <= 0) {
       return NextResponse.json(
@@ -242,7 +240,7 @@ REQUIREMENTS:
 3. Consider the cooking experience level (${cookingExperience})
 4. Ensure meals fit the cuisine preferences: ${cuisinePreferences.join(', ')}
 5. Respect dietary restrictions: ${dietaryRestrictions.join(', ') || 'None'}
-6. Stay within the $${budget} weekly budget
+6. Stay within the $${budget} weekly budget, try to aim for 5% below the budget
 7. Scale portions for ${householdSize} people
 8. Include variety in the week (different proteins, vegetables, etc.)
 9. Consider meal prep potential for busy days
@@ -251,7 +249,7 @@ For each meal, provide:
 - Meal name
 - List of ingredients (with quantities for ${householdSize} people)
 - Estimated cost for that meal
-- Brief cooking instructions appropriate for ${cookingExperience} level
+- Detailed cooking instructions appropriate for ${cookingExperience} level
 
 Format the response as a JSON object with this structure:
 {
