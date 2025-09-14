@@ -240,68 +240,75 @@ export default function GroceryListPage() {
             <div className="lg:col-span-2">
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                 {/* Receipt Header */}
-                <div className="bg-gradient-to-r from-loblaws-orange to-orange-600 text-white p-6">
-                  <div className="text-center mb-6">
-                    <div className="font-mono text-lg sm:text-xl uppercase tracking-[0.3em] font-bold mb-2">
-                      BARGAIN BITES
-                    </div>
-                    <div className="text-sm opacity-90">
-                      GROCERY RECEIPT • {getStoreDisplayName(mealPlanData?.store)}
+                <div className="bg-loblaws-orange text-white">
+                  {/* Top Section */}
+                  <div className="px-6 py-4">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h1 className="text-2xl font-bold text-white">Bargain Bites</h1>
+                        <p className="text-sm text-white/90 mt-1">
+                          Grocery Receipt • {getStoreDisplayName(mealPlanData?.store)}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-sm font-medium text-white">
+                          {formatWeekRange(currentWeekStart)}
+                        </div>
+                        <div className="mt-1">
+                          {isCurrentWeek(currentWeekStart) && (
+                            <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-green-500 text-white">
+                              Current Week
+                            </span>
+                          )}
+                          {isPastWeek(currentWeekStart) && (
+                            <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-gray-600 text-white">
+                              Archived
+                            </span>
+                          )}
+                          {isFutureWeek(currentWeekStart) && (
+                            <span className="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-white/20 text-white">
+                              Planned
+                            </span>
+                          )}
+                        </div>
+                      </div>
                     </div>
                   </div>
                   
-                  {/* Week Navigation */}
-                  <div className="flex items-center justify-between">
-                    <button
-                      onClick={goToPreviousWeek}
-                      className="flex items-center justify-center w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full transition-all duration-200 backdrop-blur-sm"
-                      title="Previous week"
-                    >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                      </svg>
-                    </button>
-                    
-                    <div className="text-center flex-1 mx-4">
-                      <div className="text-sm font-medium mb-2">
-                        {formatWeekRange(currentWeekStart)}
-                      </div>
-                      <div className="flex items-center justify-center gap-2">
-                        {isCurrentWeek(currentWeekStart) && (
-                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-500 text-white shadow-sm">
-                            Current Week
-                          </span>
-                        )}
-                        {isPastWeek(currentWeekStart) && (
-                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-600 text-white shadow-sm">
-                            Archived
-                          </span>
-                        )}
-                        {isFutureWeek(currentWeekStart) && (
-                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-white/20 text-white shadow-sm backdrop-blur-sm">
-                            Planned
-                          </span>
-                        )}
-                        {!isCurrentWeek(currentWeekStart) && (
-                          <button
-                            onClick={goToCurrentWeek}
-                            className="text-xs text-white/80 hover:text-white underline transition-colors"
-                          >
-                            Go to current
-                          </button>
-                        )}
-                      </div>
+                  {/* Navigation Section */}
+                  <div className="px-6 py-3 bg-orange-600/20 border-t border-orange-400/20">
+                    <div className="flex items-center justify-between">
+                      <button
+                        onClick={goToPreviousWeek}
+                        className="flex items-center gap-2 px-3 py-2 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+                        title="Previous week"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                        </svg>
+                        Previous
+                      </button>
+                      
+                      {!isCurrentWeek(currentWeekStart) && (
+                        <button
+                          onClick={goToCurrentWeek}
+                          className="px-4 py-2 text-sm font-medium text-white hover:text-white/80 underline transition-colors"
+                        >
+                          Go to current week
+                        </button>
+                      )}
+                      
+                      <button
+                        onClick={goToNextWeek}
+                        className="flex items-center gap-2 px-3 py-2 text-sm text-white/80 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+                        title="Next week"
+                      >
+                        Next
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
+                      </button>
                     </div>
-                    
-                    <button
-                      onClick={goToNextWeek}
-                      className="flex items-center justify-center w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full transition-all duration-200 backdrop-blur-sm"
-                      title="Next week"
-                    >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                      </svg>
-                    </button>
                   </div>
                 </div>
 
