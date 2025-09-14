@@ -8,6 +8,7 @@ import LocationStep from './components/LocationStep';
 import TransportStep from './components/TransportStep';
 import MapStep from './components/MapStep';
 import CuisineStep from './components/CuisineStep';
+import LunchPreferencesStep from './components/LunchPreferencesStep';
 
 export interface PlanData {
   postalCode: string;
@@ -17,6 +18,9 @@ export interface PlanData {
   cuisinePreferences: string[];
   dietaryRestrictions: string[];
   budget: number;
+  lunchPreference: string;
+  cookLunchSeparately: boolean;
+  specialRequests: string;
 }
 
 const STEPS = [
@@ -24,6 +28,7 @@ const STEPS = [
   { id: 'transport', title: 'Transport', component: TransportStep },
   { id: 'map', title: 'Store Selection', component: MapStep },
   { id: 'cuisine', title: 'Preferences', component: CuisineStep },
+  { id: 'lunch', title: 'Lunch & Requests', component: LunchPreferencesStep },
 ];
 
 export default function PlanPage() {
@@ -42,6 +47,9 @@ export default function PlanPage() {
     cuisinePreferences: ['american'], // Default to American cuisine to prevent empty array
     dietaryRestrictions: [],
     budget: 50,
+    lunchPreference: '',
+    cookLunchSeparately: false,
+    specialRequests: '',
   });
 
   const updateData = (updates: Partial<PlanData>) => {
@@ -199,6 +207,9 @@ export default function PlanPage() {
         budget: planData.budget,
         householdSize: planData.householdSize,
         cookingExperience: cookingExperience,
+        lunchPreference: planData.lunchPreference,
+        cookLunchSeparately: planData.cookLunchSeparately,
+        specialRequests: planData.specialRequests,
       });
 
       // Call meal planning API
@@ -214,6 +225,9 @@ export default function PlanPage() {
           budget: planData.budget,
           householdSize: planData.householdSize,
           cookingExperience: cookingExperience,
+          lunchPreference: planData.lunchPreference,
+          cookLunchSeparately: planData.cookLunchSeparately,
+          specialRequests: planData.specialRequests,
         }),
       });
 

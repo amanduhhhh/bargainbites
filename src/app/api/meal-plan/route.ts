@@ -26,18 +26,62 @@ interface MealPlanRequest {
   budget: number;
   householdSize: number;
   cookingExperience: string;
+  lunchPreference: string;
+  specialRequests: string;
 }
 
 interface MealPlanResponse {
   success: boolean;
   mealPlan?: {
-    monday: { meal: string; ingredients: string[]; totalCost: number };
-    tuesday: { meal: string; ingredients: string[]; totalCost: number };
-    wednesday: { meal: string; ingredients: string[]; totalCost: number };
-    thursday: { meal: string; ingredients: string[]; totalCost: number };
-    friday: { meal: string; ingredients: string[]; totalCost: number };
-    saturday: { meal: string; ingredients: string[]; totalCost: number };
-    sunday: { meal: string; ingredients: string[]; totalCost: number };
+    monday: { 
+      meal: string; 
+      ingredients: string[]; 
+      totalCost: number;
+      lunch?: { meal: string; ingredients: string[]; totalCost: number };
+      dinner?: { meal: string; ingredients: string[]; totalCost: number };
+    };
+    tuesday: { 
+      meal: string; 
+      ingredients: string[]; 
+      totalCost: number;
+      lunch?: { meal: string; ingredients: string[]; totalCost: number };
+      dinner?: { meal: string; ingredients: string[]; totalCost: number };
+    };
+    wednesday: { 
+      meal: string; 
+      ingredients: string[]; 
+      totalCost: number;
+      lunch?: { meal: string; ingredients: string[]; totalCost: number };
+      dinner?: { meal: string; ingredients: string[]; totalCost: number };
+    };
+    thursday: { 
+      meal: string; 
+      ingredients: string[]; 
+      totalCost: number;
+      lunch?: { meal: string; ingredients: string[]; totalCost: number };
+      dinner?: { meal: string; ingredients: string[]; totalCost: number };
+    };
+    friday: { 
+      meal: string; 
+      ingredients: string[]; 
+      totalCost: number;
+      lunch?: { meal: string; ingredients: string[]; totalCost: number };
+      dinner?: { meal: string; ingredients: string[]; totalCost: number };
+    };
+    saturday: { 
+      meal: string; 
+      ingredients: string[]; 
+      totalCost: number;
+      lunch?: { meal: string; ingredients: string[]; totalCost: number };
+      dinner?: { meal: string; ingredients: string[]; totalCost: number };
+    };
+    sunday: { 
+      meal: string; 
+      ingredients: string[]; 
+      totalCost: number;
+      lunch?: { meal: string; ingredients: string[]; totalCost: number };
+      dinner?: { meal: string; ingredients: string[]; totalCost: number };
+    };
     totalWeeklyCost: number;
     savings: number;
   };
@@ -132,7 +176,8 @@ export async function POST(request: NextRequest) {
     }
 
     const body: MealPlanRequest = await request.json();
-    let { store, cuisinePreferences, dietaryRestrictions, budget, householdSize, cookingExperience } = body;
+    const { store, dietaryRestrictions, budget, householdSize, cookingExperience, lunchPreference, specialRequests } = body;
+    let { cuisinePreferences } = body;
 
     // Debug logging
     console.log('Received meal plan request:', {
@@ -141,7 +186,9 @@ export async function POST(request: NextRequest) {
       dietaryRestrictions,
       budget,
       householdSize,
-      cookingExperience
+      cookingExperience,
+      lunchPreference,
+      specialRequests
     });
 
     // Validate required fields
@@ -209,6 +256,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Create prompt for Gemini
+    const isCookLunch = lunchPreference === 'cook-lunch';
     const prompt = `
 You are a meal planning expert. Create a weekly meal plan (Monday to Sunday) based on the following:
 
@@ -218,6 +266,8 @@ DIETARY RESTRICTIONS: ${dietaryRestrictions.join(', ') || 'None'}
 BUDGET: $${budget} per week
 HOUSEHOLD SIZE: ${householdSize} people
 COOKING EXPERIENCE: ${cookingExperience}
+LUNCH PREFERENCE: ${lunchPreference || 'Not specified'}
+SPECIAL REQUESTS: ${specialRequests || 'None'}
 
 AVAILABLE SALE ITEMS:
 ${saleItems.slice(0, 50).map(item => 
@@ -235,7 +285,7 @@ IMPORTANT: When creating meals, prioritize using these sale items and consider i
 8. REALISTIC QUANTITIES: Consider that a family of ${householdSize} might not finish a whole package of an ingredient in one meal
 
 REQUIREMENTS:
-1. Create 7 different meals (one for each day)
+1. ${isCookLunch ? 'Create 7 different lunch AND dinner meals (14 total meals - one lunch and one dinner for each day)' : 'Create 7 different meals (one for each day)'}
 2. Use items from the sale list when possible to maximize savings
 3. Consider the cooking experience level (${cookingExperience})
 4. Ensure meals fit the cuisine preferences: ${cuisinePreferences.join(', ')}
@@ -244,6 +294,8 @@ REQUIREMENTS:
 7. Scale portions for ${householdSize} people
 8. Include variety in the week (different proteins, vegetables, etc.)
 9. Consider meal prep potential for busy days
+10. LUNCH CONSIDERATION: ${lunchPreference === 'cook-lunch' ? 'Plan separate lunch and dinner meals - lunch should be lighter, quicker to prepare, and suitable for midday. Dinner can be more substantial and elaborate.' : lunchPreference === 'leftovers' ? 'Design dinner portions to provide good leftovers for lunch' : lunchPreference === 'buy-lunch' ? 'Focus on dinner meals only, budget may be adjusted for external lunch purchases' : 'Consider general meal planning without specific lunch requirements'}
+11. SPECIAL REQUESTS: ${specialRequests ? `Incorporate these preferences: ${specialRequests}` : 'No special requests to consider'}
 
 For each meal, provide:
 - Meal name
@@ -251,7 +303,35 @@ For each meal, provide:
 - Estimated cost for that meal
 - Detailed cooking instructions appropriate for ${cookingExperience} level
 
-Format the response as a JSON object with this structure:
+${isCookLunch ? `Format the response as a JSON object with this structure:
+{
+  "monday": {
+    "meal": "Combined Day Name",
+    "ingredients": ["combined ingredients from both meals"],
+    "totalCost": 25.50,
+    "cookingInstructions": "Combined instructions",
+    "lunch": {
+      "meal": "Lunch Meal Name",
+      "ingredients": ["lunch ingredient 1 [SALE:Store] - $X.XX", "lunch ingredient 2 - $X.XX", ...],
+      "totalCost": 8.25,
+      "cookingInstructions": "Lunch cooking instructions"
+    },
+    "dinner": {
+      "meal": "Dinner Meal Name", 
+      "ingredients": ["dinner ingredient 1 [SALE:Store] - $X.XX", "dinner ingredient 2 - $X.XX", ...],
+      "totalCost": 17.25,
+      "cookingInstructions": "Dinner cooking instructions"
+    }
+  },
+  "tuesday": { ... },
+  "wednesday": { ... },
+  "thursday": { ... },
+  "friday": { ... },
+  "saturday": { ... },
+  "sunday": { ... },
+  "totalWeeklyCost": 95.75,
+  "savings": 25.30
+}` : `Format the response as a JSON object with this structure:
 {
   "monday": {
     "meal": "Meal Name",
@@ -272,7 +352,7 @@ Format the response as a JSON object with this structure:
   "sunday": { ... },
   "totalWeeklyCost": 95.75,
   "savings": 25.30
-}
+}`}
 
 Focus on using the sale items to create delicious, budget-friendly meals that match the user's preferences and skill level.
 `;

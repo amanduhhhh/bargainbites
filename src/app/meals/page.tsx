@@ -15,16 +15,67 @@ interface WeeklyMeal {
   totalCost?: number;
   cookingInstructions?: string;
   flyerDeals?: string[];
+  lunch?: { meal: string; ingredients: string[]; totalCost: number; cookingInstructions: string };
+  dinner?: { meal: string; ingredients: string[]; totalCost: number; cookingInstructions: string };
 }
 
 interface GeneratedMealPlan {
-  monday: { meal: string; ingredients: string[]; totalCost: number; cookingInstructions: string };
-  tuesday: { meal: string; ingredients: string[]; totalCost: number; cookingInstructions: string };
-  wednesday: { meal: string; ingredients: string[]; totalCost: number; cookingInstructions: string };
-  thursday: { meal: string; ingredients: string[]; totalCost: number; cookingInstructions: string };
-  friday: { meal: string; ingredients: string[]; totalCost: number; cookingInstructions: string };
-  saturday: { meal: string; ingredients: string[]; totalCost: number; cookingInstructions: string };
-  sunday: { meal: string; ingredients: string[]; totalCost: number; cookingInstructions: string };
+  monday: { 
+    meal: string; 
+    ingredients: string[]; 
+    totalCost: number; 
+    cookingInstructions: string;
+    lunch?: { meal: string; ingredients: string[]; totalCost: number; cookingInstructions: string };
+    dinner?: { meal: string; ingredients: string[]; totalCost: number; cookingInstructions: string };
+  };
+  tuesday: { 
+    meal: string; 
+    ingredients: string[]; 
+    totalCost: number; 
+    cookingInstructions: string;
+    lunch?: { meal: string; ingredients: string[]; totalCost: number; cookingInstructions: string };
+    dinner?: { meal: string; ingredients: string[]; totalCost: number; cookingInstructions: string };
+  };
+  wednesday: { 
+    meal: string; 
+    ingredients: string[]; 
+    totalCost: number; 
+    cookingInstructions: string;
+    lunch?: { meal: string; ingredients: string[]; totalCost: number; cookingInstructions: string };
+    dinner?: { meal: string; ingredients: string[]; totalCost: number; cookingInstructions: string };
+  };
+  thursday: { 
+    meal: string; 
+    ingredients: string[]; 
+    totalCost: number; 
+    cookingInstructions: string;
+    lunch?: { meal: string; ingredients: string[]; totalCost: number; cookingInstructions: string };
+    dinner?: { meal: string; ingredients: string[]; totalCost: number; cookingInstructions: string };
+  };
+  friday: { 
+    meal: string; 
+    ingredients: string[]; 
+    totalCost: number; 
+    cookingInstructions: string;
+    lunch?: { meal: string; ingredients: string[]; totalCost: number; cookingInstructions: string };
+    dinner?: { meal: string; ingredients: string[]; totalCost: number; cookingInstructions: string };
+  };
+  saturday: { 
+    meal: string; 
+    ingredients: string[]; 
+    totalCost: number; 
+    cookingInstructions: string;
+    lunch?: { meal: string; ingredients: string[]; totalCost: number; cookingInstructions: string };
+    dinner?: { meal: string; ingredients: string[]; totalCost: number; cookingInstructions: string };
+  };
+  sunday: { 
+    meal: string; 
+    ingredients: string[]; 
+    totalCost: number; 
+    cookingInstructions: string;
+    lunch?: { meal: string; ingredients: string[]; totalCost: number; cookingInstructions: string };
+    dinner?: { meal: string; ingredients: string[]; totalCost: number; cookingInstructions: string };
+  };
   totalWeeklyCost: number;
   savings: number;
 }
@@ -38,6 +89,8 @@ export default function MealsPage() {
   const [isCheckingSetup, setIsCheckingSetup] = useState(true);
   const [weeklyMeals, setWeeklyMeals] = useState<WeeklyMeal[]>([]);
   const [generatedMealPlan, setGeneratedMealPlan] = useState<GeneratedMealPlan | null>(null);
+  const [selectedWeekOffset, setSelectedWeekOffset] = useState(0); // 0 = current week, -1 = previous week, 1 = next week
+  const [lunchPreference, setLunchPreference] = useState<string>('');
 
 
   useEffect(() => {
@@ -103,7 +156,19 @@ export default function MealsPage() {
 
         // Check for generated meal plan
         const storedMealPlan = localStorage.getItem('generatedMealPlan');
+        const storedPlanData = localStorage.getItem('demoPlanData');
         console.log('Checking for stored meal plan:', storedMealPlan);
+        
+        // Load lunch preference from plan data
+        if (storedPlanData) {
+          try {
+            const planData = JSON.parse(storedPlanData);
+            setLunchPreference(planData.lunchPreference || '');
+          } catch (error) {
+            console.error('Error parsing plan data:', error);
+          }
+        }
+        
         if (storedMealPlan) {
           try {
             const mealPlan: GeneratedMealPlan = JSON.parse(storedMealPlan);
@@ -123,6 +188,8 @@ export default function MealsPage() {
                   ingredients: dayData.ingredients,
                   totalCost: dayData.totalCost,
                   cookingInstructions: dayData.cookingInstructions,
+                  lunch: dayData.lunch,
+                  dinner: dayData.dinner,
                 };
               }
               return meal;
@@ -157,6 +224,35 @@ export default function MealsPage() {
     localStorage.removeItem('generatedMealPlan');
     // Navigate to plan page or trigger meal planning
     window.location.href = '/plan';
+  };
+
+  // Helper function to get the selected week start date
+  const getSelectedWeekStart = () => {
+    const today = new Date();
+    const currentWeekStart = new Date(today);
+    currentWeekStart.setDate(today.getDate() - today.getDay()); // Start of current week (Sunday)
+    currentWeekStart.setHours(0, 0, 0, 0); // Normalize to start of day
+    
+    const selectedWeekStart = new Date(currentWeekStart);
+    selectedWeekStart.setDate(currentWeekStart.getDate() + (selectedWeekOffset * 7));
+    
+    return selectedWeekStart;
+  };
+
+  // Helper function to check if Plan the Week button should be disabled
+  const isPlanWeekDisabled = () => {
+    return selectedWeekOffset !== 0; // Only allow planning for current week
+  };
+
+  // Helper function to check if navigation arrows should be disabled
+  const isPreviousWeekDisabled = () => {
+    // Allow going back to previous weeks for archive purposes
+    return false;
+  };
+
+  const isNextWeekDisabled = () => {
+    // Allow going forward to future weeks for archive purposes
+    return false;
   };
 
   // Function to check if an ingredient is from a flyer deal
@@ -198,6 +294,23 @@ export default function MealsPage() {
       .map(ingredient => getStoreFromSaleMarker(ingredient))
       .filter((store, index, arr) => arr.indexOf(store) === index); // Remove duplicates
     return stores;
+  };
+
+  // Function to calculate total weekly cost from individual meal costs
+  const calculateTotalWeeklyCost = () => {
+    if (!weeklyMeals || weeklyMeals.length === 0) return 0;
+    
+    return weeklyMeals.reduce((total, meal) => {
+      if (!meal.isSet) return total;
+      
+      // If cook-lunch preference is selected and meal has separate lunch/dinner
+      if (lunchPreference === 'cook-lunch' && meal.lunch && meal.dinner) {
+        return total + (meal.lunch.totalCost || 0) + (meal.dinner.totalCost || 0);
+      }
+      
+      // Otherwise use the main meal cost
+      return total + (meal.totalCost || 0);
+    }, 0);
   };
 
 
@@ -262,7 +375,12 @@ export default function MealsPage() {
           </div>
           <button
             onClick={handlePlanWeek}
-            className={`inline-flex items-center justify-center h-11 px-5 rounded-full text-background text-sm font-medium hover:opacity-90 transition-all duration-300 bg-loblaws-orange`}
+            disabled={isPlanWeekDisabled()}
+            className={`inline-flex items-center justify-center h-11 px-5 rounded-full text-background text-sm font-medium transition-all duration-300 ${
+              isPlanWeekDisabled() 
+                ? 'bg-gray-400 cursor-not-allowed opacity-60' 
+                : 'bg-loblaws-orange hover:opacity-90'
+            }`}
           >
             Plan the Week
           </button>
@@ -272,7 +390,7 @@ export default function MealsPage() {
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
             {/* Weekly Meals */}
-            <div className=" p-4">
+            <div className=" py-4 pr-4">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-xl font-semibold">This Week&apos;s Meals</h2>
                   <div className="text-sm text-black/60">
@@ -280,25 +398,19 @@ export default function MealsPage() {
                   </div>
                 </div>
                 
-                {/* Deal Legend */}
-                <div className="mb-2 flex items-center gap-2 text-sm">
-                  <svg className="w-4 h-4 text-loblaws-orange" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
-                  <span className="text-loblaws-orange font-medium">In this week&apos;s flyer</span>
-                </div>
 
-                {/* Reuse Legend */}
-                <div className="mb-4 flex items-center gap-2 text-sm">
-                  <svg className="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
-                  </svg>
-                  <span className="text-gray-700 font-medium">Reused from previous days</span>
-                </div>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {weeklyMeals.map((meal) => (
-                    <div key={meal.id} className="rounded-lg border border-black/10 p-4">
+                    <Link 
+                      key={meal.id} 
+                      href={meal.isSet ? `/recipe/${meal.id}` : '#'}
+                      className={`block rounded-lg border border-black/10 p-4 transition-all duration-200 ${
+                        meal.isSet 
+                          ? 'hover:border-loblaws-orange/50 hover:shadow-md hover:bg-loblaws-orange/5 cursor-pointer' 
+                          : 'cursor-default'
+                      }`}
+                    >
                       <div className="flex items-center justify-between mb-2">
                         <h3 className="font-medium text-sm">{meal.day}</h3>
                         <div className="flex items-center gap-2">
@@ -309,7 +421,7 @@ export default function MealsPage() {
                           )}
                           {meal.isSet ? (
                             <span className="inline-flex items-center px-2 py-1 rounded-sm text-xs font-medium bg-loblaws-orange text-white">
-                              Set
+                              {lunchPreference === 'cook-lunch' && meal.lunch && meal.dinner ? 'Lunch & Dinner' : 'Set'}
                             </span>
                           ) : (
                             <span className="inline-flex items-center px-2 py-1 rounded-sm text-xs font-medium bg-black text-white">
@@ -320,27 +432,49 @@ export default function MealsPage() {
                       </div>
                       {meal.isSet ? (
                         <div className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <span className="text-sm text-black/80 font-medium">{meal.meal}</span>
-                          </div>
-                          {meal.ingredients && meal.ingredients.length > 0 && (
-                            <div>
+                          {lunchPreference === 'cook-lunch' && meal.lunch && meal.dinner ? (
+                            // Show separate lunch and dinner when cook-lunch is selected
+                            <div className="space-y-3">
+                              {/* Lunch */}
                               <div className="flex items-center justify-between">
-                                <Link
-                                  href={`/recipe/${meal.id}`}
-                                  className="text-xs text-accent-muted-dark hover:text-accent-muted underline"
-                                >
-                                  View ingredients & instructions
-                                </Link>
-                                {meal.ingredients.some(ingredient => isFlyerDeal(ingredient)) && (
-                                  <div className="flex items-center gap-1 text-xs text-black">
-                                    <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                    </svg>
-                                    <span>Deals at {getStoresFromMeal(meal.ingredients || []).join(', ')}</span>
-                                  </div>
-                                )}
+                                <div>
+                                  <div className="text-xs text-black/60 font-medium uppercase tracking-wide">Lunch</div>
+                                  <span className="text-sm text-black/80 font-medium">{meal.lunch.meal}</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-xs text-accent-muted-dark font-medium">
+                                    ${meal.lunch.totalCost.toFixed(2)}
+                                  </span>
+                                  <svg className="w-4 h-4 text-black/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                  </svg>
+                                </div>
                               </div>
+                              {/* Dinner */}
+                              <div className="flex items-center justify-between">
+                                <div>
+                                  <div className="text-xs text-black/60 font-medium uppercase tracking-wide">Dinner</div>
+                                  <span className="text-sm text-black/80 font-medium">{meal.dinner.meal}</span>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <span className="text-xs text-accent-muted-dark font-medium">
+                                    ${meal.dinner.totalCost.toFixed(2)}
+                                  </span>
+                                  <svg className="w-4 h-4 text-black/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                  </svg>
+                                </div>
+                              </div>
+                            </div>
+                          ) : (
+                            // Show single meal for other preferences
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm text-black/80 font-medium">{meal.meal}</span>
+                              {meal.isSet && (
+                                <svg className="w-4 h-4 text-black/40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                </svg>
+                              )}
                             </div>
                           )}
                         </div>
@@ -349,7 +483,7 @@ export default function MealsPage() {
                           No meal planned
                         </div>
                       )}
-                    </div>
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -359,32 +493,106 @@ export default function MealsPage() {
           <div className="space-y-6">
             {/* Calendar */}
             <div className="p-4">
-              <h3 className="font-semibold mb-4">Calendar</h3>
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-semibold">Calendar</h3>
+                <div className="text-xs text-black/60">
+                  {(() => {
+                    const selectedWeekStart = getSelectedWeekStart();
+                    const selectedWeekEnd = new Date(selectedWeekStart);
+                    selectedWeekEnd.setDate(selectedWeekStart.getDate() + 6);
+                    
+                    const formatDate = (date: Date) => {
+                      return date.toLocaleDateString('en-US', { 
+                        month: 'short', 
+                        day: 'numeric' 
+                      });
+                    };
+                    
+                    return `${formatDate(selectedWeekStart)} - ${formatDate(selectedWeekEnd)}`;
+                  })()}
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => setSelectedWeekOffset(prev => prev - 1)}
+                    disabled={isPreviousWeekDisabled()}
+                    className={`p-1 rounded hover:bg-black/5 transition-colors ${
+                      isPreviousWeekDisabled() ? 'opacity-40 cursor-not-allowed' : ''
+                    }`}
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={() => setSelectedWeekOffset(prev => prev + 1)}
+                    disabled={isNextWeekDisabled()}
+                    className={`p-1 rounded hover:bg-black/5 transition-colors ${
+                      isNextWeekDisabled() ? 'opacity-40 cursor-not-allowed' : ''
+                    }`}
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
               <div className="grid grid-cols-7 gap-1 text-center">
                 {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, index) => (
                   <div key={index} className="text-xs text-black/60 py-1">{day}</div>
                 ))}
-                {Array.from({ length: 35 }, (_, i) => {
-                  const day = i - 6; // Start from previous week
-                  const isCurrentMonth = day > 0 && day <= 31;
-                  const isToday = day === new Date().getDate();
+                {(() => {
+                  // Get the selected week dates
+                  const selectedWeekStart = getSelectedWeekStart();
+                  const selectedWeekEnd = new Date(selectedWeekStart);
+                  selectedWeekEnd.setDate(selectedWeekStart.getDate() + 6);
                   
-                  return (
-                    <div
-                      key={i}
-                      className={`text-xs py-1 rounded ${
-                        isCurrentMonth 
-                          ? isToday 
-                            ? 'bg-loblaws-orange text-white' 
-                            : 'hover:bg-black/5'
-                          : 'text-black/20'
-                      }`}
-                    >
-                      {isCurrentMonth ? day : ''}
-                    </div>
-                  );
-                })}
+                  // Determine which month to display based on the selected week
+                  // If the week spans multiple months, show the month that contains the most days
+                  const selectedWeekMonth = selectedWeekStart.getMonth();
+                  const selectedWeekYear = selectedWeekStart.getFullYear();
+                  
+                  // Get first day of the selected month and calculate starting point for calendar
+                  const firstDayOfMonth = new Date(selectedWeekYear, selectedWeekMonth, 1);
+                  const startDate = new Date(firstDayOfMonth);
+                  startDate.setDate(startDate.getDate() - firstDayOfMonth.getDay()); // Start from Sunday of first week
+                  
+                  return Array.from({ length: 35 }, (_, i) => {
+                    const cellDate = new Date(startDate);
+                    cellDate.setDate(startDate.getDate() + i);
+                    cellDate.setHours(0, 0, 0, 0); // Normalize to start of day
+                    const day = cellDate.getDate();
+                    const isCurrentMonth = cellDate.getMonth() === selectedWeekMonth;
+                    
+                    // Check if this day is in the selected week
+                    // Normalize dates to compare only the date part (ignore time)
+                    const cellDateNormalized = new Date(cellDate.getFullYear(), cellDate.getMonth(), cellDate.getDate());
+                    const weekStartNormalized = new Date(selectedWeekStart.getFullYear(), selectedWeekStart.getMonth(), selectedWeekStart.getDate());
+                    const weekEndNormalized = new Date(selectedWeekEnd.getFullYear(), selectedWeekEnd.getMonth(), selectedWeekEnd.getDate());
+                    
+                    const isInSelectedWeek = cellDateNormalized >= weekStartNormalized && cellDateNormalized <= weekEndNormalized;
+                    
+                    return (
+                      <div
+                        key={i}
+                        className={`text-xs py-1 rounded ${
+                          isCurrentMonth 
+                            ? isInSelectedWeek
+                              ? 'bg-loblaws-orange text-white' 
+                              : 'hover:bg-black/5'
+                            : 'text-black/20'
+                        }`}
+                      >
+                        {isCurrentMonth ? day : ''}
+                      </div>
+                    );
+                  });
+                })()}
               </div>
+              {selectedWeekOffset !== 0 && (
+                <div className="mt-2 text-xs text-black/60 text-center">
+                  {selectedWeekOffset < 0 ? 'Previous week' : 'Future week'} - Archive view only
+                </div>
+              )}
             </div>
 
             {/* Meal Plan Summary */}
@@ -394,7 +602,7 @@ export default function MealsPage() {
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between">
                     <span className="text-black/60">Total Cost:</span>
-                    <span className="font-medium text-loblaws-orange">${generatedMealPlan.totalWeeklyCost.toFixed(2)}</span>
+                    <span className="font-medium text-loblaws-orange">${calculateTotalWeeklyCost().toFixed(2)}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-black/60">Savings:</span>
@@ -408,14 +616,14 @@ export default function MealsPage() {
                     <div 
                       className="bg-loblaws-orange h-2 rounded-full transition-all duration-500"
                       style={{ 
-                        width: `${Math.min((generatedMealPlan.totalWeeklyCost / (onboardingData?.weeklyBudget || 50)) * 100, 100)}%` 
+                        width: `${Math.min((calculateTotalWeeklyCost() / (onboardingData?.weeklyBudget || 50)) * 100, 100)}%` 
                       }}
                     />
                   </div>
                   <div className="text-xs text-black/60 text-center">
-                    {generatedMealPlan.totalWeeklyCost <= (onboardingData?.weeklyBudget || 50) 
-                      ? `Under budget by $${((onboardingData?.weeklyBudget || 50) - generatedMealPlan.totalWeeklyCost).toFixed(2)}`
-                      : `Over budget by $${(generatedMealPlan.totalWeeklyCost - (onboardingData?.weeklyBudget || 50)).toFixed(2)}`
+                    {calculateTotalWeeklyCost() <= (onboardingData?.weeklyBudget || 50) 
+                      ? `Under budget by $${((onboardingData?.weeklyBudget || 50) - calculateTotalWeeklyCost()).toFixed(2)}`
+                      : `Over budget by $${(calculateTotalWeeklyCost() - (onboardingData?.weeklyBudget || 50)).toFixed(2)}`
                     }
                   </div>
                 </div>
