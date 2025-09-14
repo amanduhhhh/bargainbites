@@ -63,6 +63,9 @@ model User {
 
   // Grocery list items
   groceryListItems  GroceryListItem[]
+  
+  // Meal plans
+  mealPlans         MealPlan[]
 
   @@map("users")
 }
@@ -79,6 +82,32 @@ model GroceryListItem {
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("grocerylistitems")
+}
+
+model MealPlan {
+  id               String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId           String   @db.ObjectId
+  weekStartDate    DateTime // Start of the week (Sunday)
+  store            String
+  totalWeeklyCost  Float
+  savings          Float
+  lunchPreference  String?
+  
+  // Daily meals as JSON objects
+  monday           Json
+  tuesday          Json
+  wednesday        Json
+  thursday         Json
+  friday           Json
+  saturday         Json
+  sunday           Json
+  
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, weekStartDate])
+  @@map("mealplans")
 }
 
 model VerificationToken {

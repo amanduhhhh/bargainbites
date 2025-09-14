@@ -1,8 +1,20 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+import { getServerSession } from 'next-auth/next';
+import { authOptions } from '@/lib/auth';
+import { PrismaClient } from '@prisma/client';
 
-// Initialize Gemini AI
+// Initialize Gemini AI and Prisma
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+const prisma = new PrismaClient();
+
+// Helper function to get the start of the week (Sunday)
+function getWeekStart(date: Date): Date {
+  const weekStart = new Date(date);
+  weekStart.setDate(date.getDate() - date.getDay()); // Start of week (Sunday)
+  weekStart.setHours(0, 0, 0, 0);
+  return weekStart;
+}
 
 interface FlyerItem {
   name: string;
@@ -30,63 +42,15 @@ interface MealPlanRequest {
   specialRequests: string;
 }
 
-interface MealPlanResponse {
-  success: boolean;
-  mealPlan?: {
-    monday: { 
-      meal: string; 
-      ingredients: string[]; 
-      totalCost: number;
-      lunch?: { meal: string; ingredients: string[]; totalCost: number };
-      dinner?: { meal: string; ingredients: string[]; totalCost: number };
-    };
-    tuesday: { 
-      meal: string; 
-      ingredients: string[]; 
-      totalCost: number;
-      lunch?: { meal: string; ingredients: string[]; totalCost: number };
-      dinner?: { meal: string; ingredients: string[]; totalCost: number };
-    };
-    wednesday: { 
-      meal: string; 
-      ingredients: string[]; 
-      totalCost: number;
-      lunch?: { meal: string; ingredients: string[]; totalCost: number };
-      dinner?: { meal: string; ingredients: string[]; totalCost: number };
-    };
-    thursday: { 
-      meal: string; 
-      ingredients: string[]; 
-      totalCost: number;
-      lunch?: { meal: string; ingredients: string[]; totalCost: number };
-      dinner?: { meal: string; ingredients: string[]; totalCost: number };
-    };
-    friday: { 
-      meal: string; 
-      ingredients: string[]; 
-      totalCost: number;
-      lunch?: { meal: string; ingredients: string[]; totalCost: number };
-      dinner?: { meal: string; ingredients: string[]; totalCost: number };
-    };
-    saturday: { 
-      meal: string; 
-      ingredients: string[]; 
-      totalCost: number;
-      lunch?: { meal: string; ingredients: string[]; totalCost: number };
-      dinner?: { meal: string; ingredients: string[]; totalCost: number };
-    };
-    sunday: { 
-      meal: string; 
-      ingredients: string[]; 
-      totalCost: number;
-      lunch?: { meal: string; ingredients: string[]; totalCost: number };
-      dinner?: { meal: string; ingredients: string[]; totalCost: number };
-    };
-    totalWeeklyCost: number;
-    savings: number;
-  };
-  error?: string;
+interface MealData {
+  meal: string;
+  ingredients: string[];
+  totalCost: number;
+  cookingInstructions?: string;
+  lunch?: { meal: string; ingredients: string[]; totalCost: number; cookingInstructions: string };
+  dinner?: { meal: string; ingredients: string[]; totalCost: number; cookingInstructions: string };
 }
+
 
 // Map store IDs to file names
 const storeFileMap: { [key: string]: string } = {
@@ -116,8 +80,92 @@ const storeDisplayNames: { [key: string]: string } = {
   'real-canadian-superstore': 'Real Canadian Superstore'
 };
 
+// Helper function to save meal plan to database
+async function saveMealPlanToDatabase(
+  userEmail: string,
+  mealPlan: {
+    monday?: MealData;
+    tuesday?: MealData;
+    wednesday?: MealData;
+    thursday?: MealData;
+    friday?: MealData;
+    saturday?: MealData;
+    sunday?: MealData;
+    totalWeeklyCost?: number;
+    savings?: number;
+  },
+  store: string,
+  lunchPreference: string
+) {
+  try {
+    // Find user by email
+    const user = await prisma.user.findUnique({
+      where: { email: userEmail }
+    });
+
+    if (!user) {
+      console.error('User not found for email:', userEmail);
+      return null;
+    }
+
+    const weekStart = getWeekStart(new Date());
+
+    // Save meal plan to database
+    const savedMealPlan = await prisma.mealPlan.upsert({
+      where: {
+        userId_weekStartDate: {
+          userId: user.id,
+          weekStartDate: weekStart
+        }
+      },
+      update: {
+        store,
+        totalWeeklyCost: mealPlan.totalWeeklyCost || 0,
+        savings: mealPlan.savings || 0,
+        lunchPreference,
+        monday: JSON.parse(JSON.stringify(mealPlan.monday || {})),
+        tuesday: JSON.parse(JSON.stringify(mealPlan.tuesday || {})),
+        wednesday: JSON.parse(JSON.stringify(mealPlan.wednesday || {})),
+        thursday: JSON.parse(JSON.stringify(mealPlan.thursday || {})),
+        friday: JSON.parse(JSON.stringify(mealPlan.friday || {})),
+        saturday: JSON.parse(JSON.stringify(mealPlan.saturday || {})),
+        sunday: JSON.parse(JSON.stringify(mealPlan.sunday || {})),
+        updatedAt: new Date()
+      },
+      create: {
+        userId: user.id,
+        weekStartDate: weekStart,
+        store,
+        totalWeeklyCost: mealPlan.totalWeeklyCost || 0,
+        savings: mealPlan.savings || 0,
+        lunchPreference,
+        monday: JSON.parse(JSON.stringify(mealPlan.monday || {})),
+        tuesday: JSON.parse(JSON.stringify(mealPlan.tuesday || {})),
+        wednesday: JSON.parse(JSON.stringify(mealPlan.wednesday || {})),
+        thursday: JSON.parse(JSON.stringify(mealPlan.thursday || {})),
+        friday: JSON.parse(JSON.stringify(mealPlan.friday || {})),
+        saturday: JSON.parse(JSON.stringify(mealPlan.saturday || {})),
+        sunday: JSON.parse(JSON.stringify(mealPlan.sunday || {}))
+      }
+    });
+
+    return savedMealPlan;
+  } catch (error) {
+    console.error('Error saving meal plan to database:', error);
+    return null;
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
+    // Get session to check authentication
+    const session = await getServerSession(authOptions);
+    
+    // Parse request body once
+    const body: MealPlanRequest = await request.json();
+    const { store, dietaryRestrictions, budget, householdSize, cookingExperience, lunchPreference, specialRequests } = body;
+    let { cuisinePreferences } = body;
+    
     // Check if Gemini API key is available
     if (!process.env.GEMINI_API_KEY) {
       console.log('Gemini API key not configured, using fallback meal plan');
@@ -169,15 +217,26 @@ export async function POST(request: NextRequest) {
         savings: 14.25 // Default savings calculation (100 - 85.75)
       };
       
+      // Save fallback meal plan to database if user is authenticated
+      if (session?.user?.email) {
+        try {
+          await saveMealPlanToDatabase(
+            session.user.email,
+            fallbackMealPlan,
+            store || 'Unknown',
+            lunchPreference || ''
+          );
+          console.log('Fallback meal plan saved to database for user:', session.user.email);
+        } catch (dbError) {
+          console.error('Failed to save fallback meal plan to database:', dbError);
+        }
+      }
+      
       return NextResponse.json({
         success: true,
         mealPlan: fallbackMealPlan
       });
     }
-
-    const body: MealPlanRequest = await request.json();
-    const { store, dietaryRestrictions, budget, householdSize, cookingExperience, lunchPreference, specialRequests } = body;
-    let { cuisinePreferences } = body;
 
     // Debug logging
     console.log('Received meal plan request:', {
@@ -388,6 +447,26 @@ Focus on using the sale items to create delicious, budget-friendly meals that ma
     
     // Update the meal plan with correct savings calculation
     mealPlan.savings = savings;
+
+    // Save to database if user is authenticated
+    if (session?.user?.email) {
+      try {
+        const savedMealPlan = await saveMealPlanToDatabase(
+          session.user.email,
+          mealPlan,
+          store,
+          lunchPreference
+        );
+        
+        if (savedMealPlan) {
+          console.log('Meal plan saved to database for user:', session.user.email);
+        } else {
+          console.log('Failed to save meal plan to database, but returning generated plan');
+        }
+      } catch (dbError) {
+        console.error('Database save error (continuing with response):', dbError);
+      }
+    }
 
     return NextResponse.json({
       success: true,

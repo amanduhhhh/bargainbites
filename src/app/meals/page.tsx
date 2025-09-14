@@ -155,53 +155,121 @@ export default function MealsPage() {
           isSet: false,
         }));
 
-        // Check for generated meal plan
-        const storedMealPlan = localStorage.getItem('generatedMealPlan');
-        const storedPlanData = localStorage.getItem('demoPlanData');
-        console.log('Checking for stored meal plan:', storedMealPlan);
-        
-        // Load lunch preference from plan data
-        if (storedPlanData) {
+        // Load meal plan from database if authenticated, otherwise fallback to localStorage
+        if (session?.user) {
           try {
-            const planData = JSON.parse(storedPlanData);
-            setLunchPreference(planData.lunchPreference || '');
-          } catch (error) {
-            console.error('Error parsing plan data:', error);
-          }
-        }
-        
-        if (storedMealPlan) {
-          try {
-            const mealPlan: GeneratedMealPlan = JSON.parse(storedMealPlan);
-            console.log('Parsed meal plan:', mealPlan);
-            setGeneratedMealPlan(mealPlan);
-            
-            // Update weekly meals with generated plan data
-            const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-            const updatedMeals = initialMeals.map((meal, index) => {
-              const dayKey = days[index];
-              const dayData = mealPlan[dayKey as keyof GeneratedMealPlan];
-              if (dayData && typeof dayData === 'object' && 'meal' in dayData) {
-                return {
-                  ...meal,
-                  meal: dayData.meal,
-                  isSet: true,
-                  ingredients: dayData.ingredients,
-                  totalCost: dayData.totalCost,
-                  cookingInstructions: dayData.cookingInstructions,
-                  lunch: dayData.lunch,
-                  dinner: dayData.dinner,
+            // Load meal plan from database
+            const response = await fetch('/api/meal-plans');
+            if (response.ok) {
+              const result = await response.json();
+              if (result.success && result.mealPlans && result.mealPlans.length > 0) {
+                // Get the most recent meal plan
+                const dbMealPlan = result.mealPlans[0];
+                
+                // Convert database format to frontend format
+                const mealPlan: GeneratedMealPlan = {
+                  monday: dbMealPlan.monday,
+                  tuesday: dbMealPlan.tuesday,
+                  wednesday: dbMealPlan.wednesday,
+                  thursday: dbMealPlan.thursday,
+                  friday: dbMealPlan.friday,
+                  saturday: dbMealPlan.saturday,
+                  sunday: dbMealPlan.sunday,
+                  totalWeeklyCost: dbMealPlan.totalWeeklyCost,
+                  savings: dbMealPlan.savings
                 };
+                
+                console.log('Loaded meal plan from database:', mealPlan);
+                setGeneratedMealPlan(mealPlan);
+                setLunchPreference(dbMealPlan.lunchPreference || '');
+                
+                // Update weekly meals with database plan data
+                const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+                const updatedMeals = initialMeals.map((meal, index) => {
+                  const dayKey = days[index];
+                  const dayData = mealPlan[dayKey as keyof GeneratedMealPlan];
+                  if (dayData && typeof dayData === 'object' && 'meal' in dayData) {
+                    return {
+                      ...meal,
+                      meal: dayData.meal,
+                      isSet: true,
+                      ingredients: dayData.ingredients,
+                      totalCost: dayData.totalCost,
+                      cookingInstructions: dayData.cookingInstructions,
+                      lunch: dayData.lunch,
+                      dinner: dayData.dinner,
+                    };
+                  }
+                  return meal;
+                });
+                setWeeklyMeals(updatedMeals);
+              } else {
+                // No meal plan in database, try localStorage fallback
+                loadFromLocalStorage();
               }
-              return meal;
-            });
-            setWeeklyMeals(updatedMeals);
-          } catch (error) {
-            console.error('Error parsing generated meal plan:', error);
-            setWeeklyMeals(initialMeals);
+            } else {
+              // API call failed, try localStorage fallback
+              loadFromLocalStorage();
+            }
+          } catch (fetchError) {
+            console.error('Error fetching meal plan from database:', fetchError);
+            // Fallback to localStorage
+            loadFromLocalStorage();
           }
         } else {
-          setWeeklyMeals(initialMeals);
+          // Not authenticated, use localStorage
+          loadFromLocalStorage();
+        }
+        
+        function loadFromLocalStorage() {
+          // Check for generated meal plan in localStorage
+          const storedMealPlan = localStorage.getItem('generatedMealPlan');
+          const storedPlanData = localStorage.getItem('demoPlanData');
+          console.log('Checking for stored meal plan in localStorage:', storedMealPlan);
+          
+          // Load lunch preference from plan data
+          if (storedPlanData) {
+            try {
+              const planData = JSON.parse(storedPlanData);
+              setLunchPreference(planData.lunchPreference || '');
+            } catch (error) {
+              console.error('Error parsing plan data:', error);
+            }
+          }
+          
+          if (storedMealPlan) {
+            try {
+              const mealPlan: GeneratedMealPlan = JSON.parse(storedMealPlan);
+              console.log('Parsed meal plan from localStorage:', mealPlan);
+              setGeneratedMealPlan(mealPlan);
+              
+              // Update weekly meals with generated plan data
+              const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+              const updatedMeals = initialMeals.map((meal, index) => {
+                const dayKey = days[index];
+                const dayData = mealPlan[dayKey as keyof GeneratedMealPlan];
+                if (dayData && typeof dayData === 'object' && 'meal' in dayData) {
+                  return {
+                    ...meal,
+                    meal: dayData.meal,
+                    isSet: true,
+                    ingredients: dayData.ingredients,
+                    totalCost: dayData.totalCost,
+                    cookingInstructions: dayData.cookingInstructions,
+                    lunch: dayData.lunch,
+                    dinner: dayData.dinner,
+                  };
+                }
+                return meal;
+              });
+              setWeeklyMeals(updatedMeals);
+            } catch (error) {
+              console.error('Error parsing generated meal plan:', error);
+              setWeeklyMeals(initialMeals);
+            }
+          } else {
+            setWeeklyMeals(initialMeals);
+          }
         }
       } catch (error) {
         console.error('Error checking setup completion:', error);
