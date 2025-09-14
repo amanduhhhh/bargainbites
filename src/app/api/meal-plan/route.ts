@@ -226,12 +226,15 @@ ${saleItems.slice(0, 50).map(item =>
   `- ${item.name}: $${item.price} (${item.measure}${item.measure_unit}) - ${item.savings_percentage}% off - Unit: ${item.unit_type}`
 ).join('\n')}
 
-IMPORTANT: When creating meals, prioritize using these sale items. For each ingredient you suggest:
+IMPORTANT: When creating meals, prioritize using these sale items and consider ingredient reuse across the week:
 1. If it's from the sale items above, format as: "ingredient name [SALE:${storeDisplayNames[store] || store}] - $X.XX"
 2. If it's not on sale, format as: "ingredient name - $X.XX" (use reasonable market prices)
 3. Always include the actual price for each ingredient
 4. Use the exact prices from the sale items when available
 5. For non-sale items, estimate realistic grocery store prices
+6. CONSIDER INGREDIENT REUSE: Plan meals that share common ingredients (e.g., if you buy a whole chicken, use it for multiple meals)
+7. PORTION SIZING: When an ingredient is used in multiple meals, only show the price for the first meal, then mark subsequent uses with "[REUSED]" marker
+8. REALISTIC QUANTITIES: Consider that a family of ${householdSize} might not finish a whole package of an ingredient in one meal
 
 REQUIREMENTS:
 1. Create 7 different meals (one for each day)
@@ -258,7 +261,12 @@ Format the response as a JSON object with this structure:
     "totalCost": 15.50,
     "cookingInstructions": "Brief instructions"
   },
-  "tuesday": { ... },
+  "tuesday": {
+    "meal": "Another Meal",
+    "ingredients": ["ingredient 1 [REUSED]", "new ingredient - $X.XX", ...],
+    "totalCost": 8.25,
+    "cookingInstructions": "Brief instructions"
+  },
   "wednesday": { ... },
   "thursday": { ... },
   "friday": { ... },

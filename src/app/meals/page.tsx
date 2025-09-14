@@ -172,11 +172,12 @@ export default function MealsPage() {
     return match ? match[1] : 'Unknown Store';
   };
 
-  // Function to clean ingredient name (remove [SALE:Store] marker and price for display)
+  // Function to clean ingredient name (remove [SALE:Store] marker, price, and [REUSED] marker for display)
   const cleanIngredientName = (ingredient: string) => {
     return ingredient
       .replace(/\s*\[SALE:[^\]]+\]\s*/g, '') // Remove [SALE:Store] marker
       .replace(/\s*-\s*\$\d+\.?\d*\s*$/g, '') // Remove price at the end
+      .replace(/\s*\[REUSED\]\s*/g, '') // Remove [REUSED] marker
       .trim();
   };
 
@@ -184,6 +185,11 @@ export default function MealsPage() {
   const getPriceFromIngredient = (ingredient: string) => {
     const match = ingredient.match(/\$(\d+\.?\d*)/);
     return match ? parseFloat(match[1]) : 0;
+  };
+
+  // Function to check if ingredient was reused from previous days
+  const isReusedIngredient = (ingredient: string) => {
+    return ingredient.includes('[REUSED]');
   };
 
   // Function to get unique stores from a meal's ingredients
@@ -280,13 +286,19 @@ export default function MealsPage() {
                 </div>
                 
                 {/* Deal Legend */}
-                <div className="mb-4 p-3 bg-loblaws-orange/10 rounded-lg">
-                  <div className="flex items-center gap-2 text-sm">
-                    <svg className="w-4 h-4 text-loblaws-orange" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                    <span className="text-loblaws-orange font-medium">Items with this star are on sale in this week&apos;s flyer</span>
-                  </div>
+                <div className="mb-2 flex items-center gap-2 text-sm">
+                  <svg className="w-4 h-4 text-loblaws-orange" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                  <span className="text-loblaws-orange font-medium">In this week&apos;s flyer</span>
+                </div>
+
+                {/* Reuse Legend */}
+                <div className="mb-4 flex items-center gap-2 text-sm">
+                  <svg className="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-gray-700 font-medium">Reused from previous days</span>
                 </div>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -347,6 +359,7 @@ export default function MealsPage() {
                                     <ul className="text-xs text-black/70 space-y-1">
                                       {meal.ingredients.map((ingredient, index) => {
                                         const price = getPriceFromIngredient(ingredient);
+                                        const isReused = isReusedIngredient(ingredient);
                                         return (
                                           <li key={index} className="flex items-start justify-between">
                                             <div className="flex items-start flex-1">
@@ -363,11 +376,17 @@ export default function MealsPage() {
                                                 </span>
                                               )}
                                             </div>
-                                            {price > 0 && (
+                                            {isReused ? (
+                                              <span className="ml-2 flex items-center" title="Reused from previous days">
+                                                <svg className="w-3 h-3 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                                                  <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
+                                                </svg>
+                                              </span>
+                                            ) : price > 0 ? (
                                               <span className="text-xs font-medium text-loblaws-orange ml-2">
                                                 ${price.toFixed(2)}
                                               </span>
-                                            )}
+                                            ) : null}
                                           </li>
                                         );
                                       })}
