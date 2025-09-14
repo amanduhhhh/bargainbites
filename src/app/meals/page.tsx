@@ -597,7 +597,16 @@ export default function MealsPage() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-black/60">Savings:</span>
-                    <span className="font-medium text-green-600">${generatedMealPlan.savings.toFixed(2)}</span>
+                    <span className={`font-medium ${
+                      calculateTotalWeeklyCost() <= (onboardingData?.weeklyBudget || 50) 
+                        ? 'text-green-600' 
+                        : 'text-red-600'
+                    }`}>
+                      {calculateTotalWeeklyCost() <= (onboardingData?.weeklyBudget || 50) 
+                        ? `$${((onboardingData?.weeklyBudget || 50) - calculateTotalWeeklyCost()).toFixed(2)}`
+                        : 'Over Budget'
+                      }
+                    </span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-black/60">Budget:</span>

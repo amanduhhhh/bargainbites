@@ -166,7 +166,7 @@ export async function POST(request: NextRequest) {
           cookingInstructions: "Season chicken with herbs. Roast with vegetables at 375°F for 1.5 hours. Make gravy from drippings."
         },
         totalWeeklyCost: 85.75,
-        savings: 15.25
+        savings: 14.25 // Default savings calculation (100 - 85.75)
       };
       
       return NextResponse.json({
@@ -330,7 +330,7 @@ ${isCookLunch ? `Format the response as a JSON object with this structure:
   "saturday": { ... },
   "sunday": { ... },
   "totalWeeklyCost": 95.75,
-  "savings": 25.30
+  "savings": 0
 }` : `Format the response as a JSON object with this structure:
 {
   "monday": {
@@ -351,7 +351,7 @@ ${isCookLunch ? `Format the response as a JSON object with this structure:
   "saturday": { ... },
   "sunday": { ... },
   "totalWeeklyCost": 95.75,
-  "savings": 25.30
+  "savings": 0
 }`}
 
 Focus on using the sale items to create delicious, budget-friendly meals that match the user's preferences and skill level.
@@ -381,6 +381,13 @@ Focus on using the sale items to create delicious, budget-friendly meals that ma
         { status: 500 }
       );
     }
+
+    // Calculate proper savings: budget - totalCost (or show over budget)
+    const totalCost = mealPlan.totalWeeklyCost || 0;
+    const savings = budget - totalCost;
+    
+    // Update the meal plan with correct savings calculation
+    mealPlan.savings = savings;
 
     return NextResponse.json({
       success: true,
