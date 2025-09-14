@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter, useParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -25,6 +25,7 @@ export default function RecipePage() {
   const [imageLoading, setImageLoading] = useState(true);
   const [isGeneratingRecipe, setIsGeneratingRecipe] = useState(false);
   const [householdSize, setHouseholdSize] = useState(2); // Default to 2, will be updated from user preferences
+  const hasGeneratedInstructions = useRef(false);
 
   // Load user preferences to get household size
   useEffect(() => {
@@ -243,6 +244,41 @@ export default function RecipePage() {
     }
   }, [recipeData]);
 
+  // Reset generation flag when recipe ID changes
+  useEffect(() => {
+    hasGeneratedInstructions.current = false;
+  }, [params.id]);
+
+  // Separate effect to generate instructions only once when recipe data is first loaded
+  useEffect(() => {
+    if (recipeData && !hasGeneratedInstructions.current && !isGeneratingRecipe) {
+      // Check if instructions are already cached
+      const cacheKey = `instructions_${recipeData.meal}_${recipeData.id}`;
+      const cachedInstructions = localStorage.getItem(cacheKey);
+      
+      if (cachedInstructions) {
+        // Check if instructions contain "reheat" - if so, don't regenerate
+        const shouldSkipRegeneration = cachedInstructions.toLowerCase().includes('reheat');
+        
+        if (shouldSkipRegeneration) {
+          // Load from cache without regenerating
+          setRecipeData(prev => prev ? { 
+            ...prev, 
+            cookingInstructions: cachedInstructions 
+          } : null);
+        } else {
+          // Generate new instructions even if cached
+          hasGeneratedInstructions.current = true;
+          generateDetailedInstructions();
+        }
+      } else {
+        // Generate new instructions
+        hasGeneratedInstructions.current = true;
+        generateDetailedInstructions();
+      }
+    }
+  }, [recipeData?.id]); // Only depend on recipe ID, not the entire recipeData object
+
   // Function to check if an ingredient is from a flyer deal
   const isFlyerDeal = (ingredient: string) => {
     return ingredient.includes('[SALE:');
@@ -280,17 +316,6 @@ export default function RecipePage() {
         <div className="text-center">
           <div className="h-8 w-8 border-2 border-foreground border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-sm text-black/60">Loading recipe...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (isGeneratingRecipe) {
-    return (
-      <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
-        <div className="text-center">
-          <div className="h-8 w-8 border-2 border-foreground border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-sm text-black/60">Generating detailed recipe...</p>
         </div>
       </div>
     );
@@ -457,7 +482,13 @@ export default function RecipePage() {
             {/* Cooking Instructions */}
             <div className="prose prose-sm max-w-none">
               <div className="bg-white pl-2">
-                {recipeData.cookingInstructions ? (
+                {isGeneratingRecipe ? (
+                  <div className="text-center py-12">
+                    <div className="h-12 w-12 border-4 border-loblaws-orange border-t-transparent rounded-full animate-spin mx-auto mb-6" />
+                    <h3 className="text-lg font-semibold text-gray-800 mb-2">Generating Detailed Instructions</h3>
+                    <p className="text-gray-500">Creating comprehensive cooking instructions with Gemini AI...</p>
+                  </div>
+                ) : recipeData.cookingInstructions ? (
                   <div 
                     className="text-black/80 leading-relaxed"
                     dangerouslySetInnerHTML={{ 
@@ -466,21 +497,10 @@ export default function RecipePage() {
                   />
                 ) : (
                   <div className="text-center py-8">
-                    <p className="text-gray-500 mb-4">No detailed instructions available</p>
+                    <p className="text-gray-500 mb-4">Instructions will appear here once generated</p>
                   </div>
                 )}
               </div>
-            </div>
-
-            {/* Generate Instructions Button */}
-            <div className="mt-6 pl-2">
-              <button
-                onClick={generateDetailedInstructions}
-                disabled={isGeneratingRecipe}
-                className="px-4 py-2 bg-loblaws-orange text-white rounded-lg hover:bg-loblaws-orange/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-              >
-                {isGeneratingRecipe ? 'Generating...' : 'Generate Cooking Instructions'}
-              </button>
             </div>
 
           </div>

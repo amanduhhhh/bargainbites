@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { CohereClient } from 'cohere-ai';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const cohere = new CohereClient({
-  token: process.env.COHERE_API_KEY || '',
-});
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
 
 interface RecipeGenerationRequest {
   mealName: string;
@@ -21,10 +19,10 @@ export async function POST(request: NextRequest) {
   console.log('🚀 Recipe generation API called at:', new Date().toISOString());
   
   try {
-    if (!process.env.COHERE_API_KEY) {
-      console.error('❌ Cohere API key not configured');
+    if (!process.env.GEMINI_API_KEY) {
+      console.error('❌ Gemini API key not configured');
       return NextResponse.json(
-        { success: false, error: 'Cohere API key not configured' },
+        { success: false, error: 'Gemini API key not configured' },
         { status: 500 }
       );
     }
@@ -49,8 +47,8 @@ export async function POST(request: NextRequest) {
       cuisineType
     });
 
-    // Simple prompt for cooking instructions only
-    const prompt = `Generate detailed cooking instructions for this meal. Do not include any conversational text, greetings, or responses to the user. Only provide the cooking instructions.
+    // Enhanced prompt for detailed cooking instructions
+    const prompt = `You are a professional chef creating detailed cooking instructions for a home cook. Generate comprehensive, step-by-step cooking instructions for this meal.
 
 MEAL: ${mealName}
 INGREDIENTS: ${ingredients.join(', ')}
@@ -59,39 +57,53 @@ COOKING EXPERIENCE: ${cookingExperience}
 DIETARY RESTRICTIONS: ${dietaryRestrictions.join(', ') || 'None'}
 PANTRY ITEMS: ${pantryItems.join(', ') || 'None'}
 
-Provide step-by-step cooking instructions that are:
-- Clear and easy to follow
-- Appropriate for ${cookingExperience} level
-- Include timing and temperature when helpful
-- Use the available ingredients efficiently
-- Include helpful cooking tips
+Create detailed cooking instructions that include:
 
-Format as numbered steps with clear instructions. Do not include any markdown headers, just the instructions.`;
+**Preparation Phase:**
+- Ingredient preparation (chopping, measuring, prepping)
+- Equipment needed
+- Preheating requirements
+
+**Cooking Phase:**
+- Step-by-step cooking process with specific techniques
+- Exact temperatures and cooking times
+- Visual cues for doneness
+- Proper heat levels (high, medium, low)
+- Stirring, flipping, or mixing instructions
+
+**Finishing Phase:**
+- Plating instructions
+- Garnishing suggestions
+- Serving temperature
+- Storage tips if applicable
+
+**Pro Tips:**
+- Common mistakes to avoid
+- Substitution suggestions
+- Time-saving techniques
+- Flavor enhancement tips
+
+Format as clear numbered steps. Be specific about techniques, temperatures, and timing. Make it easy for a ${cookingExperience} level cook to follow successfully.`;
 
     console.log('📏 Prompt length:', prompt.length, 'characters');
-    console.log('⏰ Starting Cohere API call...');
-    const cohereStartTime = Date.now();
+    console.log('⏰ Starting Gemini API call...');
+    const geminiStartTime = Date.now();
 
-    const response = await cohere.generate({
-      model: 'command',
-      prompt: prompt,
-      maxTokens: 1000,
-      temperature: 0.7,
-    });
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const cookingInstructions = response.text();
 
-    const cohereEndTime = Date.now();
-    const cohereDuration = cohereEndTime - cohereStartTime;
-    console.log(`✅ Cohere API call completed in ${cohereDuration}ms`);
+    const geminiEndTime = Date.now();
+    const geminiDuration = geminiEndTime - geminiStartTime;
+    console.log(`✅ Gemini API call completed in ${geminiDuration}ms`);
     console.log('📊 Response details:', {
-      model: 'command',
-      responseLength: response.generations[0].text.length,
-      tokensUsed: response.meta?.billed_units?.input_tokens + response.meta?.billed_units?.output_tokens || 'unknown'
+      model: 'gemini-1.5-flash',
+      responseLength: cookingInstructions.length
     });
-
-    let cookingInstructions = response.generations[0].text;
     
     // Clean up the response - remove conversational text
-    cookingInstructions = cookingInstructions
+    const cleanedInstructions = cookingInstructions
       .replace(/^(Certainly!|Here is|Let me|I'll|I can|Let me know|This recipe|This should|This honors).*/gim, '')
       .replace(/Let me know if you would like[\s\S]*$/gim, '')
       .replace(/I can also provide[\s\S]*$/gim, '')
@@ -107,7 +119,7 @@ Format as numbered steps with clear instructions. Do not include any markdown he
 
     return NextResponse.json({
       success: true,
-      cookingInstructions
+      cookingInstructions: cleanedInstructions
     });
 
   } catch (error) {
