@@ -3,6 +3,7 @@
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { ShoppingCart, User } from 'lucide-react';
 
 interface OnboardingData {
   householdSize: number;
@@ -79,28 +80,10 @@ export default function ProfilePage() {
           </Link>
           <div className="flex items-center gap-6">
             <Link
-              href="/meals"
-              className="text-sm text-black/60 hover:text-black/80 underline"
-            >
-              Meals
-            </Link>
-           
-            <Link
               href="/profile"
               className="w-6 h-6 rounded-full bg-loblaws-orange flex items-center justify-center hover:bg-loblaws-orange/80 transition-colors"
             >
-              <svg
-                className="w-5 h-5 text-white"
-                fill="currentColor"
-                viewBox="0 0 20 20"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  fillRule="evenodd"
-                  d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z"
-                  clipRule="evenodd"
-                />
-              </svg>
+              <User className="w-5 h-5 text-white" />
             </Link>
           </div>
         </div>
@@ -263,8 +246,9 @@ export default function ProfilePage() {
                   </Link>
                   <Link
                     href="/list"
-                    className="block w-full text-left px-3 py-2 text-sm border border-black/10 rounded-lg hover:bg-black/5 transition-colors"
+                    className="flex items-center gap-2 w-full text-left px-3 py-2 text-sm border border-black/10 rounded-lg hover:bg-black/5 transition-colors"
                   >
+                    <ShoppingCart className="w-4 h-4" />
                     Grocery List
                   </Link>
                   <button className="block w-full text-left px-3 py-2 text-sm border border-black/10 rounded-lg hover:bg-black/5 transition-colors">
