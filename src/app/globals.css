@@ -17,7 +17,7 @@
   --color-accent-muted-light: var(--accent-muted-light);
   --color-accent-muted-dark: var(--accent-muted-dark);
   --font-sans: Arial, Helvetica, sans-serif;
-  --font-mono: var(--font-geist-mono);
+  --font-mono: Arial, Helvetica, sans-serif;
 }
 
 body {
