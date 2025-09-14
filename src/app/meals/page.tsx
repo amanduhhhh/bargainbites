@@ -29,14 +29,6 @@ interface GeneratedMealPlan {
   savings: number;
 }
 
-interface EditorPick {
-  id: string;
-  title: string;
-  description: string;
-  price: string;
-  image: string;
-  store: string;
-}
 
 export default function MealsPage() {
   const { data: session, status } = useSession();
@@ -48,72 +40,6 @@ export default function MealsPage() {
   const [generatedMealPlan, setGeneratedMealPlan] = useState<GeneratedMealPlan | null>(null);
   const [showMealDetails, setShowMealDetails] = useState<string | null>(null);
 
-  const [editorPicks] = useState<EditorPick[]>([
-    {
-      id: '1',
-      title: 'Fresh Atlantic Salmon',
-      description: 'Perfect for grilling or baking',
-      price: '$8.99/lb',
-      image: '/background/groceries.png',
-      store: 'Loblaws'
-    },
-    {
-      id: '2',
-      title: 'Organic Spinach',
-      description: 'Great for salads and smoothies',
-      price: '$2.49/bag',
-      image: '/background/groceries.png',
-      store: 'Metro'
-    },
-    {
-      id: '3',
-      title: 'Whole Grain Bread',
-      description: 'Fresh baked daily',
-      price: '$3.99/loaf',
-      image: '/background/groceries.png',
-      store: 'Sobeys'
-    },
-    {
-      id: '4',
-      title: 'Chicken Breast',
-      description: 'Boneless, skinless premium quality',
-      price: '$6.99/lb',
-      image: '/background/groceries.png',
-      store: 'No Frills'
-    },
-    {
-      id: '5',
-      title: 'Avocados',
-      description: 'Hass variety, perfect ripeness',
-      price: '$1.99 each',
-      image: '/background/groceries.png',
-      store: 'FreshCo'
-    },
-    {
-      id: '6',
-      title: 'Greek Yogurt',
-      description: 'High protein, plain variety',
-      price: '$4.99/container',
-      image: '/background/groceries.png',
-      store: 'Food Basics'
-    },
-    {
-      id: '7',
-      title: 'Ground Beef',
-      description: 'Lean ground beef, perfect for burgers',
-      price: '$5.99/lb',
-      image: '/background/groceries.png',
-      store: 'Walmart'
-    },
-    {
-      id: '8',
-      title: 'Bell Peppers',
-      description: 'Mixed colors, fresh and crisp',
-      price: '$2.99/lb',
-      image: '/background/groceries.png',
-      store: 'Costco'
-    }
-  ]);
 
   useEffect(() => {
     const checkSetupCompletion = async () => {
@@ -167,6 +93,15 @@ export default function MealsPage() {
           }
         }
 
+        // Initialize weekly meals with empty day boxes
+        const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+        const initialMeals = dayNames.map((day, index) => ({
+          id: (index + 1).toString(),
+          day: day,
+          meal: '',
+          isSet: false,
+        }));
+
         // Check for generated meal plan
         const storedMealPlan = localStorage.getItem('generatedMealPlan');
         console.log('Checking for stored meal plan:', storedMealPlan);
@@ -176,15 +111,14 @@ export default function MealsPage() {
             console.log('Parsed meal plan:', mealPlan);
             setGeneratedMealPlan(mealPlan);
             
-            // Initialize weekly meals with generated plan
+            // Update weekly meals with generated plan data
             const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-            const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
-            const updatedMeals = days.map((dayKey, index) => {
+            const updatedMeals = initialMeals.map((meal, index) => {
+              const dayKey = days[index];
               const dayData = mealPlan[dayKey as keyof GeneratedMealPlan];
               if (dayData && typeof dayData === 'object' && 'meal' in dayData) {
                 return {
-                  id: (index + 1).toString(),
-                  day: dayNames[index],
+                  ...meal,
                   meal: dayData.meal,
                   isSet: true,
                   ingredients: dayData.ingredients,
@@ -192,17 +126,15 @@ export default function MealsPage() {
                   cookingInstructions: dayData.cookingInstructions,
                 };
               }
-              return {
-                id: (index + 1).toString(),
-                day: dayNames[index],
-                meal: '',
-                isSet: false,
-              };
+              return meal;
             });
             setWeeklyMeals(updatedMeals);
           } catch (error) {
             console.error('Error parsing generated meal plan:', error);
+            setWeeklyMeals(initialMeals);
           }
+        } else {
+          setWeeklyMeals(initialMeals);
         }
       } catch (error) {
         console.error('Error checking setup completion:', error);
@@ -220,15 +152,6 @@ export default function MealsPage() {
     }
   }, [session, status, router]);
 
-  const handleMealEdit = (id: string, newMeal: string) => {
-    setWeeklyMeals(meals => 
-      meals.map(meal => 
-        meal.id === id 
-          ? { ...meal, meal: newMeal, isSet: newMeal.trim() !== '' }
-          : meal
-      )
-    );
-  };
 
   const handlePlanWeek = () => {
     // Navigate to plan page or trigger meal planning
@@ -321,9 +244,8 @@ export default function MealsPage() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
-            {/* Weekly Meals - Only show when there's data */}
-            {weeklyMeals.length > 0 && (
-              <div className=" p-4">
+            {/* Weekly Meals */}
+            <div className=" p-4">
                 <div className="flex items-center justify-between mb-6">
                   <h2 className="text-xl font-semibold">This Week&apos;s Meals</h2>
                   <div className="text-sm text-black/60">
@@ -367,12 +289,6 @@ export default function MealsPage() {
                         <div className="space-y-2">
                           <div className="flex items-center justify-between">
                             <span className="text-sm text-black/80 font-medium">{meal.meal}</span>
-                            <button
-                              onClick={() => handleMealEdit(meal.id, '')}
-                              className="text-xs text-black/40 hover:text-black/60 underline"
-                            >
-                              Edit
-                            </button>
                           </div>
                           {meal.ingredients && meal.ingredients.length > 0 && (
                             <div>
@@ -424,22 +340,14 @@ export default function MealsPage() {
                           )}
                         </div>
                       ) : (
-                        <input
-                          type="text"
-                          className="w-full text-sm border-none outline-none bg-transparent"
-                          onKeyPress={(e) => {
-                            if (e.key === 'Enter') {
-                              handleMealEdit(meal.id, e.currentTarget.value);
-                              e.currentTarget.value = '';
-                            }
-                          }}
-                        />
+                        <div className="text-sm text-black/40 italic">
+                          No meal planned
+                        </div>
                       )}
                     </div>
                   ))}
                 </div>
               </div>
-            )}
           </div>
 
           {/* Sidebar */}
@@ -551,40 +459,6 @@ export default function MealsPage() {
           </div>
         </div>
 
-        {/* Editor's Picks Carousel - Full Width */}
-        <div className="mt-8">
-          <h2 className="text-xl font-semibold mb-6">This Week&apos;s Best Choices</h2>
-          <div className="editor-picks-marquee editor-picks-fade py-2">
-            <div className="editor-picks-track">
-              {editorPicks.map((pick) => (
-                <div key={pick.id} className="flex-shrink-0 w-64 rounded-lg  p-4 bg-white">
-                  <div className="aspect-video bg-black/5 rounded-lg mb-3">
-                  </div>
-                  <h3 className="font-medium text-sm mb-1">{pick.title}</h3>
-                  <p className="text-xs text-black/60 mb-2">{pick.description}</p>
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium text-sm">{pick.price}</span>
-                    <span className="text-xs text-black/40">{pick.store}</span>
-                  </div>
-                </div>
-              ))}
-              
-              {/* Duplicate for seamless scroll */}
-              {editorPicks.map((pick) => (
-                <div key={`duplicate-${pick.id}`} className="flex-shrink-0 w-64 rounded-lg p-4 bg-white">
-                  <div className="aspect-video bg-black/5 rounded-lg mb-3">
-                  </div>
-                  <h3 className="font-medium text-sm mb-1">{pick.title}</h3>
-                  <p className="text-xs text-black/60 mb-2">{pick.description}</p>
-                  <div className="flex items-center justify-between">
-                    <span className="font-medium text-sm">{pick.price}</span>
-                    <span className="text-xs text-black/40">{pick.store}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );
