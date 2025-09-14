@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -18,11 +18,20 @@ interface GroceryListItem {
   price?: string;
 }
 
-interface PlaceholderItem {
+interface MealPlanIngredient {
   name: string;
-  quantity: string;
   price: string;
+  isOnSale: boolean;
+  store: string;
   category: string;
+  day: string;
+}
+
+interface MealPlanData {
+  store: string;
+  totalWeeklyCost: number;
+  savings: number;
+  weekStartDate: string;
 }
 
 // Utility functions for week calculations
@@ -70,26 +79,30 @@ export default function GroceryListPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
   const [items, setItems] = useState<GroceryListItem[]>([]);
+  const [mealPlanIngredients, setMealPlanIngredients] = useState<MealPlanIngredient[]>([]);
+  const [mealPlanData, setMealPlanData] = useState<MealPlanData | null>(null);
   const [loading, setLoading] = useState(true);
   const [newItem, setNewItem] = useState({ name: '', quantity: '', notes: '' });
   const [isAdding, setIsAdding] = useState(false);
   const [currentWeekStart, setCurrentWeekStart] = useState<Date>(() => getWeekStart(new Date()));
 
-  // Placeholder grocery data for receipt
-  const placeholderItems: PlaceholderItem[] = [
-    { name: 'Organic Bananas', quantity: '2 lbs', price: '$3.98', category: 'Produce' },
-    { name: 'Whole Milk 2%', quantity: '1 gallon', price: '$4.29', category: 'Dairy' },
-    { name: 'Whole Wheat Bread', quantity: '1 loaf', price: '$2.99', category: 'Bakery' },
-    { name: 'Free Range Eggs', quantity: '1 dozen', price: '$4.99', category: 'Dairy' },
-    { name: 'Ground Turkey', quantity: '1 lb', price: '$6.99', category: 'Meat' },
-    { name: 'Brown Rice', quantity: '2 lbs', price: '$3.49', category: 'Pantry' },
-    { name: 'Fresh Spinach', quantity: '1 bag', price: '$2.99', category: 'Produce' },
-    { name: 'Greek Yogurt', quantity: '32 oz', price: '$5.99', category: 'Dairy' },
-    { name: 'Olive Oil', quantity: '16 oz', price: '$7.99', category: 'Pantry' },
-    { name: 'Chicken Breast', quantity: '2 lbs', price: '$9.98', category: 'Meat' },
-    { name: 'Sweet Potatoes', quantity: '3 lbs', price: '$4.47', category: 'Produce' },
-    { name: 'Cheddar Cheese', quantity: '8 oz', price: '$3.99', category: 'Dairy' }
-  ];
+  const fetchItems = useCallback(async () => {
+    try {
+      // Format the week parameter as ISO string for the API
+      const weekParam = currentWeekStart.toISOString().split('T')[0];
+      const response = await fetch(`/api/grocery-list?week=${weekParam}`);
+      if (response.ok) {
+        const data = await response.json();
+        setItems(data.items || []);
+        setMealPlanIngredients(data.mealPlanIngredients || []);
+        setMealPlanData(data.mealPlanData);
+      }
+    } catch (error) {
+      console.error('Error fetching items:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [currentWeekStart]);
 
   useEffect(() => {
     if (status === 'unauthenticated') {
@@ -100,21 +113,7 @@ export default function GroceryListPage() {
     if (session) {
       fetchItems();
     }
-  }, [session, status, router]);
-
-  const fetchItems = async () => {
-    try {
-      const response = await fetch('/api/grocery-list');
-      if (response.ok) {
-        const data = await response.json();
-        setItems(data.items || []);
-      }
-    } catch (error) {
-      console.error('Error fetching items:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [session, status, router, currentWeekStart, fetchItems]);
 
   const addItem = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -140,23 +139,6 @@ export default function GroceryListPage() {
     }
   };
 
-  const toggleComplete = async (id: string, completed: boolean) => {
-    try {
-      const response = await fetch(`/api/grocery-list/${id}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ completed })
-      });
-
-      if (response.ok) {
-        setItems(items.map(item => 
-          item.id === id ? { ...item, completed } : item
-        ));
-      }
-    } catch (error) {
-      console.error('Error updating item:', error);
-    }
-  };
 
   const deleteItem = async (id: string) => {
     try {
@@ -204,8 +186,6 @@ export default function GroceryListPage() {
     return null;
   }
 
-  const completedItems = items.filter(item => item.completed);
-  const pendingItems = items.filter(item => !item.completed);
 
   return (
     <div className="min-h-screen bg-background text-foreground flex flex-col">
@@ -243,8 +223,10 @@ export default function GroceryListPage() {
                 {/* Receipt Header */}
                 <div className="bg-loblaws-orange text-white p-6">
                   <div className="text-center">
-                    <div className="font-mono text-md sm:text-sm uppercase tracking-[0.2em] ">BARGAIN BITES</div>
-                    <div className="font-mono text-xs mt-1">GROCERY RECEIPT - Walmart</div>
+                  <div className="font-mono text-md sm:text-sm uppercase tracking-[0.2em] font-bold">
+  BARGAIN BITES
+</div>
+                    <div className="font-mono text-xs mt-1">GROCERY RECEIPT - {mealPlanData?.store || 'Store'}</div>
                   </div>
                   
                   {/* Week Navigation */}
@@ -305,9 +287,9 @@ export default function GroceryListPage() {
                 {/* Receipt Items */}
                 <div className="p-6">
                   <div className="font-mono text-sm space-y-1">
-                    {/* Placeholder items grouped by category */}
+                    {/* Meal plan ingredients grouped by category */}
                     {['Produce', 'Dairy', 'Meat', 'Pantry', 'Bakery'].map(category => {
-                      const categoryItems = placeholderItems.filter(item => item.category === category);
+                      const categoryItems = mealPlanIngredients.filter(item => item.category === category);
                       if (categoryItems.length === 0) return null;
                       
                       return (
@@ -319,8 +301,8 @@ export default function GroceryListPage() {
                             <div key={index} className="flex justify-between items-center py-1">
                               <div className="flex-1">
                                 <div className="flex items-center gap-2">
+                                  {item.isOnSale && <span className="text-green-600 text-xs">🏷️</span>}
                                   <span className="text-gray-800">{item.name}</span>
-                                  <span className="text-gray-500 text-xs">({item.quantity})</span>
                                 </div>
                               </div>
                               <div className="font-semibold text-gray-800">{item.price}</div>
@@ -329,6 +311,25 @@ export default function GroceryListPage() {
                         </div>
                       );
                     })}
+
+                    {/* Show message if no meal plan data */}
+                    {mealPlanIngredients.length === 0 && !loading && (
+                      <div className="text-center py-8 text-gray-500">
+                        <p className="mb-2">No meal plan found for this week</p>
+                        <p className="text-sm">Create a meal plan to see ingredients here</p>
+                        <Link href="/plan" className="inline-block mt-3 px-4 py-2 bg-loblaws-orange text-white rounded hover:bg-loblaws-orange/80 transition-colors">
+                          Create Meal Plan
+                        </Link>
+                      </div>
+                    )}
+
+                    {/* Show loading state */}
+                    {loading && (
+                      <div className="text-center py-8 text-gray-500">
+                        <div className="h-6 w-6 border-2 border-gray-400 border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+                        <p>Loading meal plan...</p>
+                      </div>
+                    )}
 
                     {/* User added items */}
                     {items.filter(item => item.isUserAdded).length > 0 && (
@@ -361,8 +362,14 @@ export default function GroceryListPage() {
                     <div className="border-t border-gray-300 pt-4 mt-6">
                       <div className="flex justify-between items-center text-lg font-bold">
                         <span>TOTAL ESTIMATED</span>
-                        <span>$65.13</span>
+                        <span>${mealPlanData?.totalWeeklyCost?.toFixed(2) || '0.00'}</span>
                       </div>
+                      {mealPlanData?.savings && (
+                        <div className="flex justify-between items-center text-sm text-green-600 mt-1">
+                          <span>SAVINGS</span>
+                          <span>${mealPlanData.savings > 0 ? '+' : ''}${mealPlanData.savings.toFixed(2)}</span>
+                        </div>
+                      )}
                       <div className="text-xs text-gray-500 mt-2 text-center">
                         *Prices are estimates and may vary by store
                       </div>
