@@ -26,6 +26,8 @@ interface MealPlanRequest {
   budget: number;
   householdSize: number;
   cookingExperience: string;
+  mealTypes: string[];
+  additionalNotes: string;
 }
 
 interface MealPlanResponse {
@@ -132,7 +134,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body: MealPlanRequest = await request.json();
-    const { store, cuisinePreferences, dietaryRestrictions, budget, householdSize, cookingExperience } = body;
+    const { store, cuisinePreferences, dietaryRestrictions, budget, householdSize, cookingExperience, mealTypes, additionalNotes } = body;
 
     // Debug logging
     console.log('Received meal plan request:', {
@@ -220,6 +222,8 @@ DIETARY RESTRICTIONS: ${dietaryRestrictions.join(', ') || 'None'}
 BUDGET: $${budget} per week
 HOUSEHOLD SIZE: ${householdSize} people
 COOKING EXPERIENCE: ${cookingExperience}
+MEAL TYPES TO PLAN: ${mealTypes.join(', ')}
+ADDITIONAL NOTES: ${additionalNotes || 'None'}
 
 AVAILABLE SALE ITEMS:
 ${saleItems.slice(0, 50).map(item => 
@@ -237,7 +241,7 @@ IMPORTANT: When creating meals, prioritize using these sale items and consider i
 8. REALISTIC QUANTITIES: Consider that a family of ${householdSize} might not finish a whole package of an ingredient in one meal
 
 REQUIREMENTS:
-1. Create 7 different meals (one for each day)
+1. Create 7 different meals (one for each day) for the following meal types: ${mealTypes.join(', ')}
 2. Use items from the sale list when possible to maximize savings
 3. Consider the cooking experience level (${cookingExperience})
 4. Ensure meals fit the cuisine preferences: ${cuisinePreferences.join(', ')}
@@ -246,6 +250,7 @@ REQUIREMENTS:
 7. Scale portions for ${householdSize} people
 8. Include variety in the week (different proteins, vegetables, etc.)
 9. Consider meal prep potential for busy days
+10. ${additionalNotes ? `SPECIAL REQUIREMENTS: ${additionalNotes}` : ''}
 
 For each meal, provide:
 - Meal name

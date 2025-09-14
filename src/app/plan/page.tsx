@@ -8,6 +8,7 @@ import LocationStep from './components/LocationStep';
 import TransportStep from './components/TransportStep';
 import MapStep from './components/MapStep';
 import CuisineStep from './components/CuisineStep';
+import MealTypesStep from './components/MealTypesStep';
 
 export interface PlanData {
   postalCode: string;
@@ -17,6 +18,8 @@ export interface PlanData {
   cuisinePreferences: string[];
   dietaryRestrictions: string[];
   budget: number;
+  mealTypes: string[];
+  additionalNotes: string;
 }
 
 const STEPS = [
@@ -24,6 +27,7 @@ const STEPS = [
   { id: 'transport', title: 'Transport', component: TransportStep },
   { id: 'map', title: 'Store Selection', component: MapStep },
   { id: 'cuisine', title: 'Preferences', component: CuisineStep },
+  { id: 'meals', title: 'Meal Types', component: MealTypesStep },
 ];
 
 export default function PlanPage() {
@@ -42,6 +46,8 @@ export default function PlanPage() {
     cuisinePreferences: [],
     dietaryRestrictions: [],
     budget: 50,
+    mealTypes: ['dinner'],
+    additionalNotes: '',
   });
 
   const updateData = (updates: Partial<PlanData>) => {
@@ -201,6 +207,8 @@ export default function PlanPage() {
           budget: planData.budget,
           householdSize: planData.householdSize,
           cookingExperience: cookingExperience,
+          mealTypes: planData.mealTypes,
+          additionalNotes: planData.additionalNotes,
         }),
       });
 
