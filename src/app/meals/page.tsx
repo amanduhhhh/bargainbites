@@ -38,7 +38,7 @@ export default function MealsPage() {
   const [isCheckingSetup, setIsCheckingSetup] = useState(true);
   const [weeklyMeals, setWeeklyMeals] = useState<WeeklyMeal[]>([]);
   const [generatedMealPlan, setGeneratedMealPlan] = useState<GeneratedMealPlan | null>(null);
-  const [showMealDetails, setShowMealDetails] = useState<string | null>(null);
+  const [showMealDetails, setShowMealDetails] = useState<string[]>([]);
 
 
   useEffect(() => {
@@ -154,6 +154,8 @@ export default function MealsPage() {
 
 
   const handlePlanWeek = () => {
+    // Clear any existing meal plan to force regeneration with updated store names
+    localStorage.removeItem('generatedMealPlan');
     // Navigate to plan page or trigger meal planning
     window.location.href = '/plan';
   };
@@ -161,12 +163,42 @@ export default function MealsPage() {
   // Function to check if an ingredient is from a flyer deal
   const isFlyerDeal = (ingredient: string) => {
     // Check if the ingredient has [SALE] marker from the API
-    return ingredient.includes('[SALE]');
+    return ingredient.includes('[SALE:');
   };
 
-  // Function to clean ingredient name (remove [SALE] marker for display)
+  // Function to extract store name from sale marker
+  const getStoreFromSaleMarker = (ingredient: string) => {
+    const match = ingredient.match(/\[SALE:([^\]]+)\]/);
+    return match ? match[1] : 'Unknown Store';
+  };
+
+  // Function to clean ingredient name (remove [SALE:Store] marker, price, and [REUSED] marker for display)
   const cleanIngredientName = (ingredient: string) => {
-    return ingredient.replace(/\s*\[SALE\]\s*/g, '').trim();
+    return ingredient
+      .replace(/\s*\[SALE:[^\]]+\]\s*/g, '') // Remove [SALE:Store] marker
+      .replace(/\s*-\s*\$\d+\.?\d*\s*$/g, '') // Remove price at the end
+      .replace(/\s*\[REUSED\]\s*/g, '') // Remove [REUSED] marker
+      .trim();
+  };
+
+  // Function to extract price from ingredient string
+  const getPriceFromIngredient = (ingredient: string) => {
+    const match = ingredient.match(/\$(\d+\.?\d*)/);
+    return match ? parseFloat(match[1]) : 0;
+  };
+
+  // Function to check if ingredient was reused from previous days
+  const isReusedIngredient = (ingredient: string) => {
+    return ingredient.includes('[REUSED]');
+  };
+
+  // Function to get unique stores from a meal's ingredients
+  const getStoresFromMeal = (ingredients: string[]) => {
+    const stores = ingredients
+      .filter(ingredient => isFlyerDeal(ingredient))
+      .map(ingredient => getStoreFromSaleMarker(ingredient))
+      .filter((store, index, arr) => arr.indexOf(store) === index); // Remove duplicates
+    return stores;
   };
 
 
@@ -250,13 +282,19 @@ export default function MealsPage() {
                 </div>
                 
                 {/* Deal Legend */}
-                <div className="mb-4 p-3 bg-loblaws-orange/10 rounded-lg">
-                  <div className="flex items-center gap-2 text-sm">
-                    <svg className="w-4 h-4 text-loblaws-orange" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                    </svg>
-                    <span className="text-black font-medium">Items with this star are on sale in this week&apos;s flyer</span>
-                  </div>
+                <div className="mb-2 flex items-center gap-2 text-sm">
+                  <svg className="w-4 h-4 text-loblaws-orange" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  </svg>
+                  <span className="text-loblaws-orange font-medium">In this week&apos;s flyer</span>
+                </div>
+
+                {/* Reuse Legend */}
+                <div className="mb-4 flex items-center gap-2 text-sm">
+                  <svg className="w-4 h-4 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                    <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
+                  </svg>
+                  <span className="text-gray-700 font-medium">Reused from previous days</span>
                 </div>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -290,38 +328,64 @@ export default function MealsPage() {
                             <div>
                               <div className="flex items-center justify-between">
                                 <button
-                                  onClick={() => setShowMealDetails(showMealDetails === meal.id ? null : meal.id)}
+                                  onClick={() => {
+                                    setShowMealDetails(prev => 
+                                      prev.includes(meal.id) 
+                                        ? prev.filter(id => id !== meal.id)
+                                        : [...prev, meal.id]
+                                    );
+                                  }}
                                   className="text-xs text-accent-muted-dark hover:text-accent-muted underline"
                                 >
-                                  {showMealDetails === meal.id ? 'Hide details' : 'View ingredients & instructions'}
+                                  {showMealDetails.includes(meal.id) ? 'Hide details' : 'View ingredients & instructions'}
                                 </button>
                                 {meal.ingredients.some(ingredient => isFlyerDeal(ingredient)) && (
                                   <div className="flex items-center gap-1 text-xs text-loblaws-orange">
                                     <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                                     </svg>
-                                    <span>Deals available</span>
+                                    <span>Deals at {getStoresFromMeal(meal.ingredients || []).join(', ')}</span>
                                   </div>
                                 )}
                               </div>
-                              {showMealDetails === meal.id && (
+                              {showMealDetails.includes(meal.id) && (
                                 <div className="mt-2 space-y-2">
                                   <div>
                                     <h4 className="text-xs font-medium text-black/60 mb-1">Ingredients:</h4>
                                     <ul className="text-xs text-black/70 space-y-1">
-                                      {meal.ingredients.map((ingredient, index) => (
-                                        <li key={index} className="flex items-start">
-                                          <span className="mr-1">•</span>
-                                          <span className="flex-1">{cleanIngredientName(ingredient)}</span>
-                                          {isFlyerDeal(ingredient) && (
-                                            <span className="ml-2 flex items-center" title="On sale in flyer">
-                                              <svg className="w-3 h-3 text-loblaws-orange" fill="currentColor" viewBox="0 0 20 20">
-                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                              </svg>
-                                            </span>
-                                          )}
-                                        </li>
-                                      ))}
+                                      {meal.ingredients.map((ingredient, index) => {
+                                        const price = getPriceFromIngredient(ingredient);
+                                        const isReused = isReusedIngredient(ingredient);
+                                        return (
+                                          <li key={index} className="flex items-start justify-between">
+                                            <div className="flex items-start flex-1">
+                                              <span className="mr-1">•</span>
+                                              <span className="flex-1">{cleanIngredientName(ingredient)}</span>
+                                              {isFlyerDeal(ingredient) && (
+                                                <span 
+                                                  className="ml-2 flex items-center" 
+                                                  title={`On sale at ${getStoreFromSaleMarker(ingredient)}`}
+                                                >
+                                                  <svg className="w-3 h-3 text-loblaws-orange" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                                                  </svg>
+                                                </span>
+                                              )}
+                                            </div>
+                                            {isReused ? (
+                                              <span className="ml-2 flex items-center" title="Reused from previous days">
+                                                <svg className="w-3 h-3 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
+                                                  <path fillRule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clipRule="evenodd" />
+                                                </svg>
+                                              </span>
+                                            ) : price > 0 ? (
+                                              <span className="text-xs font-medium text-loblaws-orange ml-2">
+                                                ${price.toFixed(2)}
+                                              </span>
+                                            ) : null}
+                                          </li>
+                                        );
+                                      })}
                                     </ul>
                                   </div>
                                   {meal.cookingInstructions && (
