@@ -1,5 +1,6 @@
 - .env
 - .gitignore
+- MEAL_PLANNING_SETUP.md
 - README.md
 - details copy.md
 - eslint.config.mjs
@@ -8,7 +9,13 @@
 - package-lock.json
 - package.json
 - postcss.config.mjs
+- prisma
+  - schema.prisma
+- project_structure.text
 - public
+  - background
+    - groceries.png
+    - oranges.png
   - company-logos
     - Costco_Wholesale_logo_2010-10-26.svg.png
     - Farm_Boy_logo.svg.png
@@ -20,28 +27,93 @@
     - Real_Canadian_Superstore_logo.svg.png
     - Sobeys_logo.svg.png
     - Walmart_logo_(2008).svg.png
+    - t-t-supermarket-logo.svg
+  - data
+    - independent.json
+    - sobeys.json
+    - t&t.json
+    - walmart.json
+    - zehrs.json
   - file.svg
+  - flyers
+    - Independent.pdf
+    - Zehrs.pdf
+    - sobeys.pdf
+    - t&t pdfs
+    - tnt.pdf
+    - walmart.pdf
   - globe.svg
+  - landing
+    - landing01.png
+    - landing02.png
   - next.svg
   - vercel.svg
   - window.svg
+- scripts
 - src
   - app
     - api
       - auth
-        - [auth0]
+        - [...nextauth]
           - route.ts
+        - [auth0]
+      - grocery-list
+        - [id]
+          - route.ts
+        - route.ts
+      - meal-plan
+        - route.ts
+      - meal-plans
+        - route.ts
+      - test-db
+        - route.ts
+      - user
+        - preferences
+          - route.ts
+    - auth
+      - signin
+        - page.tsx
     - favicon.ico
     - globals.css
+    - how-it-works
+      - page.tsx
     - layout.tsx
+    - list
+      - page.tsx
     - loading.tsx
+    - meals
+      - page.tsx
     - page.tsx
+    - plan
+      - components
+        - CuisineStep.tsx
+        - LocationStep.tsx
+        - LunchPreferencesStep.tsx
+        - MapComponent.tsx
+        - MapStep.tsx
+        - TransportStep.tsx
+      - page.tsx
     - profile
       - page.tsx
+    - recipe
+      - [id]
+        - page.tsx
     - route-loader.tsx
+    - setup
+      - components
+        - BudgetStep.tsx
+        - CookingExperienceStep.tsx
+        - DietaryRestrictionsStep.tsx
+        - EquipmentStep.tsx
+        - HouseholdSizeStep.tsx
+        - PantryStaplesStep.tsx
+      - page.tsx
     - template.tsx
   - components
     - AuthButtons.tsx
     - ClientProviders.tsx
+  - lib
+    - auth.ts
+    - mongodb.ts
   - middleware.ts
 - tsconfig.json
