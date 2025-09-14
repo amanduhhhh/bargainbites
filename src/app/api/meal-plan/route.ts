@@ -58,6 +58,20 @@ const storeFileMap: { [key: string]: string } = {
   'real-canadian-superstore': 'zehrs.json' // Using zehrs data as fallback
 };
 
+// Map store IDs to display names
+const storeDisplayNames: { [key: string]: string } = {
+  'zehrs-conestoga': 'Zehrs',
+  'zehrs': 'Zehrs',
+  'walmart-farmers-market': 'Walmart',
+  'walmart': 'Walmart',
+  'sobeys': 'Sobeys',
+  'belfiores-independent': 'Independent',
+  'independent': 'Independent',
+  'tnt-supermarket': 'T&T',
+  't&t': 'T&T',
+  'real-canadian-superstore': 'Real Canadian Superstore'
+};
+
 export async function POST(request: NextRequest) {
   try {
     // Check if Gemini API key is available
@@ -209,10 +223,15 @@ COOKING EXPERIENCE: ${cookingExperience}
 
 AVAILABLE SALE ITEMS:
 ${saleItems.slice(0, 50).map(item => 
-  `- ${item.name}: $${item.price} (${item.measure}${item.measure_unit}) - ${item.savings_percentage}% off`
+  `- ${item.name}: $${item.price} (${item.measure}${item.measure_unit}) - ${item.savings_percentage}% off - Unit: ${item.unit_type}`
 ).join('\n')}
 
-IMPORTANT: When creating meals, prioritize using these sale items. For each ingredient you suggest, indicate if it's from the sale items above by adding [SALE] next to it. For example: "Chicken breast [SALE]" or "Regular pasta" (if not on sale).
+IMPORTANT: When creating meals, prioritize using these sale items. For each ingredient you suggest:
+1. If it's from the sale items above, format as: "ingredient name [SALE:${storeDisplayNames[store] || store}] - $X.XX"
+2. If it's not on sale, format as: "ingredient name - $X.XX" (use reasonable market prices)
+3. Always include the actual price for each ingredient
+4. Use the exact prices from the sale items when available
+5. For non-sale items, estimate realistic grocery store prices
 
 REQUIREMENTS:
 1. Create 7 different meals (one for each day)
@@ -235,7 +254,7 @@ Format the response as a JSON object with this structure:
 {
   "monday": {
     "meal": "Meal Name",
-    "ingredients": ["ingredient 1", "ingredient 2", ...],
+    "ingredients": ["ingredient 1 [SALE:Store] - $X.XX", "ingredient 2 - $X.XX", ...],
     "totalCost": 15.50,
     "cookingInstructions": "Brief instructions"
   },
