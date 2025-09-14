@@ -57,6 +57,8 @@ model User {
   weeklyBudget      Float?
   equipment         String[]
   dietaryRestrictions String[]
+  lunchPreference   String?
+  specialRequests   String?
   preferencesSet    Boolean   @default(false)
 
   // Grocery list items

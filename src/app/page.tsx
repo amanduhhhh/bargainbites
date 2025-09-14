@@ -100,7 +100,7 @@ export default function Home() {
             </div>
             <div className="rounded-lg border border-black/10 p-4">
               <div className="font-medium">Optimizes your trip</div>
-              <p className="mt-1 text-sm text-black/60 dark:text-black/60">Minimizes cost with store routing and carry-capacity checks if you're on foot.</p>
+              <p className="mt-1 text-sm text-black/60 dark:text-black/60">Minimizes cost with store routing and carry-capacity checks if you&apos;re on foot.</p>
             </div>
             <div className="rounded-lg border border-black/10 p-4">
               <div className="font-medium">Simple chat adjustments</div>
@@ -117,8 +117,8 @@ export default function Home() {
                 Personalized to your needs
               </h2>
               <p className="text-sm sm:text-base text-black/60 dark:text-black/60 mb-6">
-                Tell us about your dietary restrictions, allergies, and preferences. Whether you're vegetarian, 
-                gluten-free, or have specific allergies, we'll filter out incompatible meals and focus on 
+                Tell us about your dietary restrictions, allergies, and preferences. Whether you&apos;re vegetarian, 
+                gluten-free, or have specific allergies, we&apos;ll filter out incompatible meals and focus on 
                 options that work for you.
               </p>
               <p className="text-sm sm:text-base text-black/60 dark:text-black/60">
@@ -156,8 +156,8 @@ export default function Home() {
               </h2>
               <p className="text-sm sm:text-base text-black/60 dark:text-black/60 mb-6">
                 We analyze your location and optimize your shopping trip by considering distance, 
-                transportation method, and carry capacity. Whether you're walking, cycling, or driving, 
-                we'll suggest the most convenient stores and routes.
+                transportation method, and carry capacity. Whether you&apos;re walking, cycling, or driving, 
+                we&apos;ll suggest the most convenient stores and routes.
               </p>
               <p className="text-sm sm:text-base text-black/60 dark:text-black/60">
                 Our algorithm weighs factors like proximity, item availability, and your transport 
