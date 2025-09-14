@@ -3,6 +3,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 import { getServerSession } from 'next-auth/next';
 import { authOptions } from '@/lib/auth';
 import { PrismaClient } from '@prisma/client';
+// Unsplash imports removed - image generation now handled on-demand
 
 // Initialize Gemini AI and Prisma
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
@@ -15,6 +16,8 @@ function getWeekStart(date: Date): Date {
   weekStart.setHours(0, 0, 0, 0);
   return weekStart;
 }
+
+// Recipe generation functions removed - now handled on-demand in recipe page
 
 interface FlyerItem {
   name: string;
@@ -50,6 +53,8 @@ interface MealData {
   lunch?: { meal: string; ingredients: string[]; totalCost: number; cookingInstructions: string };
   dinner?: { meal: string; ingredients: string[]; totalCost: number; cookingInstructions: string };
 }
+
+// EnhancedMealData interface removed - recipe details now generated on-demand
 
 
 // Map store IDs to file names
@@ -238,17 +243,7 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Debug logging
-    console.log('Received meal plan request:', {
-      store,
-      cuisinePreferences,
-      dietaryRestrictions,
-      budget,
-      householdSize,
-      cookingExperience,
-      lunchPreference,
-      specialRequests
-    });
+    // Process meal plan request
 
     // Validate required fields
     if (!store) {
@@ -314,10 +309,10 @@ export async function POST(request: NextRequest) {
       saleItemMap.set(normalizedName, item);
     });
 
-    // Create prompt for Gemini
+    // Create prompt for Gemini - focused on grocery information and meal planning
     const isCookLunch = lunchPreference === 'cook-lunch';
     const prompt = `
-You are a meal planning expert. Create a weekly meal plan (Monday to Sunday) based on the following:
+You are a grocery shopping and meal planning expert. Create a weekly meal plan (Monday to Sunday) focused on grocery selection and cost optimization based on the following:
 
 STORE: ${store}
 CUISINE PREFERENCES: ${cuisinePreferences.join(', ')}
@@ -333,53 +328,57 @@ ${saleItems.slice(0, 50).map(item =>
   `- ${item.name}: $${item.price} (${item.measure}${item.measure_unit}) - ${item.savings_percentage}% off - Unit: ${item.unit_type}`
 ).join('\n')}
 
-IMPORTANT: When creating meals, prioritize using these sale items and consider ingredient reuse across the week:
-1. If it's from the sale items above, format as: "ingredient name [SALE:${storeDisplayNames[store] || store}] - $X.XX"
-2. If it's not on sale, format as: "ingredient name - $X.XX" (use reasonable market prices)
-3. Always include the actual price for each ingredient
-4. Use the exact prices from the sale items when available
-5. For non-sale items, estimate realistic grocery store prices
-6. CONSIDER INGREDIENT REUSE: Plan meals that share common ingredients (e.g., if you buy a whole chicken, use it for multiple meals)
-7. PORTION SIZING: When an ingredient is used in multiple meals, only show the price for the first meal, then mark subsequent uses with "[REUSED]" marker
-8. REALISTIC QUANTITIES: Consider that a family of ${householdSize} might not finish a whole package of an ingredient in one meal
+YOUR TASK: Focus on grocery selection, cost optimization, and meal structure. Provide:
+1. Meal names that are descriptive and appealing
+2. Ingredient lists with precise measurements for ${householdSize} people
+3. Cost calculations using sale items when available
+4. Basic cooking approach (detailed recipes will be generated separately)
+
+IMPORTANT FORMATTING RULES:
+1. If ingredient is from sale items: "ingredient name [SALE:${storeDisplayNames[store] || store}] - $X.XX"
+2. If not on sale: "ingredient name - $X.XX" (use realistic market prices)
+3. Include exact prices from sale items when available
+4. For non-sale items, estimate realistic grocery store prices
+5. CONSIDER INGREDIENT REUSE: Plan meals that share common ingredients
+6. PORTION SIZING: When an ingredient is used in multiple meals, only show price for first meal, then mark subsequent uses with "[REUSED]"
+7. REALISTIC QUANTITIES: Consider that a family of ${householdSize} might not finish a whole package in one meal
 
 REQUIREMENTS:
-1. ${isCookLunch ? 'Create 7 different lunch AND dinner meals (14 total meals - one lunch and one dinner for each day)' : 'Create 7 different meals (one for each day)'}
-2. Use items from the sale list when possible to maximize savings
-3. Consider the cooking experience level (${cookingExperience})
-4. Ensure meals fit the cuisine preferences: ${cuisinePreferences.join(', ')}
-5. Respect dietary restrictions: ${dietaryRestrictions.join(', ') || 'None'}
-6. Stay within the $${budget} weekly budget, try to aim for 5% below the budget
-7. Scale portions for ${householdSize} people
-8. Include variety in the week (different proteins, vegetables, etc.)
-9. Consider meal prep potential for busy days
-10. LUNCH CONSIDERATION: ${lunchPreference === 'cook-lunch' ? 'Plan separate lunch and dinner meals - lunch should be lighter, quicker to prepare, and suitable for midday. Dinner can be more substantial and elaborate.' : lunchPreference === 'leftovers' ? 'Design dinner portions to provide good leftovers for lunch' : lunchPreference === 'buy-lunch' ? 'Focus on dinner meals only, budget may be adjusted for external lunch purchases' : 'Consider general meal planning without specific lunch requirements'}
-11. SPECIAL REQUESTS: ${specialRequests ? `Incorporate these preferences: ${specialRequests}` : 'No special requests to consider'}
+1. ${isCookLunch ? 'Create 7 different lunch AND dinner meals (14 total meals)' : 'Create 7 different meals (one for each day)'}
+2. Prioritize sale items to maximize savings
+3. Ensure meals fit cuisine preferences: ${cuisinePreferences.join(', ')}
+4. Respect dietary restrictions: ${dietaryRestrictions.join(', ') || 'None'}
+5. Stay within $${budget} weekly budget (aim for 5% below)
+6. Scale portions for ${householdSize} people
+7. Include variety (different proteins, vegetables, etc.)
+8. Consider meal prep potential for busy days
+9. LUNCH CONSIDERATION: ${lunchPreference === 'cook-lunch' ? 'Plan separate lunch and dinner - lunch should be lighter and quicker, dinner more substantial' : lunchPreference === 'leftovers' ? 'Design dinner portions to provide good leftovers for lunch' : lunchPreference === 'buy-lunch' ? 'Focus on dinner meals only' : 'Consider general meal planning'}
+10. SPECIAL REQUESTS: ${specialRequests ? `Incorporate: ${specialRequests}` : 'No special requests'}
 
 For each meal, provide:
-- Meal name
-- List of ingredients (with quantities for ${householdSize} people)
-- Estimated cost for that meal
-- Detailed cooking instructions appropriate for ${cookingExperience} level
+- Descriptive meal name
+- Ingredient list with quantities and costs
+- Total cost for that meal
+- Basic cooking approach (brief, high-level instructions)
 
-${isCookLunch ? `Format the response as a JSON object with this structure:
+${isCookLunch ? `Format as JSON:
 {
   "monday": {
     "meal": "Combined Day Name",
-    "ingredients": ["combined ingredients from both meals"],
+    "ingredients": ["combined ingredients with costs"],
     "totalCost": 25.50,
-    "cookingInstructions": "Combined instructions",
+    "cookingInstructions": "Basic cooking approach",
     "lunch": {
       "meal": "Lunch Meal Name",
-      "ingredients": ["lunch ingredient 1 [SALE:Store] - $X.XX", "lunch ingredient 2 - $X.XX", ...],
+      "ingredients": ["lunch ingredients with costs"],
       "totalCost": 8.25,
-      "cookingInstructions": "Lunch cooking instructions"
+      "cookingInstructions": "Basic lunch approach"
     },
     "dinner": {
       "meal": "Dinner Meal Name", 
-      "ingredients": ["dinner ingredient 1 [SALE:Store] - $X.XX", "dinner ingredient 2 - $X.XX", ...],
+      "ingredients": ["dinner ingredients with costs"],
       "totalCost": 17.25,
-      "cookingInstructions": "Dinner cooking instructions"
+      "cookingInstructions": "Basic dinner approach"
     }
   },
   "tuesday": { ... },
@@ -390,19 +389,19 @@ ${isCookLunch ? `Format the response as a JSON object with this structure:
   "sunday": { ... },
   "totalWeeklyCost": 95.75,
   "savings": 0
-}` : `Format the response as a JSON object with this structure:
+}` : `Format as JSON:
 {
   "monday": {
     "meal": "Meal Name",
     "ingredients": ["ingredient 1 [SALE:Store] - $X.XX", "ingredient 2 - $X.XX", ...],
     "totalCost": 15.50,
-    "cookingInstructions": "Brief instructions"
+    "cookingInstructions": "Basic cooking approach"
   },
   "tuesday": {
     "meal": "Another Meal",
     "ingredients": ["ingredient 1 [REUSED]", "new ingredient - $X.XX", ...],
     "totalCost": 8.25,
-    "cookingInstructions": "Brief instructions"
+    "cookingInstructions": "Basic cooking approach"
   },
   "wednesday": { ... },
   "thursday": { ... },
@@ -413,7 +412,7 @@ ${isCookLunch ? `Format the response as a JSON object with this structure:
   "savings": 0
 }`}
 
-Focus on using the sale items to create delicious, budget-friendly meals that match the user's preferences and skill level.
+Focus on grocery selection and cost optimization. Detailed recipes will be generated separately.
 `;
 
     // Generate meal plan using Gemini
@@ -447,6 +446,9 @@ Focus on using the sale items to create delicious, budget-friendly meals that ma
     
     // Update the meal plan with correct savings calculation
     mealPlan.savings = savings;
+
+    // Skip recipe enhancement during meal plan generation for speed
+    // Recipes will be generated on-demand when users click on them
 
     // Save to database if user is authenticated
     if (session?.user?.email) {

@@ -138,16 +138,16 @@ export async function GET(request: NextRequest) {
           let ingredients: string[] = [];
           
           // Handle both single meal and lunch/dinner structure
-          if (Array.isArray(dayMeal.ingredients)) {
-            ingredients = dayMeal.ingredients as string[];
-          }
+          // If there are separate lunch/dinner meals, use those instead of main meal ingredients
           const lunch = dayMeal.lunch as Record<string, unknown> | undefined;
-          if (lunch && Array.isArray(lunch.ingredients)) {
-            ingredients = [...ingredients, ...(lunch.ingredients as string[])];
-          }
           const dinner = dayMeal.dinner as Record<string, unknown> | undefined;
-          if (dinner && Array.isArray(dinner.ingredients)) {
-            ingredients = [...ingredients, ...(dinner.ingredients as string[])];
+          
+          if (lunch && dinner && Array.isArray(lunch.ingredients) && Array.isArray(dinner.ingredients)) {
+            // Use lunch and dinner ingredients when both exist
+            ingredients = [...(lunch.ingredients as string[]), ...(dinner.ingredients as string[])];
+          } else if (Array.isArray(dayMeal.ingredients)) {
+            // Use main meal ingredients when no separate lunch/dinner
+            ingredients = dayMeal.ingredients as string[];
           }
 
           // Process ingredients and categorize them

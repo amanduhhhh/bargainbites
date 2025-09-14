@@ -23,6 +23,44 @@ export default function RecipePage() {
   const [recipeData, setRecipeData] = useState<RecipeData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [imageLoading, setImageLoading] = useState(true);
+  const [isGeneratingRecipe, setIsGeneratingRecipe] = useState(false);
+  const [householdSize, setHouseholdSize] = useState(2); // Default to 2, will be updated from user preferences
+
+  // Load user preferences to get household size
+  useEffect(() => {
+    const loadUserPreferences = async () => {
+      if (status === 'loading') return;
+      
+      if (session?.user) {
+        try {
+          const response = await fetch('/api/user/preferences');
+          if (response.ok) {
+            const data = await response.json();
+            if (data.success && data.preferences?.householdSize) {
+              setHouseholdSize(data.preferences.householdSize);
+            }
+          }
+        } catch (error) {
+          console.error('Error loading user preferences:', error);
+        }
+      } else {
+        // Check for demo data in localStorage
+        const demoData = localStorage.getItem('demoOnboardingData');
+        if (demoData) {
+          try {
+            const parsedData = JSON.parse(demoData);
+            if (parsedData.householdSize) {
+              setHouseholdSize(parsedData.householdSize);
+            }
+          } catch (error) {
+            console.error('Error parsing demo data:', error);
+          }
+        }
+      }
+    };
+
+    loadUserPreferences();
+  }, [session, status]);
 
   useEffect(() => {
     const loadRecipeData = async () => {
@@ -54,6 +92,7 @@ export default function RecipePage() {
               totalCost: dayData.totalCost,
               cookingInstructions: dayData.cookingInstructions,
               day: dayNames[dayIndex],
+              imageUrl: dayData.imageUrl,
             });
           } else {
             router.push('/meals');
@@ -77,62 +116,130 @@ export default function RecipePage() {
     }
   }, [params.id, router, status]);
 
-  // Function to get recipe image based on meal name using dynamic Unsplash search
-  const getRecipeImage = (mealName: string) => {
-    // Clean and prepare the meal name for URL encoding
-    const cleanMealName = mealName
-      .toLowerCase()
-      .replace(/[^\w\s-]/g, '') // Remove special characters except spaces and hyphens
-      .replace(/\s+/g, '+') // Replace spaces with + for URL encoding
-      .trim();
-
-    // Create a dynamic Unsplash URL with the meal name as search query
-    // Using Unsplash's search API with food category and specific meal name
-    const searchQuery = encodeURIComponent(cleanMealName);
-    const imageUrl = `https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&h=600&fit=crop&q=80&auto=format&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&utm_source=unsplash&utm_medium=referral&utm_campaign=api-credit&q=${searchQuery}`;
+  // Function to generate detailed cooking instructions on-demand
+  const generateDetailedInstructions = async () => {
+    if (!recipeData || isGeneratingRecipe) return;
     
-    return imageUrl;
-  };
-
-  // Alternative function using Unsplash's source API for more specific results
-  const getRecipeImageFromUnsplash = async (mealName: string): Promise<string> => {
+    setIsGeneratingRecipe(true);
+    
     try {
-      // Clean the meal name for better search results
-      const searchQuery = mealName
-        .toLowerCase()
-        .replace(/[^\w\s-]/g, '')
-        .replace(/\s+/g, ' ')
-        .trim();
+      // Check if instructions are already cached
+      const cacheKey = `instructions_${recipeData.meal}_${recipeData.id}`;
+      const cachedInstructions = localStorage.getItem(cacheKey);
+      
+      if (cachedInstructions) {
+        setRecipeData(prev => prev ? { 
+          ...prev, 
+          cookingInstructions: cachedInstructions 
+        } : null);
+        setIsGeneratingRecipe(false);
+        return;
+      }
 
-      // Use Unsplash's search API (requires API key, but we can use a fallback approach)
-      // For now, we'll use a more intelligent URL construction
-      const encodedQuery = encodeURIComponent(searchQuery);
+      // Extract ingredients
+      const ingredients: string[] = [];
       
-      // Try to get a more specific image by constructing a search-based URL
-      // This uses Unsplash's public search endpoint
-      const searchUrl = `https://source.unsplash.com/800x600/?food,${encodedQuery}`;
+      recipeData.ingredients.forEach(ingredient => {
+        const match = ingredient.match(/^(.+?)\s*-\s*\$\d+\.\d+$/);
+        if (match) {
+          const ingredientName = match[1].replace(/\[SALE:.*?\]|\[REUSED\]/g, '').trim();
+          ingredients.push(ingredientName);
+        }
+      });
+
+      // Generate cooking instructions using Cohere
+      console.log('🚀 Frontend: Starting recipe generation request');
+      const requestStartTime = Date.now();
       
-      return searchUrl;
+      const response = await fetch('/api/recipe/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          mealName: recipeData.meal,
+          ingredients,
+          measurements: ingredients.map(() => 'as needed'),
+          servingSize: householdSize,
+          pantryItems: [],
+          dietaryRestrictions: [],
+          cookingExperience: 'intermediate',
+          cuisineType: 'american'
+        }),
+      });
+
+      const requestEndTime = Date.now();
+      const requestDuration = requestEndTime - requestStartTime;
+      console.log(`⏱️ Frontend: Request completed in ${requestDuration}ms`);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('❌ Frontend: API request failed:', response.status, errorText);
+        throw new Error(`Failed to generate cooking instructions: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('✅ Frontend: Received response from API');
+      
+      if (data.success) {
+        console.log('💾 Frontend: Caching instructions and updating UI');
+        // Cache the instructions
+        localStorage.setItem(cacheKey, data.cookingInstructions);
+        
+        // Update recipe data with new instructions
+        setRecipeData(prev => prev ? { 
+          ...prev, 
+          cookingInstructions: data.cookingInstructions 
+        } : null);
+      } else {
+        console.error('❌ Frontend: API returned success: false', data);
+      }
     } catch (error) {
-      console.error('Error generating image URL:', error);
-      // Fallback to a general food image
-      return 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&h=600&fit=crop';
+      console.error('Error generating cooking instructions:', error);
+    } finally {
+      setIsGeneratingRecipe(false);
     }
   };
 
+  // Function to parse markdown to HTML
+  const parseMarkdown = (text: string) => {
+    return text
+      // Convert headers first
+      .replace(/^### (.*$)/gim, '<h3 class="text-lg font-semibold mt-4 mb-2">$1</h3>')
+      .replace(/^## (.*$)/gim, '<h2 class="text-xl font-semibold mt-4 mb-2">$1</h2>')
+      .replace(/^# (.*$)/gim, '<h1 class="text-2xl font-semibold mt-4 mb-2">$1</h1>')
+      // Convert numbered lists (before bullet points)
+      .replace(/^(\d+)\.\s+(.*)$/gim, '<div class="flex gap-3 mb-2"><span class="font-semibold text-loblaws-orange min-w-[2rem]">$1.</span><span>$2</span></div>')
+      // Convert bullet points - more flexible regex
+      .replace(/^\s*[-*•]\s+(.*)$/gim, '<div class="flex gap-3 mb-2"><span class="text-loblaws-orange">•</span><span>$1</span></div>')
+      // Convert bold text
+      .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold">$1</strong>')
+      // Convert italic text
+      .replace(/\*(.*?)\*/g, '<em class="italic">$1</em>')
+      // Convert line breaks
+      .replace(/\n\n/g, '</p><p class="mb-3">')
+      // Wrap in paragraphs (but not for divs)
+      .replace(/^(?!<[h|d])/gm, '<p class="mb-3">')
+      .replace(/(?<!>)$/gm, '</p>')
+      // Clean up empty paragraphs
+      .replace(/<p class="mb-3"><\/p>/g, '')
+      .replace(/<p class="mb-3"><div/g, '<div')
+      .replace(/<\/div><\/p>/g, '</div>');
+  };
+
+  // Simple fallback image for all recipes
+  const getRecipeImage = () => {
+    return 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&h=600&fit=crop';
+  };
+
   useEffect(() => {
-    if (recipeData && !recipeData.imageUrl) {
-      // Use the more dynamic Unsplash source API for better image matching
-      getRecipeImageFromUnsplash(recipeData.meal).then((imageUrl) => {
-        setRecipeData(prev => prev ? { ...prev, imageUrl } : null);
-        setImageLoading(false);
-      }).catch((error) => {
-        console.error('Error fetching recipe image:', error);
-        // Fallback to the basic function
-        const fallbackUrl = getRecipeImage(recipeData.meal);
-        setRecipeData(prev => prev ? { ...prev, imageUrl: fallbackUrl } : null);
-        setImageLoading(false);
-      });
+    if (recipeData) {
+      // Set default image if not already set
+      if (!recipeData.imageUrl) {
+        const defaultImageUrl = getRecipeImage();
+        setRecipeData(prev => prev ? { ...prev, imageUrl: defaultImageUrl } : null);
+      }
+      setImageLoading(false);
     }
   }, [recipeData]);
 
@@ -173,6 +280,17 @@ export default function RecipePage() {
         <div className="text-center">
           <div className="h-8 w-8 border-2 border-foreground border-t-transparent rounded-full animate-spin mx-auto mb-4" />
           <p className="text-sm text-black/60">Loading recipe...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (isGeneratingRecipe) {
+    return (
+      <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
+        <div className="text-center">
+          <div className="h-8 w-8 border-2 border-foreground border-t-transparent rounded-full animate-spin mx-auto mb-4" />
+          <p className="text-sm text-black/60">Generating detailed recipe...</p>
         </div>
       </div>
     );
@@ -238,9 +356,11 @@ export default function RecipePage() {
             <span>•</span>
             <span className="font-medium text-loblaws-orange">${recipeData.totalCost.toFixed(2)}</span>
           </div>
-          <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight mb-4">
-            {recipeData.meal}
-          </h1>
+          <div className="mb-4">
+            <h1 className="text-4xl sm:text-5xl font-semibold tracking-tight">
+              {recipeData.meal}
+            </h1>
+          </div>
         </div>
 
         {/* Recipe Image */}
@@ -257,16 +377,11 @@ export default function RecipePage() {
                 className="w-full h-full object-cover"
                 onLoad={() => setImageLoading(false)}
                 onError={(e) => {
+                  console.log('🔄 Image failed to load, using fallback...');
                   setImageLoading(false);
-                  // Try fallback image generation
-                  const fallbackUrl = getRecipeImage(recipeData.meal);
+                  // Use fallback image
                   const target = e.target as HTMLImageElement;
-                  if (target.src !== fallbackUrl) {
-                    target.src = fallbackUrl;
-                  } else {
-                    // Final fallback to a general food image
-                    target.src = 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=800&h=600&fit=crop';
-                  }
+                  target.src = getRecipeImage();
                 }}
               />
             )}
@@ -279,6 +394,8 @@ export default function RecipePage() {
           <div className="lg:col-span-1">
             <div className="sticky top-8">
               <h2 className="text-2xl font-semibold mb-6">Ingredients</h2>
+              
+              {/* Ingredients List */}
               <div className="space-y-3">
                 {recipeData.ingredients.map((ingredient, index) => {
                   const price = getPriceFromIngredient(ingredient);
@@ -336,12 +453,34 @@ export default function RecipePage() {
           {/* Instructions */}
           <div className="lg:col-span-2">
             <h2 className="text-2xl font-semibold mb-6 pl-2">Instructions</h2>
+            
+            {/* Cooking Instructions */}
             <div className="prose prose-sm max-w-none">
               <div className="bg-white pl-2">
-                <p className="text-black/80 leading-relaxed whitespace-pre-line">
-                  {recipeData.cookingInstructions}
-                </p>
+                {recipeData.cookingInstructions ? (
+                  <div 
+                    className="text-black/80 leading-relaxed"
+                    dangerouslySetInnerHTML={{ 
+                      __html: parseMarkdown(recipeData.cookingInstructions) 
+                    }}
+                  />
+                ) : (
+                  <div className="text-center py-8">
+                    <p className="text-gray-500 mb-4">No detailed instructions available</p>
+                  </div>
+                )}
               </div>
+            </div>
+
+            {/* Generate Instructions Button */}
+            <div className="mt-6 pl-2">
+              <button
+                onClick={generateDetailedInstructions}
+                disabled={isGeneratingRecipe}
+                className="px-4 py-2 bg-loblaws-orange text-white rounded-lg hover:bg-loblaws-orange/80 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                {isGeneratingRecipe ? 'Generating...' : 'Generate Cooking Instructions'}
+              </button>
             </div>
 
           </div>

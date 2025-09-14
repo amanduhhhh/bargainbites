@@ -75,6 +75,25 @@ const isFutureWeek = (weekStart: Date): boolean => {
   return weekStart > currentWeekStart;
 };
 
+// Map store IDs to display names
+const storeDisplayNames: { [key: string]: string } = {
+  'zehrs-conestoga': 'Zehrs',
+  'zehrs': 'Zehrs',
+  'walmart-farmers-market': 'Walmart',
+  'walmart': 'Walmart',
+  'sobeys': 'Sobeys',
+  'belfiores-independent': 'Independent',
+  'independent': 'Independent',
+  'tnt-supermarket': 'T&T',
+  't&t': 'T&T',
+  'real-canadian-superstore': 'Real Canadian Superstore'
+};
+
+const getStoreDisplayName = (storeId: string | undefined): string => {
+  if (!storeId) return 'Store';
+  return storeDisplayNames[storeId] || storeId;
+};
+
 export default function GroceryListPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
@@ -221,50 +240,52 @@ export default function GroceryListPage() {
             <div className="lg:col-span-2">
               <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
                 {/* Receipt Header */}
-                <div className="bg-loblaws-orange text-white p-6">
-                  <div className="text-center">
-                  <div className="font-mono text-md sm:text-sm uppercase tracking-[0.2em] font-bold">
-  BARGAIN BITES
-</div>
-                    <div className="font-mono text-xs mt-1">GROCERY RECEIPT - {mealPlanData?.store || 'Store'}</div>
+                <div className="bg-gradient-to-r from-loblaws-orange to-orange-600 text-white p-6">
+                  <div className="text-center mb-6">
+                    <div className="font-mono text-lg sm:text-xl uppercase tracking-[0.3em] font-bold mb-2">
+                      BARGAIN BITES
+                    </div>
+                    <div className="text-sm opacity-90">
+                      GROCERY RECEIPT • {getStoreDisplayName(mealPlanData?.store)}
+                    </div>
                   </div>
                   
                   {/* Week Navigation */}
-                  <div className="mt-2 flex items-center justify-between">
+                  <div className="flex items-center justify-between">
                     <button
                       onClick={goToPreviousWeek}
-                      className="flex items-center gap-1 px-3 py-1 bg-white text-black hover:bg-gray-100 rounded text-xs font-mono transition-colors"
+                      className="flex items-center justify-center w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full transition-all duration-200 backdrop-blur-sm"
+                      title="Previous week"
                     >
-                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                       </svg>
-                      Previous
                     </button>
                     
-                    <div className="text-center">
-                      <div className="mb-2 font-mono text-xs">
+                    <div className="text-center flex-1 mx-4">
+                      <div className="text-sm font-medium mb-2">
                         {formatWeekRange(currentWeekStart)}
                       </div>
-                      <div className="flex items-center justify-center gap-2 mt-1">
+                      <div className="flex items-center justify-center gap-2">
                         {isCurrentWeek(currentWeekStart) && (
-                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-600 text-white">
-                            Current
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-green-500 text-white shadow-sm">
+                            Current Week
                           </span>
                         )}
                         {isPastWeek(currentWeekStart) && (
-                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-black text-white">
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-gray-600 text-white shadow-sm">
                             Archived
                           </span>
                         )}
                         {isFutureWeek(currentWeekStart) && (
-                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-white text-black">
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-white/20 text-white shadow-sm backdrop-blur-sm">
                             Planned
                           </span>
                         )}
                         {!isCurrentWeek(currentWeekStart) && (
                           <button
                             onClick={goToCurrentWeek}
-                            className="text-xs text-black hover:text-white underline"
+                            className="text-xs text-white/80 hover:text-white underline transition-colors"
                           >
                             Go to current
                           </button>
@@ -274,10 +295,10 @@ export default function GroceryListPage() {
                     
                     <button
                       onClick={goToNextWeek}
-                      className="flex items-center gap-1 px-3 py-1 bg-white hover:bg-gray-100  text-black rounded text-xs font-mono transition-colors"
+                      className="flex items-center justify-center w-10 h-10 bg-white/20 hover:bg-white/30 rounded-full transition-all duration-200 backdrop-blur-sm"
+                      title="Next week"
                     >
-                      Next
-                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                       </svg>
                     </button>
