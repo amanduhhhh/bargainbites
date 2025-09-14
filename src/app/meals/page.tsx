@@ -231,11 +231,7 @@ export default function MealsPage() {
           </div>
           <button
             onClick={handlePlanWeek}
-            className={`inline-flex items-center justify-center h-11 px-5 rounded-full text-background text-sm font-medium hover:opacity-90 transition-all duration-300 ${
-              allMealsSet 
-                ? 'bg-foreground' 
-                : 'bg-loblaws-orange shadow-md shadow-loblaws-orange/60 animate-[pulse_2s_ease-in-out_infinite]'
-            }`}
+            className={`inline-flex items-center justify-center h-11 px-5 rounded-full text-background text-sm font-medium hover:opacity-90 transition-all duration-300 bg-loblaws-orange`}
           >
             Plan the Week
           </button>
@@ -259,7 +255,7 @@ export default function MealsPage() {
                     <svg className="w-4 h-4 text-loblaws-orange" fill="currentColor" viewBox="0 0 20 20">
                       <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
                     </svg>
-                    <span className="text-loblaws-orange font-medium">Items with this star are on sale in this week&apos;s flyer</span>
+                    <span className="text-black font-medium">Items with this star are on sale in this week&apos;s flyer</span>
                   </div>
                 </div>
                 
@@ -279,7 +275,7 @@ export default function MealsPage() {
                               Set
                             </span>
                           ) : (
-                            <span className="inline-flex items-center px-2 py-1 rounded-sm text-xs font-medium bg-accent-muted text-white">
+                            <span className="inline-flex items-center px-2 py-1 rounded-sm text-xs font-medium bg-black text-white">
                               Not set
                             </span>
                           )}
