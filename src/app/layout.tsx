@@ -18,6 +18,9 @@ export const metadata: Metadata = {
   title: "Bargain Bites",
   description:
     "Save more. Eat better. Weekly budget-friendly meal plans from Canadian grocery flyers.",
+  icons: {
+    icon: '/icon.png',
+  },
 };
 
 export default function RootLayout({
