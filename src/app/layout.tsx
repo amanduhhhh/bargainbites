@@ -19,7 +19,11 @@ export const metadata: Metadata = {
   description:
     "Save more. Eat better. Weekly budget-friendly meal plans from Canadian grocery flyers.",
   icons: {
-    icon: '/icon.png',
+    icon: {
+      url: "/icon.png",
+      type: "image/png",
+    },
+    shortcut: { url: "/icon.png", type: "image/png" },
   },
 };
 
