@@ -486,7 +486,7 @@ export default function RecipePage() {
                   <div className="text-center py-12">
                     <div className="h-12 w-12 border-4 border-loblaws-orange border-t-transparent rounded-full animate-spin mx-auto mb-6" />
                     <h3 className="text-lg font-semibold text-gray-800 mb-2">Generating Detailed Instructions</h3>
-                    <p className="text-gray-500">Creating comprehensive cooking instructions with Gemini AI...</p>
+                    <p className="text-gray-500">Cooking...</p>
                   </div>
                 ) : recipeData.cookingInstructions ? (
                   <div 
